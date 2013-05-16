@@ -1,0 +1,6 @@
+syntax: regexp
+target      # maven output
+\.classpath # eclipse
+\.project   # eclipse
+\.settings  # eclipse
+\.externalToolBuilders
