@@ -1,4 +1,4 @@
-package com.synaway.oneplaces.services.impl;
+package com.synaway.oneplaces.service.impl;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,7 +16,7 @@ import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserRepository;
-import com.synaway.oneplaces.services.SpotService;
+import com.synaway.oneplaces.service.SpotService;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -97,5 +97,12 @@ public class SpotServiceImpl implements SpotService {
         Coordinate coord = new Coordinate( x, y );
         Point point = gf.createPoint( coord );
 		return point;
+	}
+
+	@Override
+	public List<Spot> getByLatitudeLongitudeAndRadius(Double latitude, Double longitude, Integer radius) {
+		String point = "POINT("+longitude+" "+latitude+")";
+		List<Spot> spots = spotRepository.findByLatitudeLongitudeAndRadius(point, radius);
+		return spots;
 	}
 }

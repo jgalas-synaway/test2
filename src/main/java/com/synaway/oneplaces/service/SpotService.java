@@ -1,4 +1,4 @@
-package com.synaway.oneplaces.services;
+package com.synaway.oneplaces.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,5 +19,7 @@ public interface SpotService {
 	Point createPoint(double x, double y);
 
 	Spot saveSpot(Spot spot);
+
+	List<Spot> getByLatitudeLongitudeAndRadius(Double latitude, Double longitude, Integer radius);
 
 }

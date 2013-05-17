@@ -14,6 +14,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 
 
@@ -39,6 +40,7 @@ public class User {
 	@Column(name = "login")
 	private String login;
 	
+	@JsonIgnore
 	@Column(name = "password")
 	private String password;
 	
@@ -52,11 +54,14 @@ public class User {
 	private Date modificationDate;
 	
 	@OneToMany(mappedBy = "user")
-	@JsonIgnore
 	private List<Spot> spots;
 	
-	public User() {}
 	
+	
+	public User() {
+		super();
+	}
+
 	public User(Long id) {
 		this.id = id;
 	}
@@ -101,10 +106,12 @@ public class User {
 		this.login = login;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
 
+	@JsonProperty("password")
 	public void setPassword(String password) {
 		this.password = password;
 	}

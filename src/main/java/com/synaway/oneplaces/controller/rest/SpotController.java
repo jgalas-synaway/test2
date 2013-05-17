@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserRepository;
-import com.synaway.oneplaces.services.SpotService;
+import com.synaway.oneplaces.service.SpotService;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -51,7 +52,7 @@ import com.vividsolutions.jts.io.WKTReader;
 
 @Transactional
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/spots")
 public class SpotController {
 	
 	private static Logger logger = Logger.getLogger(SpotController.class);
@@ -63,16 +64,30 @@ public class SpotController {
 	SpotService spotService;
 	
 	
-	@RequestMapping(value="/spots", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public List<Spot> getAllSpots(@RequestParam double latitude) {
-		List<Spot> spots = spotService.getAll();
+    public List<Spot> getAllSpots(@RequestParam(required=false) Double latitude, @RequestParam(required=false) Double longitude, @RequestParam(required=false) Integer radius) throws Exception {
+		List<Spot> spots = new ArrayList<Spot>();
+		if(latitude == null && longitude==null && radius== null){
+			spots = spotService.getAll();
+		}else{
+			if(latitude == null){
+				throw new Exception("Missing argument latitude");
+			}
+			if(longitude == null){
+				throw new Exception("Missing argument longitude");
+			}
+			if(radius == null){
+				throw new Exception("Missing argument radius");
+			}
+			spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
+		}
 		return spots;
 	}
 	
 	
 	
-	@RequestMapping(value="/spots/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
+	@RequestMapping(value="/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
     public Spot getSpot(@PathVariable Long id) {
 		Spot spot = spotService.getSpot(id);		
@@ -80,77 +95,11 @@ public class SpotController {
 	}
 	
 	
-	@RequestMapping(value="/spots", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
     public Spot addSpot(@RequestBody String json) throws Exception {
 		Spot spot = spotService.json2Spot(json);	
 		spot = spotService.saveSpot(spot);
 		return spot;
 	}	
-	
-	
-	@RequestMapping(value="/test", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
-	@ResponseBody
-    public String test() {
-		Spot spot = new Spot();
-		
-		spot.setLocation(spotService.createPoint(0, 0));
-		
-
-		
-		User user = new User();
-		user.setFirstName("test");
-		user.setLastName("test");
-		user = userRepository.save(user);
-		spot.setUser(user);
-		//spotRepository.save(spot);
-		
-		
-		return null;
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value="/cartodb")
-    public @ResponseBody String initDevicePairing() {
-		String res = "";
-		for(int i=0; i < 10; i++) {
-            try {
-                long startRequest = new Date().getTime();
-                final HttpParams httpParams = new BasicHttpParams();
-                HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
-                HttpConnectionParams.setSoTimeout(httpParams, 35000);
-                HttpClient client = new DefaultHttpClient(httpParams);
-                HttpGet request = new HttpGet(createURL());
-                HttpResponse response = client.execute(request);
-
-                BufferedReader br2 = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),
-                        Charset.forName("UTF-8")));
-                long requestDuration = new Date().getTime() - startRequest;
-
-                res += br2.readLine()+"<br />";
-            } catch (Exception e) {
-            	logger.error(e.getMessage(),e);
-            }
-        }
-    	return res;
-        
-    }
-	
-	private String createURL() throws UnsupportedEncodingException{
-		double min = 50.0521;
-		double max = 50.0787;
-		Random r = new Random();
-		double latitude = min+(r.nextDouble()*(max-min));
-
-		min = 19.883;
-		max = 19.969;
-		double longitude = min+(r.nextDouble()*(max-min));
-		
-		boolean active = r.nextBoolean();
-		
-		String sql = URLEncoder.encode("INSERT INTO spots (the_geom, active) VALUES (ST_SetSRID(ST_Point("+longitude+", "+latitude+"),4326), "+active+")","UTF-8");
-		String URI = "q="+sql+"&api_key=e8097e3a9c84902ddeadbe8fa0e6683afbfa9352";
-		String URL = "http://1places.cartodb.com/api/v2/sql?"+URI;
-		logger.info(URL);
-		return URL;
-	}
 }

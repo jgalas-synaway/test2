@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
-<databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
- 
-    <changeSet id="1" author="lkracon">
-        <comment>Create basic schema for database</comment>
-        <createTable tableName="users">
-            <column name="id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="first_name" type="varchar(50)"></column>
-            <column name="last_name" type="varchar(50)"/>
-            <column name="email" type="varchar(50)"/>
-            <column name="login" type="varchar(50)"/>
-            <column name="password" type="varchar(50)"/>
-            <column name="role" type="varchar(50)"/>
-            <column name="creation_date" type="datetime"/>
-            <column name="modification_date" type="datetime"/>
-        </createTable>
-        
-        <createTable tableName="spot">
-            <column name="id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="user_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="varchar(50)"></column>
-        </createTable>
-        
-        <addForeignKeyConstraint constraintName="fk_spot_user"
-    		baseTableName="spot" baseColumnNames="user_id"
-   			referencedTableName="users" referencedColumnNames="id"
-		/>
-		
-		<sql>SELECT AddGeometryColumn('spot', 'location', 4326, 'POINT', 2 );</sql>
-    </changeSet>
- 
+
+	<changeSet id="1" author="lkracon">
+		<comment>Create basic schema for database</comment>
+		<createTable tableName="users">
+			<column name="id" type="int">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="first_name" type="varchar(50)"></column>
+			<column name="last_name" type="varchar(50)" />
+			<column name="email" type="varchar(50)" />
+			<column name="login" type="varchar(50)" />
+			<column name="password" type="varchar(50)" />
+			<column name="role" type="varchar(50)" />
+			<column name="creation_date" type="datetime" />
+			<column name="modification_date" type="datetime" />
+		</createTable>
+
+		<createTable tableName="spot">
+			<column name="id" type="int">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="varchar(50)"></column>
+		</createTable>
+
+		<addForeignKeyConstraint constraintName="fk_spot_user"
+			baseTableName="spot" baseColumnNames="user_id" referencedTableName="users"
+			referencedColumnNames="id" />
+
+		<sql>SELECT AddGeometryColumn('spot', 'location', 4326, 'POINT', 2 );
+		</sql>
+	</changeSet>
+
 </databaseChangeLog>

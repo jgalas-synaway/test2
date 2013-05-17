@@ -15,6 +15,10 @@
 
 	<context:component-scan base-package="com.synaway.oneplaces" />
 	<mvc:annotation-driven />
+	
+	<mvc:interceptors>
+		<bean class="com.synaway.oneplaces.interceptor.CheckAccessTokenInterceptor" />
+	</mvc:interceptors>
 
 
 	<mvc:resources mapping="/resources/**" location="/resources/" />

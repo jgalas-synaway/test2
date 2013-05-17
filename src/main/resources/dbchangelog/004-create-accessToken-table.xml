@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+    <changeSet id="4" author="lkracon">
+        <comment>Create acces_token table</comment>
+        
+        
+        <createTable tableName="access_token">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="varchar(40)"></column>            
+            <column name="expire" type="datetime"/>
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="fk_access_token_user"
+    		baseTableName="access_token" baseColumnNames="user_id"
+   			referencedTableName="users" referencedColumnNames="id"
+		/>
+    </changeSet>
+ 
+</databaseChangeLog>
