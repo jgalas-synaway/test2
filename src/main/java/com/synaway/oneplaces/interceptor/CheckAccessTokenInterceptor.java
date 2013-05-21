@@ -20,7 +20,7 @@ public class CheckAccessTokenInterceptor implements HandlerInterceptor {
 
 		//response.setStatus(500, token);
 		
-		return false;
+		return true;
 	}
 
 	@Override
