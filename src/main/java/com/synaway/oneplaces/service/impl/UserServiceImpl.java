@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import com.synaway.oneplaces.exception.GeneralException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
@@ -56,15 +57,20 @@ public class UserServiceImpl implements UserService {
 		
 		User user = userRepository.findOneByLogin(login);
 		if(user == null){
-			throw new Exception("invalid login");
+			throw new GeneralException("invalid login", 504);
 		}
 		Md5PasswordEncoder enc = new Md5PasswordEncoder();
 		
 		if(!enc.isPasswordValid(user.getPassword(), password, null)){
-			throw new Exception("invalid password");
+			throw new GeneralException("invalid password", 505);
 		}
 		
-		AccessToken accessToken = accessTokenRepository.findByUserOrderByExpireDesc(user);
+		List<AccessToken> accessTokens = accessTokenRepository.findByUserOrderByExpireDesc(user);
+		AccessToken accessToken = null;
+		
+		if(accessTokens.size() > 0){
+			accessToken = accessTokens.get(0);
+		}
 		
 		if(accessToken == null || accessToken.getExpire().getTime() < new Date().getTime()){
 			accessToken = new AccessToken();
