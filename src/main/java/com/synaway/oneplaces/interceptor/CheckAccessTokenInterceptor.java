@@ -15,7 +15,12 @@ public class CheckAccessTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String token = request.getParameter("access_token");
-		return true;
+		
+		//request.getParameterMap().remove("access_token");
+
+		//response.setStatus(500, token);
+		
+		return false;
 	}
 
 	@Override
