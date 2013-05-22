@@ -4,3 +4,6 @@ target      # maven output
 \.project   # eclipse
 \.settings  # eclipse
 \.externalToolBuilders
+
+syntax: regexp
+^src/test/resources/META-INF/spring/configuration-test\.properties$
