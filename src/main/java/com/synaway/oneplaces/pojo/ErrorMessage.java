@@ -15,8 +15,10 @@ public class ErrorMessage {
 	
 	private String message;
 	
+	@JsonIgnore
 	private String developerMessage;
 	
+	@JsonIgnore
 	private int status;
 	
 	private int code;

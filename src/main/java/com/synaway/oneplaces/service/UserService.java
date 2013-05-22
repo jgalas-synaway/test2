@@ -16,4 +16,6 @@ public interface UserService {
 
 	AccessToken getToken(String login, String password) throws Exception;
 
+	User getCurrentUser();
+
 }

@@ -13,5 +13,6 @@
 	<include file="classpath:dbchangelog/004-create-accessToken-table.xml"/>
 	<include file="classpath:dbchangelog/005-add-unique-user-login.xml"/>
 	<include file="classpath:dbchangelog/006-create-sequences-access_token.xml"/>
+	<include file="classpath:dbchangelog/007-create-user-locations-table.xml"/>
 	
 </databaseChangeLog>

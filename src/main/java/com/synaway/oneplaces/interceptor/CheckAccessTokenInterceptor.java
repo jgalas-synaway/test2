@@ -26,9 +26,6 @@ public class CheckAccessTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getRequestURI().replace(request.getContextPath(), "");
-
-		//logger.info(request.getParameter("login"));
-	     
 		
 		
 		if(uri.endsWith("/users") && request.getMethod().equalsIgnoreCase("POST")){

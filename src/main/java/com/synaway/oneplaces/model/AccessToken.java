@@ -13,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 @Table(name = "access_token")
@@ -64,6 +65,11 @@ public class AccessToken {
 
 	public void setExpire(Date expire) {
 		this.expire = expire;
+	}
+	
+	@JsonProperty("user_id")
+	public Long getUserId(){
+		return user.getId();
 	}
 
 	@Override

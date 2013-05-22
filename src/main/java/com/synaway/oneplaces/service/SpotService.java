@@ -6,6 +6,7 @@ import java.util.List;
 import org.codehaus.jackson.JsonProcessingException;
 
 import com.synaway.oneplaces.model.Spot;
+import com.synaway.oneplaces.model.User;
 import com.vividsolutions.jts.geom.Point;
 
 public interface SpotService {
@@ -21,5 +22,7 @@ public interface SpotService {
 	Spot saveSpot(Spot spot);
 
 	List<Spot> getByLatitudeLongitudeAndRadius(Double latitude, Double longitude, Integer radius);
+
+	List<Spot> getByUser(User user, int limit, int offset);
 
 }

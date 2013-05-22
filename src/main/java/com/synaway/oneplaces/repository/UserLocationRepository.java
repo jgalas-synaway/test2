@@ -1,0 +1,21 @@
+package com.synaway.oneplaces.repository;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.synaway.oneplaces.model.Spot;
+import com.synaway.oneplaces.model.User;
+import com.synaway.oneplaces.model.UserLocation;
+
+
+public interface UserLocationRepository  extends JpaRepository<UserLocation, Long> {
+
+	List<UserLocation> findByUserOrderByTimestampDesc(User user, Pageable pageable);
+	
+	List<UserLocation> findByUserAndTimestampBetweenOrderByTimestampDesc(User user, Date start, Date end, Pageable pageable);
+
+}

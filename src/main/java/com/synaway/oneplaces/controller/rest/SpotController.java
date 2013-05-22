@@ -1,36 +1,12 @@
 package com.synaway.oneplaces.controller.rest;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,15 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.synaway.oneplaces.model.Spot;
-import com.synaway.oneplaces.model.User;
-import com.synaway.oneplaces.repository.SpotRepository;
-import com.synaway.oneplaces.repository.UserRepository;
+import com.synaway.oneplaces.model.UserLocation;
+import com.synaway.oneplaces.repository.AccessTokenRepository;
+import com.synaway.oneplaces.repository.UserLocationRepository;
 import com.synaway.oneplaces.service.SpotService;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.WKTReader;
+import com.synaway.oneplaces.service.UserService;
 
 
 @Transactional
@@ -57,31 +29,49 @@ public class SpotController {
 	
 	private static Logger logger = Logger.getLogger(SpotController.class);
 	
+	
 	@Autowired
-	UserRepository userRepository;
+	UserService userService;
 	
 	@Autowired
 	SpotService spotService;
 	
+	@Autowired
+	AccessTokenRepository accessTokenRepository;
+	
+	@Autowired
+	UserLocationRepository userLocationRepository;	
 	
 	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public List<Spot> getAllSpots(@RequestParam(required=false) Double latitude, @RequestParam(required=false) Double longitude, @RequestParam(required=false) Integer radius) throws Exception {
+    public List<Spot> getAllSpots(@RequestParam String access_token, @RequestParam(required=false) Double latitude, @RequestParam(required=false) Double longitude, @RequestParam(required=false) Integer radius) throws Exception {
 		List<Spot> spots = new ArrayList<Spot>();
 		if(latitude == null && longitude==null && radius== null){
 			spots = spotService.getAll();
 		}else{
 			if(latitude == null){
-				throw new Exception("Missing argument latitude");
+				throw new MissingServletRequestParameterException("latitude", "Double");
 			}
 			if(longitude == null){
-				throw new Exception("Missing argument longitude");
+				throw new MissingServletRequestParameterException("longitude", "Double");
 			}
 			if(radius == null){
-				throw new Exception("Missing argument radius");
+				throw new MissingServletRequestParameterException("radius", "Integer");
 			}
 			spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
+			
+			
+			
+			UserLocation userLocation = new UserLocation();
+			userLocation.setLocation(spotService.createPoint(longitude, latitude));
+			userLocation.setUser(userService.getCurrentUser());
+			
+			userLocationRepository.save(userLocation);			
 		}
+		
+		
+		
+		
 		return spots;
 	}
 	

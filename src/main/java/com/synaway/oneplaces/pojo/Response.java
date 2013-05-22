@@ -24,6 +24,7 @@ public class Response {
     
     public Response(Exception ex) {
         super();
+        error = new ErrorMessage();
         error.setMessage(ex.getMessage());
 
     }

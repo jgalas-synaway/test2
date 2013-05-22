@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+ 
+    <changeSet id="7" author="lkracon">
+        <comment>Create user_location table</comment>
+        
+        
+        <createTable tableName="user_location">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>           
+            <column name="timestamp" type="TIMESTAMP"  defaultValueComputed="CURRENT_TIMESTAMP" />
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="fk_user_location_user"
+    		baseTableName="user_location" baseColumnNames="user_id"
+   			referencedTableName="users" referencedColumnNames="id"
+		/>
+		
+		<sql>SELECT AddGeometryColumn('user_location', 'location', 4326, 'POINT', 2 );</sql>
+		
+    </changeSet>
+ 
+</databaseChangeLog>

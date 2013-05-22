@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import com.synaway.oneplaces.exception.AccessTokenException;
 import com.synaway.oneplaces.exception.GeneralException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
@@ -35,6 +38,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	AccessTokenRepository accessTokenRepository;
 	
+	@Autowired
+	HttpServletRequest request;
+	
 	@Override
 	public User getUser(long id){
 		return userRepository.findOne(id);
@@ -48,7 +54,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User saveUser(User user) throws NoSuchAlgorithmException{	
 		Md5PasswordEncoder enc = new Md5PasswordEncoder();
-		user.setPassword(enc.encodePassword(user.getPassword(), null));		
+		user.setPassword(enc.encodePassword(user.getPassword(), null));
+		
+		User existingUser = userRepository.findOneByLogin(user.getLogin());
+		if(existingUser != null){
+			throw new GeneralException("User with login "+user.getLogin()+" already exist.", 506);
+		}
+		
 		return userRepository.save(user);
 	}
 	
@@ -84,6 +96,13 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return accessToken;
+	}
+	
+	@Override
+	public User getCurrentUser(){
+		String token = request.getParameter("access_token");
+		AccessToken accessToken = accessTokenRepository.findByToken(token);		
+		return accessToken.getUser();
 	}
 	
 	

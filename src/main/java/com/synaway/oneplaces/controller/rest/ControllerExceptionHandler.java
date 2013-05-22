@@ -4,6 +4,7 @@ import javax.persistence.NoResultException;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,10 +45,11 @@ public class ControllerExceptionHandler {
     }
     
     @ExceptionHandler({ Exception.class })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     protected Response handleException(Exception ex) {
         logger.error(ex.getMessage(), ex);
-        return new Response(ex);
+        return new Response(new GeneralException(ex.getMessage(), GeneralException.GENERAL_EXCEPTION));
     }
     
     private void logGeneralException(GeneralException ex) {

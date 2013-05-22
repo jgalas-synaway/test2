@@ -15,7 +15,9 @@ public class GeneralException extends RuntimeException{
     public static final int GENERAL_FILE_EXCEPTION = 200;
     public static final int FILE_NOT_FOUND = 201;
     
-    public static final int GENERAL_ACCESS_TOKEN_EXCEPTION = 500;
+    public static final int GENERAL_ACCESS_TOKEN_EXCEPTION = 300;
+
+	public static final int GENERAL_EXCEPTION = 500;
 	
 	@JsonProperty
 	protected int code = 0;

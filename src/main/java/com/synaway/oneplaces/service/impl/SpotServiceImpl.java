@@ -9,6 +9,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,12 @@ public class SpotServiceImpl implements SpotService {
 	@Override
 	public Spot saveSpot(Spot spot){
 		return spotRepository.save(spot);
+	}
+	
+
+	@Override
+	public List<Spot> getByUser(User user, int limit, int offset){
+		return spotRepository.findByUserOrderByTimestampDesc(user, new PageRequest(offset, limit));
 	}
 	
 	@Override

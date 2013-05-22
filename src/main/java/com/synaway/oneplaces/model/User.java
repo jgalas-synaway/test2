@@ -15,12 +15,18 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.PageRequest;
+
+import com.synaway.oneplaces.repository.SpotRepository;
 
 
 
 @Entity
 @Table(name = "users")
 public class User {
+
 	
     @Id
     @GeneratedValue(generator = "user_id", strategy = GenerationType.SEQUENCE)
@@ -53,8 +59,13 @@ public class User {
 	@Column(name = "modification_date")
 	private Date modificationDate;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Spot> spots;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<UserLocation> user_locations;
 	
 	
 	
@@ -146,5 +157,13 @@ public class User {
 
 	public void setSpots(List<Spot> spots) {
 		this.spots = spots;
+	}
+
+	public List<UserLocation> getUser_locations() {
+		return user_locations;
+	}
+
+	public void setUser_locations(List<UserLocation> user_locations) {
+		this.user_locations = user_locations;
 	}
 }
