@@ -60,8 +60,6 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
 	MockMvc mockMvc;
 
-	private List<User> users = null;
-
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
@@ -72,10 +70,6 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	public void cleanDatabase() throws NoSuchAlgorithmException {
 		accessTokenRepository.deleteAllInBatch();
 		userRepository.deleteAllInBatch();
-		users = new ArrayList<User>();
-		for (int i = 0; i < 20; i++) {
-			users.add(createUser("john" + i, "password"));
-		}
 	}
 
 	@Test
@@ -91,7 +85,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	public void authenticationTest() throws Exception {
-
+		createUser("john0", "password");
 		AccessToken accessToken = userService.getToken("john0", "password");
 
 		mockMvc.perform(
