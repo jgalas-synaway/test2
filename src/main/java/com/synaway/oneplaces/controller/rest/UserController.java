@@ -120,7 +120,6 @@ public class UserController {
 	@RequestMapping(value="/auth", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
     public AccessToken getToken(@RequestParam String login, @RequestParam String password) throws Exception {
-		
 		return userService.getToken(login, password);
 	}
 	

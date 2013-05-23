@@ -18,6 +18,8 @@
        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
      
 
+	<context:component-scan base-package="com.synaway.oneplaces" />
+	<context:annotation-config />
    	
     <context:property-placeholder
 	location="file:src/test/resources/META-INF/spring/configuration-test.properties" order="0" system-properties-mode="OVERRIDE"/>
@@ -32,13 +34,9 @@
         <property name="dataSource" ref="dataSource" />
         <property name="persistenceUnitName" value="persistenceUnitTest" />
     </bean>
-    
-    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
-		<property name="dataSource" ref="dataSource" />
-		<property name="changeLog" value="classpath:dbchangelog/dbchangelog.xml" />
-		<property name="contexts" value="test, production" />
-		<property name="dropFirst" value="true" />
-	</bean>
+
+<!-- 	<bean id="mockHttpServletRequest" class="org.springframework.mock.web.MockHttpServletRequest" /> -->
+     
      
 
 </beans>
