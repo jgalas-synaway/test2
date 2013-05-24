@@ -2,11 +2,16 @@ package com.synaway.oneplaces.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +49,7 @@ public class SpotController {
 	
 	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public List<Spot> getAllSpots(@RequestParam String access_token, @RequestParam(required=false) Double latitude, @RequestParam(required=false) Double longitude, @RequestParam(required=false) Integer radius) throws Exception {
+    public List<Spot> getAllSpots(@RequestParam(required=false) Double latitude, @RequestParam(required=false) Double longitude, @RequestParam(required=false) Integer radius) throws Exception {
 		List<Spot> spots = new ArrayList<Spot>();
 		if(latitude == null && longitude==null && radius== null){
 			spots = spotService.getAll();
@@ -76,7 +81,6 @@ public class SpotController {
 	}
 	
 	
-	
 	@RequestMapping(value="/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
     public Spot getSpot(@PathVariable Long id) {
@@ -85,7 +89,7 @@ public class SpotController {
 	}
 	
 	
-	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
 	@ResponseBody
     public Spot addSpot(@RequestBody String json) throws Exception {
 		Spot spot = spotService.json2Spot(json);	
