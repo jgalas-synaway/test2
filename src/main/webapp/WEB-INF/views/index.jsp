@@ -8,10 +8,12 @@
 	<c:url var="style" value="/resources/styles/style.css" />
 	<c:url var="baseUrl" value="/"/>
 	
-	<link rel="stylesheet" href="${style}"/>
+	<base href="${pageContext.request.contextPath}">
 	
-	<script type="text/javascript" src="${jq}"></script>
-	<script type="text/javascript" src="${app}"></script>
+	<link rel="stylesheet" href="/resources/styles/style.css"/>
+	
+	<script type="text/javascript" src="/resources/scripts/app.js"></script>
+	<script type="text/javascript" src="/resources/scripts/jquery-1.9.1.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	
 	<script type="text/javascript">

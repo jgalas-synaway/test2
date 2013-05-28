@@ -110,7 +110,7 @@ public class SpotController {
 	public Spot addSpot() throws Exception {
 		Spot spot = new Spot();
 		spot.setTimestamp(new Date());
-		spot.setUser(userService.getUser(2));
+		spot.setUser(userService.getAll().get(0));
 		spot.setStatus("free");
 		
 		Random r = new Random();
