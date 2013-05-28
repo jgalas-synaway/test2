@@ -28,7 +28,7 @@ var AppView = function() {
 	function getSpots() {
 		
 		$.ajax({
-			url : baseUrl+"/spots?latitude="+self.map.getCenter().lat()+"&longitude="+self.map.getCenter().lng()+"&radius=30000&access_token=04287a65258748891af53e12b43d8d5e&tracking=false",
+			url : baseUrl+"/spots?latitude="+self.map.getCenter().lat()+"&longitude="+self.map.getCenter().lng()+"&radius=30000&access_token=cfe3b962334808e63435a18d294854b3&tracking=false",
 			dataType:"json"
 		}).done(function(data) {
 			//remove old spots from list
