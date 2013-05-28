@@ -7,9 +7,8 @@
 	<c:url var="jq" value="/resources/scripts/jquery-1.9.1.min.js" />
 	<c:url var="app" value="/resources/scripts/app.js" />
 	<c:url var="style" value="/resources/styles/style.css" />
-	<c:url var="baseUrl" value="/"/>
-	
-	<base href="${pageContext.request.contextPath}">
+
+
 	
 	<link rel="stylesheet" href="${style}"/>
 	
@@ -18,7 +17,7 @@
 	<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	
 	<script type="text/javascript">
-		var baseUrl = "${baseUrl}";
+		var baseUrl = "${pageContext.request.contextPath}";
 	</script>
 	
 </head>
