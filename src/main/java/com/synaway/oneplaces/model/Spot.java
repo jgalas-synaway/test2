@@ -122,6 +122,13 @@ public class Spot implements JsonSerializableWithType {
 		}else{
 			jgen.writeNumberField("latitude", location.getY());
 		}
+		
+		if(status == null){
+			jgen.writeNullField("status");
+		}else{
+			jgen.writeStringField("status", status);
+		}
+
 
 		jgen.writeEndObject();		 
 		

@@ -27,6 +27,9 @@ public class CheckAccessTokenInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getRequestURI().replace(request.getContextPath(), "");
 		
+		if(uri.startsWith("/frontend") || uri.startsWith("/resources")){
+			return true;
+		}
 		
 		if(uri.endsWith("/users") && request.getMethod().equalsIgnoreCase("POST")){
 			return true;

@@ -148,9 +148,9 @@ public class SpottControllerIntegrationTest extends AbstractIntegrationTest {
 			spotController.addSpot("{\"longitude\": 18.856278, \"latitude\": 58.06063, \"userId\" : "+user.getId()+", \"status\" : \"somestatus\" }");
 		}
 		
-		Assert.assertEquals(20 ,spotController.getAllSpots(null, null,null).size());
-		Assert.assertEquals(10 ,spotController.getAllSpots(50.06063, 19.856278,100).size());
-		Assert.assertEquals(10 ,spotController.getAllSpots(58.06063, 18.856278,100).size());
+		Assert.assertEquals(20 ,spotController.getAllSpots(null, null,null, null).size());
+		Assert.assertEquals(10 ,spotController.getAllSpots(50.06063, 19.856278,100, null).size());
+		Assert.assertEquals(10 ,spotController.getAllSpots(58.06063, 18.856278,100, null).size());
 
 	}
 	
@@ -163,7 +163,7 @@ public class SpottControllerIntegrationTest extends AbstractIntegrationTest {
 		request.addParameter("access_token", accessToken.getToken());
 		
 		for(int i = 0; i < 10; i++){
-			spotController.getAllSpots(50.06063, 19.856278,100);
+			spotController.getAllSpots(50.06063, 19.856278,100, null);
 		}
 		
 		Assert.assertEquals(10 ,userLocationRepository.count());
