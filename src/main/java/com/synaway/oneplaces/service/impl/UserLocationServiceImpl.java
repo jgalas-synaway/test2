@@ -1,5 +1,7 @@
 package com.synaway.oneplaces.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,11 @@ public class UserLocationServiceImpl implements UserLocationService {
 	@Override
 	public List<UserLocation> getByUser(User user, int limit, int offset){
 		return userLocationRepository.findByUserOrderByTimestampDesc(user, new PageRequest(offset, limit));
+	}
+	
+	@Override
+	public List<UserLocation> getActive(){
+		return userLocationRepository.findActive();
 	}
 	
 }

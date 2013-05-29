@@ -2,6 +2,7 @@ html, body{
 	width: 100%;
 	height :100%;
 	margin: 0;
+	font-family: sans-serif;
 }
 
 #main{	
@@ -13,10 +14,55 @@ html, body{
 	width: 300px;
 	height :100%;
 	float: left;
+	overflow: hidden;
+	border-right: 1px solid #aaaaaa;
+}
+
+#errorBox{
+	color:red;
+}
+
+#content{
+	overflow:hidden;
+	height :100%;
+	position: relative;
+}
+
+#userInfo{
+	width: 100%;
+	text-align: center;
+	overflow: auto;
+}
+
+#userInfo p{
+	margin: 1em;
+}
+
+
+#content .tab{
+	height: 100%;
+	right: 0;
+	left: 0;
+	background-color: #ffffff;
+	position: absolute;
+	padding: 20px;
+}
+
+#content #tabs-1.tab{
+	padding: 0;
 }
 
 #map_canvas{
-	overflow:hidden;
-
 	height :100%;
+	width: 100%
+}
+
+#menu label {
+	display: block;
+}
+
+#menu input {
+	float: left;
+	margin-top: 7px;
+	margin-right: 7px;
 }

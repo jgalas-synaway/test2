@@ -111,6 +111,12 @@ public class UserLocation implements JsonSerializableWithType {
 		}else{
 			jgen.writeNumberField("latitude", location.getY());
 		}
+		
+		if(user == null){
+			jgen.writeNullField("user");
+		}else{
+			jgen.writeObjectField("user", user);
+		}
 
 		jgen.writeEndObject();		 
 		

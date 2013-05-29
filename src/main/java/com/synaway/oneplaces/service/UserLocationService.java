@@ -9,4 +9,6 @@ public interface UserLocationService {
 
 	List<UserLocation> getByUser(User user, int limit, int offset);
 
+	List<UserLocation> getActive();
+
 }
