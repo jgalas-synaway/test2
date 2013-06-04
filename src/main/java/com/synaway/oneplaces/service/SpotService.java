@@ -25,4 +25,6 @@ public interface SpotService {
 
 	List<Spot> getByUser(User user, int limit, int offset);
 
+	Spot updateSpot(Spot spot);
+
 }

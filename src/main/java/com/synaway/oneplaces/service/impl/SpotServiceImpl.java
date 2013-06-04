@@ -10,6 +10,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.SpotService;
+import com.synaway.oneplaces.service.UserService;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -31,9 +33,12 @@ public class SpotServiceImpl implements SpotService {
 	
 	@Autowired
 	SpotRepository spotRepository;
-	
+
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public Spot getSpot(long id){
@@ -47,6 +52,9 @@ public class SpotServiceImpl implements SpotService {
 	
 	@Override
 	public Spot saveSpot(Spot spot){
+		if(spot.getUser() == null){
+			spot.setUser(userService.getCurrentUser());
+		}
 		return spotRepository.save(spot);
 	}
 	
@@ -73,15 +81,17 @@ public class SpotServiceImpl implements SpotService {
 			throw new Exception("Missing argument latitude");
 		}		
 		
-		if(!ob.has("userId")){
-			//TODO throw custom exception
-			throw new Exception("Missing argument userId");
-		}
-		
-		User user = userRepository.findOne(ob.get("userId").asLong());
-		if(user == null){
-			//TODO throw custom exception
-			throw new Exception("User with id "+ob.get("userId").asLong()+" does not exist");
+//		if(!ob.has("userId")){
+//			//TODO throw custom exception
+//			throw new Exception("Missing argument userId");
+//		}
+		User user = null;
+		if(ob.has("userId")){
+			user = userRepository.findOne(ob.get("userId").asLong());
+			if(user == null){
+				//TODO throw custom exception
+				throw new Exception("User with id "+ob.get("userId").asLong()+" does not exist");
+			}
 		}
 		
 		if(!ob.has("status")){
@@ -93,7 +103,9 @@ public class SpotServiceImpl implements SpotService {
 		spot.setTimestamp(new Date());
 		spot.setUser(user);
 		spot.setLocation(createPoint(ob.get("longitude").asDouble(), ob.get("latitude").asDouble()));
-		
+		if(ob.has("spotId")){
+			spot.setId(ob.get("spotId").asLong());
+		}
 		
 		return spot;		 
 	}
@@ -111,5 +123,24 @@ public class SpotServiceImpl implements SpotService {
 		String point = "POINT("+longitude+" "+latitude+")";
 		List<Spot> spots = spotRepository.findByLatitudeLongitudeAndRadius(point, radius);
 		return spots;
+	}
+	
+	@Override
+	public Spot updateSpot(Spot spot){
+		Spot existing = spotRepository.findOne(spot.getId());
+		
+		
+				
+		if(spot.getLocation() != null){
+			existing.setLocation(spot.getLocation());
+		}
+		if(spot.getStatus() != null){
+			existing.setStatus(spot.getStatus());
+		}
+		if(spot.getTimestamp() != null){
+			existing.setTimestamp(spot.getTimestamp());
+		}
+		return spotRepository.save(existing);
+		
 	}
 }

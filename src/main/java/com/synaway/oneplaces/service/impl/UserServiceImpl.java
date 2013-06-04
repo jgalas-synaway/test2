@@ -105,6 +105,32 @@ public class UserServiceImpl implements UserService {
 		return accessToken.getUser();
 	}
 	
+	@Override
+	public User updateUser(User user){
+		User existing = userRepository.findOne(user.getId());
+		if(user.getPassword() != null){
+			Md5PasswordEncoder enc = new Md5PasswordEncoder();
+			existing.setPassword(enc.encodePassword(user.getPassword(), null));
+		}
+		if(user.getFirstName() != null){
+			existing.setFirstName(user.getFirstName());
+		}
+		if(user.getLastName() != null){
+			existing.setLastName(user.getLastName());
+		}
+		if(user.getLogin() != null){
+			existing.setLogin(user.getLogin());
+		}
+		if(user.getEmail() != null){
+			existing.setEmail(user.getEmail());
+		}
+		if(user.getRole() != null){
+			existing.setRole(user.getRole());
+		}
+		return userRepository.save(existing);
+		
+	}
+	
 	
 	
 }

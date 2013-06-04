@@ -18,4 +18,6 @@ public interface UserService {
 
 	User getCurrentUser();
 
+	User updateUser(User user);
+
 }

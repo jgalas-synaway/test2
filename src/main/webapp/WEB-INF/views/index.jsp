@@ -18,15 +18,19 @@
 <c:url var="ui_tabs" value="/resources/scripts/ui/jquery.ui.tabs.js" />
 <c:url var="dataTable"
 	value="/resources/scripts/dataTables/media/js/jquery.dataTables.js" />
+<c:url var="dataTableUpdate"
+	value="/resources/scripts/dataTables/plugins/fnReloadAjax.js" />
 
 <c:url var="app" value="/resources/scripts/app.js" />
 <c:url var="users" value="/resources/scripts/users.js" />
+<c:url var="spots" value="/resources/scripts/spots.js" />
 
 <c:url var="style" value="/resources/styles/style.css" />
 <c:url var="ui_style"
 	value="/resources/scripts/themes/base/jquery.ui.all.css" />
 <c:url var="tableStyle"
 	value="/resources/scripts/dataTables/media/css/jquery.dataTables.css" />
+
 
 <link rel="stylesheet" href="${style}" />
 <link rel="stylesheet" href="${ui_style}" />
@@ -42,9 +46,11 @@
 <script type="text/javascript" src="${ui_accordion}"></script>
 <script type="text/javascript" src="${ui_tabs}"></script>
 <script type="text/javascript" src="${dataTable}"></script>
+<script type="text/javascript" src="${dataTableUpdate}"></script>
 
 <script type="text/javascript" src="${app}"></script>
 <script type="text/javascript" src="${users}"></script>
+<script type="text/javascript" src="${spots}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 <script type="text/javascript">
@@ -54,6 +60,7 @@
 			.cookie('access_token');
 	var user = null;
 	var users = null;
+	var spots = null;
 
 	$(function() {
 
@@ -78,8 +85,8 @@
 					dataType : "json",
 					type : "POST",
 					data : {
-						login : $("#login").val(),
-						password : $("#password").val()
+						login : $(this).find("#login").val(),
+						password : $(this).find("#password").val()
 					}
 				}).done(function(data) {
 					$("#loginFormBox").remove();
@@ -89,6 +96,7 @@
 					$("#main").css("visibility", "visible");
 					me(token);
 					users = new Users(token);
+					spots = new Spots(token);
 				}).fail(function(data) {
 					var error = $.parseJSON(data.responseText).error;
 					if (error.code == 504) {
@@ -108,6 +116,7 @@
 			$("#main").css("visibility", "visible");
 			me(token);
 			users = new Users(token);
+			spots = new Spots(token);
 		}
 
 		$("#accordion").accordion(
@@ -144,26 +153,26 @@
 
 		function me(token) {
 			$.ajax({
-						url : baseUrl + "/users/me?access_token=" + token,
-						dataType : "json",
-					})
-					.done(
-							function(data) {
-								user = data;
-								$("#userInfo").empty();
-								$("#userInfo")
-										.append(
-												'<p>'
-														+ user.firstName
-														+ ' '
-														+ user.lastName
-														+ ' <a href="#" id="logout">logout</a></p>');
-								$("#userInfo #logout").click(function() {
-									$.removeCookie('access_token');
-									location.reload();
-								});
-								$("#accordion").accordion("refresh");
-							});
+				url : baseUrl + "/users/me?access_token=" + token,
+				dataType : "json",
+			}).done(
+				function(data) {
+					user = data;
+					$("#userInfo").empty();
+					$("#userInfo").append(
+						'<p>'
+						+ user.firstName
+						+ ' '
+						+ user.lastName
+						+ ' ('+user.login+')'
+						+ ' <a href="#" id="logout">logout</a></p>'
+					);
+					$("#userInfo #logout").click(function() {
+						$.removeCookie('access_token');
+						location.reload();
+					});
+					$("#accordion").accordion("refresh");
+				});
 		}
 
 		$(window).resize(function() {
@@ -186,7 +195,15 @@
 			}
 		});
 
-		
+		$("#accordion .link").click(function(event){
+			var forElement = $(this).attr("href");
+			if (forElement == undefined || forElement == null
+					|| forElement == "") {
+				forElement = $(this).data("for");
+			}
+			changeTab(forElement);
+			event.preventDefault();
+		});
 
 	});
 </script>
@@ -221,11 +238,11 @@
 				</div>
 				<h3 id="acc-2" data-for="tab-2">Administration</h3>
 				<div>
-					<p>
-						<a href="#">Users</a>
+					<p class="link" data-for="tab-2">
+						Users
 					</p>
-					<p>
-						<a href="#">Spots</a>
+					<p  class="link" data-for="tab-3">
+						Spots
 					</p>
 				</div>
 
@@ -256,6 +273,102 @@
 
 					</tbody>
 				</table>
+				<div id="add_user_btn">
+				Add user
+				</div>
+				<div id="user_edit">
+					<form>
+						<input name="user_id" id="user_id" type="hidden"/>
+						<div class="form_row">
+							<label for="firstName">First Name:</label> 
+							<input id="firstName" name="firstName" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="lastName">Last Name:</label> 
+							<input id="lastName" name="lastName" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="login">Login:</label> 
+							<input id="login" name="login" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="email">Email:</label> 
+							<input id="email" name="email" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="role">Role:</label> 
+							<select id="role" name="role">
+								<option value="user">user</option>
+								<option value="beta">beta</option>
+								<option value="admin">admin</option>
+							</select>
+						</div>
+						<div class="form_row"> 
+							<label for="change_password">Change password:</label> 
+							<input id="change_password" name="change_password" type="checkbox" />
+						</div>
+						
+						<div class="form_row">
+							<label for="new_password">Password:</label> 
+							<input id="new_password" name="new_password" type="password" />
+						</div>
+						<input value="save" type="submit"/>
+						<input value="cancel" type="button"/>
+					</form>
+				</div>
+				<div id="user_delete">
+					Are you sure you want to delete this item?
+				</div>
+			</div>
+			<div id="tab-3" class="tab">
+				<h3>Spots</h3>
+				<table cellpadding="0" cellspacing="0" border="0" class="display"
+					id="spots-table">
+					<thead>
+						<tr>
+							<th width="20%">Latitude</th>
+							<th width="20%">Longitude</th>
+							<th width="20%">Timestamp</th>
+							<th width="20%">Status</th>
+							<th width="20%">edit</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+				<div id="add_spot_btn">
+				Add spot
+				</div>
+				<div id="spot_edit">
+					<form>
+						<input name="spot_id" id="spot_id" type="hidden"/>
+						<div class="form_row">
+							<label for="longitude">Longitude:</label> 
+							<input id="longitude" name="longitude" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="latitude">Latitude:</label> 
+							<input id="latitude" name="latitude" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="timestamp">Timestamp:</label> 
+							<input id="timestamp" name="timestamp" type="text" />
+						</div>
+						<div class="form_row">
+							<label for="status">Status:</label> 
+							<select id="status" name="status">
+								<option value="free">free</option>
+								<option value="occupied">occupied</option>
+							</select>
+						</div>
+						<input value="save" type="submit"/>
+						<input value="cancel" type="button"/>
+					</form>
+				</div>
+				<div id="spot_delete">
+					Are you sure you want to delete this item?
+				</div>
 			</div>
 		</div>
 

@@ -19,6 +19,8 @@ import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.model.UserLocation;
+import com.synaway.oneplaces.repository.AccessTokenRepository;
+import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserLocationRepository;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.SpotService;
@@ -41,6 +43,18 @@ public class UserController {
 	@Autowired
 	UserLocationService userLocationService;
 	
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	UserLocationRepository userLocationRepository;
+	
+	@Autowired
+	SpotRepository spotRepository;
+	
+	@Autowired
+	AccessTokenRepository accessTokenRepository;
+	
 	
 	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
@@ -56,6 +70,15 @@ public class UserController {
     public User getUser(@PathVariable Long id) {
 		User user = userService.getUser(id);		
 		return user;
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, consumes="application/json", produces = "application/json")
+	@ResponseBody
+    public User updateUser(@RequestBody User user) throws MissingServletRequestParameterException {
+		if(user.getId() == null){
+			throw new MissingServletRequestParameterException("id","Long");
+		}		
+		return userService.updateUser(user);
 	}
 	
 	@RequestMapping(value="/me", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
@@ -115,7 +138,15 @@ public class UserController {
 		user.setCreationDate(Calendar.getInstance().getTime());
 		user.setModificationDate(Calendar.getInstance().getTime());
 		return userService.saveUser(user);
-	}	
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+    public User deleteSpot(@PathVariable Long id)  {
+		User user = userService.getUser(id);
+		userRepository.delete(id);
+		return user;
+	}
 	
 	@RequestMapping(value="/auth", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody

@@ -66,3 +66,39 @@ html, body{
 	margin-top: 7px;
 	margin-right: 7px;
 }
+
+.edit_btn, .delete_btn{
+	margin-left: 15px;
+	cursor: pointer;
+}
+
+#user_edit .form_row{
+	width: 100%;
+}
+
+#user_edit .form_row label{
+	width: 200px;
+	display: inline-block;
+}
+
+#add_user_btn{
+	margin-top:20px;
+}
+
+#spot_edit .form_row{
+	width: 100%;
+}
+
+#spot_edit .form_row label{
+	width: 200px;
+	display: inline-block;
+}
+
+
+#add_spot_btn{
+	margin-top:20px;
+}
+
+.link{
+	cursor: pointer;
+}

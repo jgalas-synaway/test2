@@ -1,5 +1,6 @@
 package com.synaway.oneplaces.controller.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.synaway.oneplaces.model.Spot;
+import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.model.UserLocation;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
 import com.synaway.oneplaces.repository.SpotRepository;
@@ -41,6 +44,9 @@ public class SpotController {
 
 	@Autowired
 	SpotService spotService;
+	
+	@Autowired
+	SpotRepository spotRepository;
 
 	@Autowired
 	AccessTokenRepository accessTokenRepository;
@@ -93,6 +99,24 @@ public class SpotController {
 	public Spot addSpot(@RequestBody String json) throws Exception {
 		Spot spot = spotService.json2Spot(json);
 		spot = spotService.saveSpot(spot);
+		return spot;
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, consumes="application/json", produces = "application/json")
+	@ResponseBody
+    public Spot updateSpot(@RequestBody String json) throws JsonProcessingException, IOException, Exception {
+		Spot spot = spotService.json2Spot(json);
+		if(spot.getId() == null){
+			throw new MissingServletRequestParameterException("spotId","Long");
+		}		
+		return spotService.updateSpot(spot);
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+    public Spot deleteSpot(@PathVariable Long id)  {
+		Spot spot = spotService.getSpot(id);
+		spotRepository.delete(id);
 		return spot;
 	}
 	
