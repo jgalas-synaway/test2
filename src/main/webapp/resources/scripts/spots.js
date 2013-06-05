@@ -14,6 +14,9 @@ var Spots = function(token){
 		if(id == ""){
 			id = null;
 		}
+		var date = $(this).find("#timestamp").datepicker( "getDate" );
+		date.setHours($(this).find("#hour").val(), $(this).find("#minute").val(), $(this).find("#second").val());
+
 		$.ajax({
 			"dataType" : 'json',
 			"type" : (id == null)?"POST":"PUT",
@@ -23,7 +26,7 @@ var Spots = function(token){
 				"spotId" : id,
 				"longitude" : $(this).find("#longitude").val(),
 				"latitude" : $(this).find("#latitude").val(),
-				"timestamp" : $(this).find("#timestamp").val(),
+				"timestamp" : date.getTime()/1000,
 				"status" : $(this).find("#status").val()
 			})
 		}).done(function(json){
@@ -32,6 +35,9 @@ var Spots = function(token){
 		});
 		return false;
 	});
+	$("#spot_edit form #spot_cancel").click(function(){
+		editWindow.dialog('close');
+	});
 	
 	$('#add_spot_btn').button().click(function(){
 		self.editWindow();
@@ -39,6 +45,7 @@ var Spots = function(token){
 	
 	$('#spot_delete').dialog({autoOpen:false});
 	
+	$( "#spot_edit #timestamp" ).datepicker();
 	
 	var table = $('#spots-table').dataTable(
 		{
@@ -60,6 +67,16 @@ var Spots = function(token){
 					"data" : aoData
 				}).done(
 						function(json) {
+							$.each(json,function(index){
+								var d = new Date(this.timestamp*1000);
+								var curr_date = d.getDate() < 10 ? "0"+d.getDate():d.getDate();
+							    var curr_month = d.getMonth() + 1 < 10 ? "0"+(d.getMonth()+1):d.getMonth()+1;
+							    var curr_year = d.getFullYear();
+							    var h = d.getHours() < 10 ? "0"+d.getHours():d.getHours();
+							    var m = d.getMinutes()< 10 ? "0"+d.getMinutes():d.getMinutes();
+							    var s = d.getSeconds()< 10 ? "0"+d.getSeconds():d.getSeconds();
+							    this.timestamp = curr_date + "-" + curr_month + "-" + curr_year + " "+h+":"+m+":"+s;
+							});
 							fnCallback({
 								aaData : json
 							});
@@ -88,8 +105,16 @@ var Spots = function(token){
 			$(editWindow).find("#spot_id").val("");
 			$(editWindow).find("#latitude").val("");
 			$(editWindow).find("#longitude").val("");
-			$(editWindow).find("#timestamp").val("");
+			//$(editWindow).find("#timestamp").val("");
 			$(editWindow).find("#status").val("");
+			
+			var d = new Date();
+			
+			$(editWindow).find("#timestamp").datepicker('setDate', d);
+			(editWindow).find("#hour").val(d.getHours());
+			(editWindow).find("#minute").val(d.getMinutes());
+			(editWindow).find("#second").val(d.getSeconds());
+			
 			editWindow.dialog( "open" );
 		}else{
 			$.ajax({
@@ -102,8 +127,15 @@ var Spots = function(token){
 				$(editWindow).find("#spot_id").val(json.spotId);
 				$(editWindow).find("#latitude").val(json.latitude);
 				$(editWindow).find("#longitude").val(json.longitude);
-				$(editWindow).find("#timestamp").val(json.timestamp);
+				//$(editWindow).find("#timestamp").val(json.timestamp);
 				$(editWindow).find("#status").val(json.status);
+				
+				var d = new Date(json.timestamp*1000);
+				
+				$(editWindow).find("#timestamp").datepicker('setDate', d);
+				(editWindow).find("#hour").val(d.getHours());
+				(editWindow).find("#minute").val(d.getMinutes());
+				(editWindow).find("#second").val(d.getSeconds());
 				
 				editWindow.dialog( "open" );
 			});

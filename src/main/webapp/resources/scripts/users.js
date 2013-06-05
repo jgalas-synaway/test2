@@ -54,6 +54,10 @@ var Users = function(token){
 		
 	});
 	
+	$("#spot_edit form #user_cancel").click(function(){
+		editWindow.dialog('close');
+	});
+	
 	$('#user_delete').dialog({autoOpen:false});
 	
 	var table = $('#users-table').dataTable(

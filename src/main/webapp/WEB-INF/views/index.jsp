@@ -16,6 +16,7 @@
 <c:url var="ui_accordion"
 	value="/resources/scripts/ui/jquery.ui.accordion.js" />
 <c:url var="ui_tabs" value="/resources/scripts/ui/jquery.ui.tabs.js" />
+<c:url var="datepicker" value="/resources/scripts/ui/jquery.ui.datepicker.js" />
 <c:url var="dataTable"
 	value="/resources/scripts/dataTables/media/js/jquery.dataTables.js" />
 <c:url var="dataTableUpdate"
@@ -45,6 +46,7 @@
 <script type="text/javascript" src="${ui_button}"></script>
 <script type="text/javascript" src="${ui_accordion}"></script>
 <script type="text/javascript" src="${ui_tabs}"></script>
+<script type="text/javascript" src="${datepicker}"></script>
 <script type="text/javascript" src="${dataTable}"></script>
 <script type="text/javascript" src="${dataTableUpdate}"></script>
 
@@ -315,7 +317,7 @@
 							<input id="new_password" name="new_password" type="password" />
 						</div>
 						<input value="save" type="submit"/>
-						<input value="cancel" type="button"/>
+						<input id="user_cancel" value="cancel" type="button"/>
 					</form>
 				</div>
 				<div id="user_delete">
@@ -346,16 +348,17 @@
 					<form>
 						<input name="spot_id" id="spot_id" type="hidden"/>
 						<div class="form_row">
-							<label for="longitude">Longitude:</label> 
-							<input id="longitude" name="longitude" type="text" />
-						</div>
-						<div class="form_row">
 							<label for="latitude">Latitude:</label> 
 							<input id="latitude" name="latitude" type="text" />
 						</div>
 						<div class="form_row">
+							<label for="longitude">Longitude:</label> 
+							<input id="longitude" name="longitude" type="text" />
+						</div>
+						<div class="form_row">
 							<label for="timestamp">Timestamp:</label> 
-							<input id="timestamp" name="timestamp" type="text" />
+							<input style="width:105px" id="timestamp" name="timestamp" type="text" />
+							<input style="width:23px;margin-left:0;" id="hour" name="hour"/>:<input style="width:23px;margin-left:0;" id="minute" name="minute"/>:<input style="width:23px;margin-left:0;" id="second" name="second"/>
 						</div>
 						<div class="form_row">
 							<label for="status">Status:</label> 
@@ -365,7 +368,7 @@
 							</select>
 						</div>
 						<input value="save" type="submit"/>
-						<input value="cancel" type="button"/>
+						<input id="spot_cancel" value="cancel" type="button"/>
 					</form>
 				</div>
 				<div id="spot_delete">
