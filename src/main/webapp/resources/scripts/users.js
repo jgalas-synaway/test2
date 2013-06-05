@@ -54,6 +54,8 @@ var Users = function(token){
 		
 	});
 	
+	$('#user_delete').dialog({autoOpen:false});
+	
 	var table = $('#users-table').dataTable(
 		{
 			"bProcessing" : true,
@@ -132,7 +134,7 @@ var Users = function(token){
 	}
 	
 	this.deleteWindow = function(id){
-		$('#user_delete').dialog({
+		$('#user_delete').dialog( 'option',{
 			modal:true,
 			buttons:[
 				         {
@@ -155,5 +157,6 @@ var Users = function(token){
 				         }
 			         ]
 		});
+		$('#user_delete').dialog('open');
 	}
 };

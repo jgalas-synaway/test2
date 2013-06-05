@@ -14,4 +14,6 @@ public interface AccessTokenRepository  extends JpaRepository<AccessToken, Long>
 	public List<AccessToken> findByUserOrderByExpireDesc(User user);
 	
 	public AccessToken findByToken(String token);
+	
+	public List<AccessToken> findByUser(User user);
 }

@@ -143,9 +143,8 @@ public class UserController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
     public User deleteSpot(@PathVariable Long id)  {
-		User user = userService.getUser(id);
-		userRepository.delete(id);
-		return user;
+		
+		return userService.delete(id);
 	}
 	
 	@RequestMapping(value="/auth", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")

@@ -21,5 +21,7 @@ public interface UserLocationRepository  extends JpaRepository<UserLocation, Lon
 	
 	@Query(nativeQuery=true ,value="select DISTINCT ON (user_id) * from user_location u where u.timestamp > now() - INTERVAL '1 minute' group by u.user_id,  u.id order by u.user_id, u.timestamp DESC")
 	List<UserLocation> findActive();
+	
+	public List<UserLocation> findByUser(User user);
 
 }

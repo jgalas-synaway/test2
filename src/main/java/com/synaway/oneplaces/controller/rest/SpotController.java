@@ -44,7 +44,7 @@ public class SpotController {
 
 	@Autowired
 	SpotService spotService;
-	
+
 	@Autowired
 	SpotRepository spotRepository;
 
@@ -101,25 +101,25 @@ public class SpotController {
 		spot = spotService.saveSpot(spot);
 		return spot;
 	}
-	
-	@RequestMapping(method = RequestMethod.PUT, consumes="application/json", produces = "application/json")
+
+	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-    public Spot updateSpot(@RequestBody String json) throws JsonProcessingException, IOException, Exception {
+	public Spot updateSpot(@RequestBody String json) throws JsonProcessingException, IOException, Exception {
 		Spot spot = spotService.json2Spot(json);
-		if(spot.getId() == null){
-			throw new MissingServletRequestParameterException("spotId","Long");
-		}		
+		if (spot.getId() == null) {
+			throw new MissingServletRequestParameterException("spotId", "Long");
+		}
 		return spotService.updateSpot(spot);
 	}
-	
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
-    public Spot deleteSpot(@PathVariable Long id)  {
+	public Spot deleteSpot(@PathVariable Long id) {
 		Spot spot = spotService.getSpot(id);
 		spotRepository.delete(id);
 		return spot;
 	}
-	
+
 	@RequestMapping(value = "/{id}/occupy", method = RequestMethod.PUT)
 	@ResponseBody
 	public Spot setOccupy(@PathVariable Long id) {
@@ -128,21 +128,22 @@ public class SpotController {
 		spot = spotService.saveSpot(spot);
 		return spot;
 	}
-	
+
 	@RequestMapping("/random")
 	@ResponseBody
-	public Spot addSpot() throws Exception {
+	public Spot addSpot(@RequestParam Double minLatitude, @RequestParam Double minLongitude,
+			@RequestParam Double maxLatitude, @RequestParam Double maxLongitude) throws Exception {
 		Spot spot = new Spot();
 		spot.setTimestamp(new Date());
 		spot.setUser(userService.getAll().get(0));
 		spot.setStatus("free");
-		
+
 		Random r = new Random();
-		double latitude = 50.0208 + (50.0831 - 50.0208) * r.nextDouble();
-		double longitude = 19.885 + (19.991 - 19.885) * r.nextDouble();
-		
-		spot.setLocation(spotService.createPoint(longitude ,latitude));
-		
+		double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();
+		double longitude = minLongitude + (maxLongitude - minLongitude) * r.nextDouble();
+
+		spot.setLocation(spotService.createPoint(latitude, longitude));
+
 		spot = spotService.saveSpot(spot);
 		return spot;
 	}

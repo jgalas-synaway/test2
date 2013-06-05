@@ -22,6 +22,8 @@ import com.synaway.oneplaces.exception.GeneralException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
+import com.synaway.oneplaces.repository.SpotRepository;
+import com.synaway.oneplaces.repository.UserLocationRepository;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.UserService;
 
@@ -37,6 +39,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	AccessTokenRepository accessTokenRepository;
+	
+	@Autowired
+	SpotRepository spotRepository;
+	
+	@Autowired
+	UserLocationRepository userLocationRepository;
 	
 	@Autowired
 	HttpServletRequest request;
@@ -128,6 +136,19 @@ public class UserServiceImpl implements UserService {
 			existing.setRole(user.getRole());
 		}
 		return userRepository.save(existing);
+		
+	}
+	
+	@Override
+	public User delete(Long id){
+		User user = userRepository.findOne(id);
+		accessTokenRepository.delete(accessTokenRepository.findByUser(user));
+		spotRepository.delete(spotRepository.findByUser(user));
+		userLocationRepository.delete(userLocationRepository.findByUser(user));
+		
+		userRepository.delete(id);
+		
+		return user;
 		
 	}
 	

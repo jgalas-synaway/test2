@@ -37,6 +37,7 @@ var Spots = function(token){
 		self.editWindow();
 	});
 	
+	$('#spot_delete').dialog({autoOpen:false});
 	
 	
 	var table = $('#spots-table').dataTable(
@@ -110,7 +111,7 @@ var Spots = function(token){
 	}
 	
 	this.deleteWindow = function(id){
-		$('#spot_delete').dialog({
+		$('#spot_delete').dialog('option',{
 			modal:true,
 			buttons:[
 				         {
@@ -133,6 +134,7 @@ var Spots = function(token){
 				         }
 			         ]
 		});
+		$('#spot_delete').dialog('open');
 	}
 	
 };
