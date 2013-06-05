@@ -45,8 +45,8 @@ var Spots = function(token){
 			"bProcessing" : true,
 			"bJQueryUI": true,
 			"aoColumns": [
-			              { "mData": "longitude" },
 			              { "mData": "latitude" },
+			              { "mData": "longitude" },
 			              { "mData": "timestamp" },
 			              { "mData": "status" },
 			              { "mData": "spotId" }

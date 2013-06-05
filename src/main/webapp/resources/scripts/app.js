@@ -9,7 +9,7 @@ var MapView = function(element) {
 	
 	self.token = token;
 
-	var center = new google.maps.LatLng(50.0627, 19.9382);
+	var center = new google.maps.LatLng(48.860, 2.344);
 	var styles = [ {
 		elementType : "geometry",
 		stylers : [ {
@@ -20,7 +20,7 @@ var MapView = function(element) {
 	} ];
 
 	var mapOptions = {
-		zoom : 13,
+		zoom : 12,
 		mapTypeId : google.maps.MapTypeId.ROADMAP,
 		center : center,
 		styles : styles
@@ -137,6 +137,8 @@ var MapView = function(element) {
 			
 		});
 	}
+	
+	
 
 	
 	this.spotStart = function (token){
@@ -168,6 +170,8 @@ var MapView = function(element) {
 		});
 		self.locations = [];
 	};
+	
+	
 
 };
 

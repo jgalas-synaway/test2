@@ -61,6 +61,8 @@
 	var user = null;
 	var users = null;
 	var spots = null;
+	
+	$.ajaxSetup({cache:false})
 
 	$(function() {
 
