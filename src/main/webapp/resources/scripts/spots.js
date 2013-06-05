@@ -55,7 +55,7 @@ var Spots = function(token){
 		{
 			"bProcessing" : true,
 			"bJQueryUI": true,
-			//"sScrollY": "260px",
+			"sPaginationType": "input",
 			"aoColumns": [
 			              { "mData": "latitude" },
 			              { "mData": "longitude" },

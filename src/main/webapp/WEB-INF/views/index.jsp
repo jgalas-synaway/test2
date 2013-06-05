@@ -22,6 +22,9 @@
 <c:url var="dataTableUpdate"
 	value="/resources/scripts/dataTables/plugins/fnReloadAjax.js" />
 
+<c:url var="dataTablePagination"
+	value="/resources/scripts/dataTables/plugins/pagination.js" />
+
 <c:url var="app" value="/resources/scripts/app.js" />
 <c:url var="users" value="/resources/scripts/users.js" />
 <c:url var="spots" value="/resources/scripts/spots.js" />
@@ -49,6 +52,7 @@
 <script type="text/javascript" src="${datepicker}"></script>
 <script type="text/javascript" src="${dataTable}"></script>
 <script type="text/javascript" src="${dataTableUpdate}"></script>
+<script type="text/javascript" src="${dataTablePagination}"></script>
 
 <script type="text/javascript" src="${app}"></script>
 <script type="text/javascript" src="${users}"></script>

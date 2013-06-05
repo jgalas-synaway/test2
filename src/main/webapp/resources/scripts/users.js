@@ -68,6 +68,7 @@ var Users = function(token){
 		{
 			"bProcessing" : true,
 			"bJQueryUI": true,
+			"sPaginationType": "input",
 			"aoColumns": [
 			              { "mData": "firstName" },
 			              { "mData": "lastName" },
