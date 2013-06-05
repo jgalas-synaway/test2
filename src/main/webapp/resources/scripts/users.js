@@ -60,6 +60,10 @@ var Users = function(token){
 	
 	$('#user_delete').dialog({autoOpen:false});
 	
+	$('#refresch_user_btn').button().click(function(){
+		table.fnReloadAjax();
+	});
+	
 	var table = $('#users-table').dataTable(
 		{
 			"bProcessing" : true,

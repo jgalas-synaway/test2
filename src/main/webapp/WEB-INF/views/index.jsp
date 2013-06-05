@@ -260,119 +260,129 @@
 				<div id="map_canvas"></div>
 			</div>
 			<div id="tab-2" class="tab">
-				<h3>Users</h3>
-				<table cellpadding="0" cellspacing="0" border="0" class="display"
-					id="users-table">
-					<thead>
-						<tr>
-							<th width="20%">First Name</th>
-							<th width="20%">Last Name</th>
-							<th width="20%">Login</th>
-							<th width="15%">Role</th>
-							<th width="15%">email</th>
-							<th width="10%">edit</th>
-						</tr>
-					</thead>
-					<tbody>
-
-					</tbody>
-				</table>
-				<div id="add_user_btn">
-				Add user
-				</div>
-				<div id="user_edit">
-					<form>
-						<input name="user_id" id="user_id" type="hidden"/>
-						<div class="form_row">
-							<label for="firstName">First Name:</label> 
-							<input id="firstName" name="firstName" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="lastName">Last Name:</label> 
-							<input id="lastName" name="lastName" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="login">Login:</label> 
-							<input id="login" name="login" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="email">Email:</label> 
-							<input id="email" name="email" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="role">Role:</label> 
-							<select id="role" name="role">
-								<option value="user">user</option>
-								<option value="beta">beta</option>
-								<option value="admin">admin</option>
-							</select>
-						</div>
-						<div class="form_row"> 
-							<label for="change_password">Change password:</label> 
-							<input id="change_password" name="change_password" type="checkbox" />
-						</div>
-						
-						<div class="form_row">
-							<label for="new_password">Password:</label> 
-							<input id="new_password" name="new_password" type="password" />
-						</div>
-						<input value="save" type="submit"/>
-						<input id="user_cancel" value="cancel" type="button"/>
-					</form>
-				</div>
-				<div id="user_delete">
-					Are you sure you want to delete this item?
+				<div class="tabWrapper">
+					<h3>Users</h3>
+					<table cellpadding="0" cellspacing="0" border="0" class="display"
+						id="users-table">
+						<thead>
+							<tr>
+								<th width="20%">First Name</th>
+								<th width="20%">Last Name</th>
+								<th width="20%">Login</th>
+								<th width="15%">Role</th>
+								<th width="15%">email</th>
+								<th width="10%">edit</th>
+							</tr>
+						</thead>
+						<tbody>
+	
+						</tbody>
+					</table>
+					<div id="add_user_btn" class="under_table_btn">
+					Add user
+					</div>
+					<div id="refresch_user_btn" class="under_table_btn">
+					Refresh
+					</div>
+					<div id="user_edit">
+						<form>
+							<input name="user_id" id="user_id" type="hidden"/>
+							<div class="form_row">
+								<label for="firstName">First Name:</label> 
+								<input id="firstName" name="firstName" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="lastName">Last Name:</label> 
+								<input id="lastName" name="lastName" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="login">Login:</label> 
+								<input id="login" name="login" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="email">Email:</label> 
+								<input id="email" name="email" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="role">Role:</label> 
+								<select id="role" name="role">
+									<option value="user">user</option>
+									<option value="beta">beta</option>
+									<option value="admin">admin</option>
+								</select>
+							</div>
+							<div class="form_row"> 
+								<label for="change_password">Change password:</label> 
+								<input id="change_password" name="change_password" type="checkbox" />
+							</div>
+							
+							<div class="form_row">
+								<label for="new_password">Password:</label> 
+								<input id="new_password" name="new_password" type="password" />
+							</div>
+							<input value="save" type="submit"/>
+							<input id="user_cancel" value="cancel" type="button"/>
+						</form>
+					</div>
+					<div id="user_delete">
+						Are you sure you want to delete this item?
+					</div>
 				</div>
 			</div>
 			<div id="tab-3" class="tab">
-				<h3>Spots</h3>
-				<table cellpadding="0" cellspacing="0" border="0" class="display"
-					id="spots-table">
-					<thead>
-						<tr>
-							<th width="20%">Latitude</th>
-							<th width="20%">Longitude</th>
-							<th width="20%">Timestamp</th>
-							<th width="20%">Status</th>
-							<th width="20%">edit</th>
-						</tr>
-					</thead>
-					<tbody>
-
-					</tbody>
-				</table>
-				<div id="add_spot_btn">
-				Add spot
-				</div>
-				<div id="spot_edit">
-					<form>
-						<input name="spot_id" id="spot_id" type="hidden"/>
-						<div class="form_row">
-							<label for="latitude">Latitude:</label> 
-							<input id="latitude" name="latitude" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="longitude">Longitude:</label> 
-							<input id="longitude" name="longitude" type="text" />
-						</div>
-						<div class="form_row">
-							<label for="timestamp">Timestamp:</label> 
-							<input style="width:105px" id="timestamp" name="timestamp" type="text" />
-							<input style="width:23px;margin-left:0;" id="hour" name="hour"/>:<input style="width:23px;margin-left:0;" id="minute" name="minute"/>:<input style="width:23px;margin-left:0;" id="second" name="second"/>
-						</div>
-						<div class="form_row">
-							<label for="status">Status:</label> 
-							<select id="status" name="status">
-								<option value="free">free</option>
-								<option value="occupied">occupied</option>
-							</select>
-						</div>
-						<input value="save" type="submit"/>
-						<input id="spot_cancel" value="cancel" type="button"/>
-					</form>
-				</div>
-				<div id="spot_delete">
-					Are you sure you want to delete this item?
+				<div class="tabWrapper">
+					<h3>Spots</h3>
+					<table cellpadding="0" cellspacing="0" border="0" class="display"
+						id="spots-table">
+						<thead>
+							<tr>
+								<th width="20%">Latitude</th>
+								<th width="20%">Longitude</th>
+								<th width="20%">Timestamp</th>
+								<th width="20%">Status</th>
+								<th width="20%">edit</th>
+							</tr>
+						</thead>
+						<tbody>
+	
+						</tbody>
+					</table>
+					<div id="add_spot_btn"  class="under_table_btn">
+					Add spot
+					</div>
+					<div id="refresch_spot_btn" class="under_table_btn">
+					Refresh
+					</div>
+					<div id="spot_edit">
+						<form>
+							<input name="spot_id" id="spot_id" type="hidden"/>
+							<div class="form_row">
+								<label for="latitude">Latitude:</label> 
+								<input id="latitude" name="latitude" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="longitude">Longitude:</label> 
+								<input id="longitude" name="longitude" type="text" />
+							</div>
+							<div class="form_row">
+								<label for="timestamp">Timestamp:</label> 
+								<input style="width:105px" id="timestamp" name="timestamp" type="text" />
+								<input style="width:23px;margin-left:0;" id="hour" name="hour"/>:<input style="width:23px;margin-left:0;" id="minute" name="minute"/>:<input style="width:23px;margin-left:0;" id="second" name="second"/>
+							</div>
+							<div class="form_row">
+								<label for="status">Status:</label> 
+								<select id="status" name="status">
+									<option value="free">free</option>
+									<option value="occupied">occupied</option>
+								</select>
+							</div>
+							<input value="save" type="submit"/>
+							<input id="spot_cancel" value="cancel" type="button"/>
+						</form>
+					</div>
+					<div id="spot_delete">
+						Are you sure you want to delete this item?
+					</div>
 				</div>
 			</div>
 		</div>

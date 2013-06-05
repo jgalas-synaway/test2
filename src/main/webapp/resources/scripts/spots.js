@@ -47,10 +47,15 @@ var Spots = function(token){
 	
 	$( "#spot_edit #timestamp" ).datepicker();
 	
+	$('#refresch_spot_btn').button().click(function(){
+		table.fnReloadAjax();
+	});
+	
 	var table = $('#spots-table').dataTable(
 		{
 			"bProcessing" : true,
 			"bJQueryUI": true,
+			//"sScrollY": "260px",
 			"aoColumns": [
 			              { "mData": "latitude" },
 			              { "mData": "longitude" },

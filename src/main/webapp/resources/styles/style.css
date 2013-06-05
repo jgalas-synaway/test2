@@ -45,7 +45,12 @@ html, body{
 	left: 0;
 	background-color: #ffffff;
 	position: absolute;
-	padding: 20px;
+	overflow: auto;
+}
+
+
+.tabWrapper{
+	margin:20px;
 }
 
 #content #tab-1.tab{
@@ -81,7 +86,7 @@ html, body{
 	display: inline-block;
 }
 
-#add_user_btn{
+.under_table_btn{
 	margin-top:20px;
 }
 
@@ -102,3 +107,5 @@ html, body{
 .link{
 	cursor: pointer;
 }
+
+
