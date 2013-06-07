@@ -14,8 +14,7 @@
     <persistence-unit name="persistenceUnitTest" transaction-type="RESOURCE_LOCAL">
         <properties>  
             <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-            <property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
         </properties>
     </persistence-unit>
  
