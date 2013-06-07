@@ -7,7 +7,6 @@ import com.synaway.oneplaces.exception.GeneralException;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Response {
 
-    private Object data;
     private ErrorMessage error;
 
     public Response() {
@@ -17,7 +16,6 @@ public class Response {
     public Response(GeneralException ex) {
         super();
         error = new ErrorMessage();
-        error.setDeveloperMessage(ex.getDeveloperMessage());
         error.setMessage(ex.getMessage());
         error.setCode(ex.getCode());
     }
@@ -29,18 +27,6 @@ public class Response {
 
     }
 
-    public Response(Object data) {
-        super();
-        this.data = data;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
 
     public ErrorMessage getError() {
         return error;

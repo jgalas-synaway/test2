@@ -10,16 +10,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 
-@XmlRootElement
 public class ErrorMessage {
 	
 	private String message;
-	
-	@JsonIgnore
-	private String developerMessage;
-	
-	@JsonIgnore
-	private int status;
 	
 	private int code;
 
@@ -33,22 +26,6 @@ public class ErrorMessage {
 
 	public void setMessage(String message) {
 		this.message = message;
-	}
-
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-
-	public void setDeveloperMessage(String developerMessage) {
-		this.developerMessage = developerMessage;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 	public int getCode() {
