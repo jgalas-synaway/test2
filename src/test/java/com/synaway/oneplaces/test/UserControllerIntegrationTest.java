@@ -111,7 +111,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 		user.setEmail("john@doe.pl");
 
 		Md5PasswordEncoder enc = new Md5PasswordEncoder();
-		user.setPassword(enc.encodePassword(password, null));
+		user.setPassword(enc.encodePassword(password, user.getLastName()));
 
 		user = userRepository.save(user);
 		return user;
