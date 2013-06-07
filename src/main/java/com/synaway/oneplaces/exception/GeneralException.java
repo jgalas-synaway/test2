@@ -18,6 +18,10 @@ public class GeneralException extends RuntimeException{
     public static final int GENERAL_ACCESS_TOKEN_EXCEPTION = 300;
 
 	public static final int GENERAL_EXCEPTION = 500;
+
+	public static final int GENERAL_INVALID_LOGIN = 504;
+	public static final int GENERAL_INVALID_PASSWORD = 505;
+	public static final int GENERAL_USER_EXIST = 506;
 	
 	@JsonProperty
 	protected int code = 0;

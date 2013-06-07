@@ -19,7 +19,7 @@ import com.synaway.oneplaces.service.UserLocationService;
 public class UserLocationServiceImpl implements UserLocationService {
 
 	@Autowired
-	UserLocationRepository userLocationRepository;
+	private UserLocationRepository userLocationRepository;
 	
 	@Override
 	public List<UserLocation> getByUser(User user, int limit, int offset){

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.synaway.oneplaces.exception.AccessTokenException;
 import com.synaway.oneplaces.exception.GeneralException;
+import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
@@ -35,19 +36,19 @@ public class UserServiceImpl implements UserService {
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	@Autowired
-	AccessTokenRepository accessTokenRepository;
+	private AccessTokenRepository accessTokenRepository;
 	
 	@Autowired
-	SpotRepository spotRepository;
+	private SpotRepository spotRepository;
 	
 	@Autowired
-	UserLocationRepository userLocationRepository;
+	private UserLocationRepository userLocationRepository;
 	
 	@Autowired
-	HttpServletRequest request;
+	private HttpServletRequest request;
 	
 	@Override
 	public User getUser(long id){
@@ -60,29 +61,30 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User saveUser(User user) throws NoSuchAlgorithmException{	
+	public User saveUser(User user) throws GeneralException{	
 		Md5PasswordEncoder enc = new Md5PasswordEncoder();
-		user.setPassword(enc.encodePassword(user.getPassword(), null));
 		
 		User existingUser = userRepository.findOneByLogin(user.getLogin());
 		if(existingUser != null){
-			throw new GeneralException("User with login "+user.getLogin()+" already exist.", 506);
+			throw new UserException("User with login "+user.getLogin()+" already exist.", UserException.GENERAL_USER_EXIST);
 		}
+
+		user.setPassword(enc.encodePassword(user.getPassword(), user.getLastName()));
 		
 		return userRepository.save(user);
 	}
 	
 	@Override
-	public AccessToken getToken(String login, String password) throws Exception{
+	public AccessToken getToken(String login, String password) throws UserException{
 		
 		User user = userRepository.findOneByLogin(login);
 		if(user == null){
-			throw new GeneralException("invalid login", 504);
+			throw new UserException("Invalid login", UserException.GENERAL_INVALID_LOGIN);
 		}
 		Md5PasswordEncoder enc = new Md5PasswordEncoder();
 		
-		if(!enc.isPasswordValid(user.getPassword(), password, null)){
-			throw new GeneralException("invalid password", 505);
+		if(!enc.isPasswordValid(user.getPassword(), password, user.getLastName())){
+			throw new UserException("Invalid password", UserException.GENERAL_INVALID_PASSWORD);
 		}
 		
 		List<AccessToken> accessTokens = accessTokenRepository.findByUserOrderByExpireDesc(user);
@@ -109,6 +111,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getCurrentUser(){
 		String token = request.getParameter("access_token");
+		if(token == null){
+			return null;
+		}
 		AccessToken accessToken = accessTokenRepository.findByToken(token);		
 		return accessToken.getUser();
 	}

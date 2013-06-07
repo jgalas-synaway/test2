@@ -8,19 +8,19 @@ public class AccessTokenException extends GeneralException {
     
     public AccessTokenException() {
         super(info);
-        this.code = GENERAL_ACCESS_TOKEN_EXCEPTION;
+        this.code = GENERAL_EXCEPTION;
     }
     public AccessTokenException(String message, Throwable cause) {
         super(message, cause);
-        this.code = GENERAL_ACCESS_TOKEN_EXCEPTION;
+        this.code = GENERAL_EXCEPTION;
     }
     public AccessTokenException(String message) {
         super( message);
-        this.code = GENERAL_ACCESS_TOKEN_EXCEPTION;
+        this.code = GENERAL_EXCEPTION;
     }
     public AccessTokenException(Throwable cause) {
         super(cause);
-        this.code = GENERAL_ACCESS_TOKEN_EXCEPTION;
+        this.code = GENERAL_EXCEPTION;
     }
     public AccessTokenException(String message, int code) {
         super( message);

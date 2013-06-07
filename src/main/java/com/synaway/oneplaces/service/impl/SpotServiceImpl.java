@@ -13,7 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
+import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.SpotRepository;
@@ -32,13 +34,13 @@ public class SpotServiceImpl implements SpotService {
 	private static Logger logger = Logger.getLogger(SpotServiceImpl.class);
 	
 	@Autowired
-	SpotRepository spotRepository;
+	private SpotRepository spotRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@Override
 	public Spot getSpot(long id){
@@ -65,38 +67,30 @@ public class SpotServiceImpl implements SpotService {
 	}
 	
 	@Override
-	public Spot json2Spot(String json) throws Exception{
+	public Spot json2Spot(String json) throws MissingServletRequestParameterException, JsonProcessingException, IOException, UserException{
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode ob = mapper.readTree(json);
 		Spot spot = new Spot();
 		
 		
 		if(!ob.has("longitude")){
-			//TODO throw custom exception
-			throw new Exception("Missing argument longitude");
+			throw new MissingServletRequestParameterException("longitude", "Double");
 		}
 		
 		if(!ob.has("latitude")){
-			//TODO throw custom exception
-			throw new Exception("Missing argument latitude");
+			throw new MissingServletRequestParameterException("latitude", "Double");
 		}		
-		
-//		if(!ob.has("userId")){
-//			//TODO throw custom exception
-//			throw new Exception("Missing argument userId");
-//		}
+
 		User user = null;
 		if(ob.has("userId")){
 			user = userRepository.findOne(ob.get("userId").asLong());
 			if(user == null){
-				//TODO throw custom exception
-				throw new Exception("User with id "+ob.get("userId").asLong()+" does not exist");
+				throw new UserException("User with id "+ob.get("userId").asLong()+" does not exist", UserException.USER_NOT_FOUND);
 			}
 		}
 		
 		if(!ob.has("status")){
-			//TODO throw custom exception
-			throw new Exception("Missing argument status");
+			throw new MissingServletRequestParameterException("status", "String");
 		}
 		
 		spot.setStatus(ob.get("status").asText());
