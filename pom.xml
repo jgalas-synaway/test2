@@ -172,11 +172,17 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.liquibase</groupId> -->
+<!-- 			<artifactId>liquibase-core</artifactId> -->
+<!-- 			<version>2.0.5</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>2.0.5</version>
+			<version>3.0.0-rc1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
@@ -286,25 +292,24 @@
 		</plugins>
 	</build>
 	<profiles>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!-- EXAMPLE FOR MYSQL -->
-                <sonar.jdbc.url>
-                 jdbc:postgresql://192.168.2.165:5432/sonar
-                </sonar.jdbc.url>
-                <sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
-                <sonar.jdbc.username>sonar</sonar.jdbc.username>
-                <sonar.jdbc.password>sonar</sonar.jdbc.password>
- 
-                <!-- optional URL to server. Default value is http://localhost:9000 -->
-                <sonar.host.url>
-                  http://192.168.2.165:9000
-                </sonar.host.url>
-            </properties>
-        </profile>
-     </profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:postgresql://192.168.2.165:5432/sonar
+				</sonar.jdbc.url>
+				<sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
+				<sonar.jdbc.username>sonar</sonar.jdbc.username>
+				<sonar.jdbc.password>sonar</sonar.jdbc.password>
+
+				<!-- optional URL to server. Default value is http://localhost:9000 -->
+				<sonar.host.url>
+					http://192.168.2.165:9000
+				</sonar.host.url>
+			</properties>
+		</profile>
+	</profiles>
 </project>
