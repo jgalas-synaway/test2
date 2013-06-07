@@ -22,7 +22,7 @@
 	<context:annotation-config />
    	
     <context:property-placeholder
-	location="file:src/test/resources/META-INF/spring/configuration-test.properties" order="0" system-properties-mode="OVERRIDE"/>
+	location="classpath*:META-INF/spring/configuration-test.properties" order="0" system-properties-mode="OVERRIDE"/>
 
     
 
