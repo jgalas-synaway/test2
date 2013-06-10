@@ -11,8 +11,7 @@ public class FrontendController {
 	
 	@RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
-        ModelAndView model = new ModelAndView("index");
-        return model;
+        return new ModelAndView("index");
     }
 
 }

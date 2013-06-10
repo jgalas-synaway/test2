@@ -16,7 +16,7 @@ import com.synaway.oneplaces.service.UserLocationService;
 public class UserLocationController {
 	
 	@Autowired
-	UserLocationService userLocationService;
+	private UserLocationService userLocationService;
 
 	@RequestMapping(value="/active", method=RequestMethod.GET, produces = "application/json")
 	@ResponseBody

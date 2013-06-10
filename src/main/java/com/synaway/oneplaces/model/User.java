@@ -15,11 +15,6 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.PageRequest;
-
-import com.synaway.oneplaces.repository.SpotRepository;
 
 
 
@@ -65,7 +60,7 @@ public class User {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
-	private List<UserLocation> user_locations;
+	private List<UserLocation> userLocations;
 	
 	
 	
@@ -159,11 +154,11 @@ public class User {
 		this.spots = spots;
 	}
 
-	public List<UserLocation> getUser_locations() {
-		return user_locations;
+	public List<UserLocation> getUserLocations() {
+		return userLocations;
 	}
 
-	public void setUser_locations(List<UserLocation> user_locations) {
-		this.user_locations = user_locations;
+	public void setUserLocations(List<UserLocation> userLocations) {
+		this.userLocations = userLocations;
 	}
 }

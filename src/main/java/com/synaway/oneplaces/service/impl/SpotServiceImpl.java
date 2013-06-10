@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -30,8 +27,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 @Service
 @Transactional
 public class SpotServiceImpl implements SpotService {
-
-	private static Logger logger = Logger.getLogger(SpotServiceImpl.class);
+	
+	private static final int SRID = 4326;
 	
 	@Autowired
 	private SpotRepository spotRepository;
@@ -67,7 +64,7 @@ public class SpotServiceImpl implements SpotService {
 	}
 	
 	@Override
-	public Spot json2Spot(String json) throws MissingServletRequestParameterException, JsonProcessingException, IOException, UserException{
+	public Spot json2Spot(String json) throws MissingServletRequestParameterException, IOException, UserException{
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode ob = mapper.readTree(json);
 		Spot spot = new Spot();
@@ -106,17 +103,15 @@ public class SpotServiceImpl implements SpotService {
 	
 	@Override
 	public Point createPoint(double x, double y){
-		GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);		
+		GeometryFactory gf = new GeometryFactory(new PrecisionModel(), SRID);		
         Coordinate coord = new Coordinate( x, y );
-        Point point = gf.createPoint( coord );
-		return point;
+		return gf.createPoint( coord );
 	}
 
 	@Override
 	public List<Spot> getByLatitudeLongitudeAndRadius(Double latitude, Double longitude, Integer radius) {
 		String point = "POINT("+longitude+" "+latitude+")";
-		List<Spot> spots = spotRepository.findByLatitudeLongitudeAndRadius(point, radius);
-		return spots;
+		return spotRepository.findByLatitudeLongitudeAndRadius(point, radius);
 	}
 	
 	@Override

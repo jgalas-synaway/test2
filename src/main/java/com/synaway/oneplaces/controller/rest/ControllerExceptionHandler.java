@@ -4,7 +4,6 @@ import javax.persistence.NoResultException;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,7 +17,7 @@ import com.synaway.oneplaces.pojo.Response;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    private transient final Logger logger = Logger.getLogger(ControllerExceptionHandler.class);
+    private static final Logger logger = Logger.getLogger(ControllerExceptionHandler.class);
     
     @ExceptionHandler({ NoResultException.class, ObjectByIdNotFoundException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)

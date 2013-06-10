@@ -11,9 +11,9 @@ import com.synaway.oneplaces.model.User;
 
 public interface AccessTokenRepository  extends JpaRepository<AccessToken, Long> {
 
-	public List<AccessToken> findByUserOrderByExpireDesc(User user);
+	List<AccessToken> findByUserOrderByExpireDesc(User user);
 	
-	public AccessToken findByToken(String token);
+	AccessToken findByToken(String token);
 	
-	public List<AccessToken> findByUser(User user);
+	List<AccessToken> findByUser(User user);
 }

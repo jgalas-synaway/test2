@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
@@ -38,7 +39,7 @@ public class UserServiceIntegrationTest extends AbstractIntegrationTest {
 	private List<User> users = null;
 	
 	@Before
-	public void cleanDatabase() throws NoSuchAlgorithmException{
+	public void cleanDatabase() throws NoSuchAlgorithmException, UserException{
 		accessTokenRepository.deleteAllInBatch();
 		userRepository.deleteAllInBatch();
 		users = new ArrayList<User>();
@@ -86,7 +87,7 @@ public class UserServiceIntegrationTest extends AbstractIntegrationTest {
 	}
 	
 	
-	private User createUser(String login, String password) throws NoSuchAlgorithmException{
+	private User createUser(String login, String password) throws NoSuchAlgorithmException, UserException{
 		User user = new User();
 		user.setFirstName("John");
 		user.setLastName("Doe");

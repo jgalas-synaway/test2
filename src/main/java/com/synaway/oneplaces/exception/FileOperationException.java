@@ -4,26 +4,26 @@ public class FileOperationException extends GeneralException {
 
     private static final long serialVersionUID = 1L;
     
-    private static final String info = "File operation exception:";
+    private static final String INFO = "File operation exception:";
     
     public FileOperationException() {
-        super(info);
-        this.code = GENERAL_FILE_EXCEPTION;
+        super(INFO);
+        this.setCode(GENERAL_FILE_EXCEPTION);
     }
     public FileOperationException(String message, Throwable cause) {
         super(message, cause);
-        this.code = GENERAL_FILE_EXCEPTION;
+        this.setCode(GENERAL_FILE_EXCEPTION);
     }
     public FileOperationException(String message) {
         super( message);
-        this.code = GENERAL_FILE_EXCEPTION;
+        this.setCode(GENERAL_FILE_EXCEPTION);
     }
     public FileOperationException(Throwable cause) {
         super(cause);
-        this.code = GENERAL_FILE_EXCEPTION;
+        this.setCode(GENERAL_FILE_EXCEPTION);
     }
     public FileOperationException(String message, int code) {
         super( message);
-        this.code = code;
+        this.setCode(code);
     }
 }

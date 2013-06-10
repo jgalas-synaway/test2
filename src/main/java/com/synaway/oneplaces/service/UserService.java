@@ -1,6 +1,5 @@
 package com.synaway.oneplaces.service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import com.synaway.oneplaces.exception.UserException;

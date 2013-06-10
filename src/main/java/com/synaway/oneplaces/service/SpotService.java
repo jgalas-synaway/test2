@@ -3,7 +3,6 @@ package com.synaway.oneplaces.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import com.synaway.oneplaces.exception.UserException;
@@ -54,7 +53,7 @@ public interface SpotService {
 	 * @throws MissingServletRequestParameterException - if some arguments are missing
 	 * @throws UserException - if there is no user with specified id, code 101.
 	 */
-	Spot json2Spot(String json) throws JsonProcessingException, IOException, MissingServletRequestParameterException, UserException;
+	Spot json2Spot(String json) throws IOException, MissingServletRequestParameterException, UserException;
 
 	
 	/** 

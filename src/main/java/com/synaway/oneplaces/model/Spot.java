@@ -16,7 +16,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializableWithType;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.TypeSerializer;
@@ -96,7 +95,7 @@ public class Spot implements JsonSerializableWithType {
 	
 
 	@Override
-	public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+	public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
 		
 		jgen.writeStartObject();
 		if(id == null){
@@ -135,8 +134,7 @@ public class Spot implements JsonSerializableWithType {
 	}
 
 	@Override
-	public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer)
-			throws IOException, JsonProcessingException {
+	public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer){
 		
 		
 	}

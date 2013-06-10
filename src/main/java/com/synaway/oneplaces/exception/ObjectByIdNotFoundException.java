@@ -5,27 +5,27 @@ public class ObjectByIdNotFoundException extends GeneralException {
     private static final long serialVersionUID = 1L;
 
     
-    private static final String info = "Not found object with given id";
+    private static final String INFO = "Not found object with given id";
     
     
     public ObjectByIdNotFoundException() {
-        super(info);
-        this.code = OBJECT_NOT_FOUND;
+        super(INFO);
+        this.setCode(OBJECT_NOT_FOUND);
     }
     public ObjectByIdNotFoundException(String message, Throwable cause) {
         super(message, cause);
-        this.code = OBJECT_NOT_FOUND;
+        this.setCode(OBJECT_NOT_FOUND);
     }
     public ObjectByIdNotFoundException(String message) {
         super(message);
-        this.code = OBJECT_NOT_FOUND;
+        this.setCode(OBJECT_NOT_FOUND);
     }
     public ObjectByIdNotFoundException(Throwable cause) {
         super(cause);
-        this.code = OBJECT_NOT_FOUND;
+        this.setCode(OBJECT_NOT_FOUND);
     }
     public ObjectByIdNotFoundException(String message, int code) {
         super(message, code);
-        this.code = code;
+        this.setCode(code);
     }
 }

@@ -3,16 +3,16 @@ package com.synaway.oneplaces.exception;
 public class CallRecipientIsBusyException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     
-    private static final String info = "Call recipient is busy: ";
+    private static final String INFO = "Call recipient is busy: ";
     
     public CallRecipientIsBusyException() {
-        super(info);
+        super(INFO);
     }
     public CallRecipientIsBusyException(String message, Throwable cause) {
-        super(info + message, cause);
+        super(INFO + message, cause);
     }
     public CallRecipientIsBusyException(String message) {
-        super(info + message);
+        super(INFO + message);
     }
     public CallRecipientIsBusyException(Throwable cause) {
         super(cause);
