@@ -183,11 +183,13 @@ var MapView = function(element) {
 	};
 	
 	this.showFake = function(show){
-		$.each(self.spots, function(index, spot){
+		$.grep(self.spots, function(spot, index){
 			if(show || spot.flag != "fake"){
-				spot.marker.setMap(self.map);				
+				spot.marker.setMap(self.map);	
+				return true;
 			}else{
-				spot.marker.setMap(null);	
+				spot.marker.setMap(null);
+				return false;
 			}
 		});
 		self.fakeSpots = show;
