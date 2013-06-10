@@ -191,6 +191,7 @@ var MapView = function(element) {
 			}
 		});
 		self.fakeSpots = show;
+		getSpots();
 	};
 	
 	
