@@ -124,6 +124,7 @@ public class SpotController {
 		spot.setTimestamp(new Date());
 		spot.setUser(userService.getAll().get(0));
 		spot.setStatus("free");
+		spot.setFlag("fake");
 
 		Random r = new Random();
 		double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();

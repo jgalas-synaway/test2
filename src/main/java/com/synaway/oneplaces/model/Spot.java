@@ -47,6 +47,9 @@ public class Spot implements JsonSerializableWithType {
     
     @Column(name="created_at")
     private Date timestamp;
+    
+    @Column(name = "flag")
+    private String flag;
 
 	public void setId(Long id) {
 		this.id = id;
@@ -127,6 +130,12 @@ public class Spot implements JsonSerializableWithType {
 		}else{
 			jgen.writeStringField("status", status);
 		}
+		
+		if(flag == null){
+			jgen.writeNullField("flag");
+		}else{
+			jgen.writeStringField("flag", flag);
+		}
 
 
 		jgen.writeEndObject();		 
@@ -137,6 +146,14 @@ public class Spot implements JsonSerializableWithType {
 	public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer){
 		
 		
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 	
 }

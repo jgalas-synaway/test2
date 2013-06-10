@@ -190,8 +190,10 @@
 		$("#spot").change(function() {
 			if ($(this).is(":checked")) {
 				mapView.spotStart(token);
+				$('#fakeDiv').css('display', 'block');
 			} else {
 				mapView.spotStop();
+				$('#fakeDiv').css('display', 'none');
 			}
 		});
 
@@ -200,6 +202,14 @@
 				mapView.locationStart(token);
 			} else {
 				mapView.locationStop();
+			}
+		});
+		
+		$("#fake").change(function() {
+			if ($(this).is(":checked")) {
+				mapView.showFake(true);
+			} else {
+				mapView.showFake(false);
 			}
 		});
 
@@ -240,9 +250,13 @@
 				<h3 id="acc-1" data-for="tab-1">Map</h3>
 				<div>
 					<input id="spot" name="spot" type="checkbox" checked="checked" />
-					<label for="spot">spots</label> <input id="location"
-						name="location" type="checkbox" /> <label for="location">users
-						locations</label>
+					<label for="spot">spots</label>
+					<div id="fakeDiv">
+						<input id="fake" name="fake" type="checkbox" checked="checked"/>
+						<label for="spot">show fake spots</label>
+					</div>
+					<input id="location" name="location" type="checkbox" />
+					<label for="location">users locations</label>
 				</div>
 				<h3 id="acc-2" data-for="tab-2">Administration</h3>
 				<div>

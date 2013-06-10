@@ -14,5 +14,6 @@
 	<include file="classpath:dbchangelog/005-add-unique-user-login.xml"/>
 	<include file="classpath:dbchangelog/006-create-sequences-access_token.xml"/>
 	<include file="classpath:dbchangelog/007-create-user-locations-table.xml"/>
+	<include file="classpath:dbchangelog/008-add-flag-to-spots.xml"/>
 	
 </databaseChangeLog>

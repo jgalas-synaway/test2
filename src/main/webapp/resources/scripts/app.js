@@ -3,6 +3,8 @@ var MapView = function(element) {
 	self = this;
 	self.spots = [];
 	self.locations = [];
+	
+	self.fakeSpots = true;
 
 	var intSpot = null;
 	var intLocation = null;
@@ -55,6 +57,8 @@ var MapView = function(element) {
 			
 			//add new spots to list
 			$.each(data, function(index, newSpot){
+				
+				
 				var exist = false;
 				$.each(self.spots, function(index2, oldSpot){
 					if(oldSpot.spotId == newSpot.spotId){
@@ -64,15 +68,21 @@ var MapView = function(element) {
 				});
 				
 				if(!exist){
+					var mapa = null;
+					if(self.fakeSpots || newSpot.flag != 'fake'){
+						mapa = self.map;
+					}
 					var markerOption = {
-							map : self.map,
+							map : mapa,
 							position : new google.maps.LatLng(newSpot.latitude, newSpot.longitude),
-							flat : true
+							flat : true,
+							zIndex : 0
 					};
 					newSpot.marker = new google.maps.Marker(markerOption);
 					
 					self.spots.push(newSpot);
 				}
+				
 			});
 			
 			
@@ -101,7 +111,7 @@ var MapView = function(element) {
 			
 			
 			
-			//add new spots to list
+			//add new location to list
 			$.each(data, function(index, newLocation){
 				var exist = false;
 				$.each(self.locations, function(index2, oldLocation){
@@ -126,7 +136,8 @@ var MapView = function(element) {
 							position : new google.maps.LatLng(newLocation.latitude, newLocation.longitude),
 							flat : true,
 							icon : pinImage,
-							title : user.firstName+" "+user.lastName
+							title : user.firstName+" "+user.lastName,
+							zIndex : 1
 					};
 					newLocation.marker = new google.maps.Marker(markerOption);
 					
@@ -169,6 +180,17 @@ var MapView = function(element) {
 			location.marker.setMap(null);
 		});
 		self.locations = [];
+	};
+	
+	this.showFake = function(show){
+		$.each(self.spots, function(index, spot){
+			if(show || spot.flag != "fake"){
+				spot.marker.setMap(self.map);				
+			}else{
+				spot.marker.setMap(null);	
+			}
+		});
+		self.fakeSpots = show;
 	};
 	
 	
