@@ -143,23 +143,25 @@ public class SpotController {
 	@ResponseBody
 	public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart,
 			@RequestParam(required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho,
-			@RequestParam(required = false) String mDataProp_0, @RequestParam(required = false) String mDataProp_1,
-			@RequestParam(required = false) String mDataProp_2, @RequestParam(required = false) String mDataProp_3,
-			@RequestParam(required = false) String mDataProp_4, @RequestParam(required = false) int iSortCol_0, 
-			@RequestParam(required = false) String sSortDir_0, @RequestParam(required = false) String sSearch) {
-		
+			@RequestParam(value = "mDataProp_0", required = false) String mDataProp0,
+			@RequestParam(value = "mDataProp_1", required = false) String mDataProp1,
+			@RequestParam(value = "mDataProp_2", required = false) String mDataProp2,
+			@RequestParam(value = "mDataProp_3", required = false) String mDataProp3,
+			@RequestParam(value = "mDataProp_4", required = false) String mDataProp4,
+			@RequestParam(value = "iSortCol_0", required = false) int iSortCol,
+			@RequestParam(value = "sSortDir_0", required = false) String sSortDir,
+			@RequestParam(required = false) String sSearch) {
+
 		List<String> cols = new ArrayList<String>();
-		cols.add(0, mDataProp_0);
-		cols.add(1, mDataProp_1);
-		cols.add(2, mDataProp_2);
-		cols.add(3, mDataProp_3);
-		cols.add(4, mDataProp_4);
-		
-		
+		cols.add(0, mDataProp0);
+		cols.add(1, mDataProp1);
+		cols.add(2, mDataProp2);
+		cols.add(3, mDataProp3);
+		cols.add(4, mDataProp4);
 
 		Map<String, Object> response = new HashMap<String, Object>();
 
-		response.put("aaData", spotService.getAll(cols.get(iSortCol_0), sSortDir_0, iDisplayStart, iDisplayLength));
+		response.put("aaData", spotService.getAll(cols.get(iSortCol), sSortDir, iDisplayStart, iDisplayLength));
 		response.put("iTotalRecords", spotRepository.count());
 
 		response.put("iTotalDisplayRecords", spotRepository.count());

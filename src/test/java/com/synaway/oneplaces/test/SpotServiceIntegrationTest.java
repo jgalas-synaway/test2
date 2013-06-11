@@ -2,8 +2,11 @@ package com.synaway.oneplaces.test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +52,7 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 	@Autowired
 	UserLocationRepository userLocationRepository;
 	
+	
 	@Before
 	public void cleanDatabase() throws Exception {
 		accessTokenRepository.deleteAllInBatch();
@@ -57,6 +61,124 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		userLocationRepository.deleteAllInBatch();
 		
 		
+	}
+	
+	@Transactional
+	@Test
+	public void getSpotShouldReturnPropperData(){
+		User user = createUser("john", "password");
+
+		Spot spot = new Spot();
+		spot.setLocation(spotService.createPoint( 19.856278, 50.06063));
+		spot.setUser(user);
+		
+		spot = spotRepository.save(spot);
+		
+		spot = spotService.getSpot(spot.getId());
+		
+		Assert.assertEquals(19.856278, spot.getLocation().getX(), 0);
+		Assert.assertEquals(50.06063, spot.getLocation().getY(), 0);
+		Assert.assertEquals(user.getId(), spot.getUser().getId());
+		
+		spot = spotRepository.findOne(spot.getId());
+		
+
+		Assert.assertEquals(19.856278, spot.getLocation().getX(), 0);
+		Assert.assertEquals(50.06063, spot.getLocation().getY(), 0);
+		Assert.assertEquals(user.getId(), spot.getUser().getId());
+	}
+	
+	
+	@Transactional
+	@Test
+	public void getAllShouldReturnPropperData(){
+		User user = createUser("john", "password");
+		for(int i = 0; i < 10; i++){
+			addSpot(user);
+		}
+		
+		List<Spot> spots = spotService.getAll();		
+		Assert.assertEquals(10, spots.size());
+
+	}
+	
+	@Transactional
+	@Test
+	public void getAllParamShouldReturnPropperData(){
+		User user = createUser("john", "password");
+		for(int i = 0; i < 10; i++){
+			addSpot(user);
+		}
+		
+		List<Spot> spots = spotService.getAll("timestamp", "asc", 2, 5);		
+		Assert.assertEquals(5, spots.size());
+		Iterator<Spot> it = spots.iterator();
+		Spot prev = null;
+		while (it.hasNext()) {
+			Spot spot = (Spot) it.next();
+			if(prev != null){
+				Assert.assertTrue("wrong order of entities" ,spot.getTimestamp().getTime() >= prev.getTimestamp().getTime());
+			}
+			prev = spot;
+		}
+		
+		spots = spotService.getAll("timestamp", "desc", 3, 6);		
+		Assert.assertEquals(6, spots.size());
+		it = spots.iterator();
+		prev = null;
+		while (it.hasNext()) {
+			Spot spot = (Spot) it.next();
+			if(prev != null){
+				Assert.assertTrue("wrong order of entities", spot.getTimestamp().getTime() <= prev.getTimestamp().getTime());
+			}
+			prev = spot;
+		}
+	}
+	
+	@Transactional
+	@Test
+	public void saveSpotShouldReturnPropperData(){
+		User user = createUser("john", "password");
+		Spot spot = new Spot();
+		spot.setLocation(spotService.createPoint( 19.856278, 50.06063));
+		spot.setUser(user);
+		
+		Spot spot2 = spotService.saveSpot(spot);
+		Assert.assertEquals(spot.getTimestamp(), spot2.getTimestamp());
+		Assert.assertEquals(spot.getUser(), spot2.getUser());
+		Assert.assertEquals(spot.getLocation(), spot2.getLocation());
+	}
+	
+	@Transactional
+	@Test
+	public void getByUserShouldReturnPropperData(){
+
+		User user1 = createUser("john1", "password");
+		User user2 = createUser("john3", "password");
+		
+		for(int i = 0; i < 5; i++){
+			addSpot(user1);
+		}
+		for(int i = 0; i < 10; i++){
+			addSpot(user2);
+		}
+		Assert.assertEquals(5, spotService.getByUser(user1, 20, 0).size());
+		Assert.assertEquals(10, spotService.getByUser(user2, 20, 0).size());
+	}
+	
+	@Transactional
+	@Test
+	public void getByLatitudeLongitudeAndRadiusShouldReturnPropperData(){
+		User user = createUser("john", "password");
+		for(int i = 0; i < 10; i++){
+			addSpot(user);
+		}
+		
+		List<Spot> spots = spotService.getByLatitudeLongitudeAndRadius(0.0, 0.0, 100);
+		Assert.assertEquals(0, spots.size());
+		
+		spots = spotService.getByLatitudeLongitudeAndRadius(50.05, 19.7, 30000);
+		Assert.assertEquals(10, spots.size());	
 	}
 	
 	
@@ -83,6 +205,40 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		Spot spot = spotService.json2Spot("{\"longitude\": 19.856278, \"latitude\": 50.06063, \"userId\" : "+user.getId()+" }");
 	}
 	
+	
+	@Transactional
+	@Test
+	public void updateSpotShouldReturnPropperData(){
+		User user = createUser("john1", "password");
+		User user2 = createUser("john2", "password");
+		Spot spotBefore = addSpot(user);
+		
+		Spot spotUpdate = new Spot();
+		spotUpdate.setId(spotBefore.getId());		
+		
+		Spot spotAfter = spotService.updateSpot(spotUpdate);
+
+		Assert.assertEquals(spotBefore.getId(), spotAfter.getId());
+		Assert.assertEquals(spotBefore.getLocation(), spotAfter.getLocation());
+		Assert.assertEquals(spotBefore.getStatus(), spotAfter.getStatus());
+		
+		spotBefore = addSpot(user);
+		
+		spotUpdate = new Spot();
+		spotUpdate.setId(spotBefore.getId());		
+		spotUpdate.setLocation(spotService.createPoint( 19.0, 50.0));
+		spotUpdate.setUser(user2);
+		spotUpdate.setStatus("occupcied");
+		
+		spotAfter = spotService.updateSpot(spotUpdate);
+		
+
+		Assert.assertEquals(spotUpdate.getId(), spotAfter.getId());
+		Assert.assertEquals(spotUpdate.getLocation(), spotAfter.getLocation());
+		Assert.assertEquals(spotUpdate.getStatus(), spotAfter.getStatus());
+		
+	}
+	
 	private Spot addSpot(User user){
 		double minLatitude = 19.885;
 		double maxLatitude = 19.991;
@@ -91,7 +247,7 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		
 		Spot spot = new Spot();
 		spot.setTimestamp(new Date());
-		spot.setUser(userService.getAll().get(0));
+		spot.setUser(user);
 		spot.setStatus("free");
 		spot.setFlag("fake");
 

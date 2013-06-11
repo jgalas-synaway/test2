@@ -122,9 +122,9 @@ public class SpotServiceImpl implements SpotService {
 	}
 	
 	@Override
-	public Point createPoint(double x, double y){
+	public Point createPoint(double longitude, double latitude){
 		GeometryFactory gf = new GeometryFactory(new PrecisionModel(), SRID);		
-        Coordinate coord = new Coordinate( x, y );
+        Coordinate coord = new Coordinate( longitude, latitude );
 		return gf.createPoint( coord );
 	}
 

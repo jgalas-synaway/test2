@@ -285,7 +285,7 @@ public class SpottControllerIntegrationTest extends AbstractIntegrationTest {
 		
 		Spot spot = new Spot();
 		spot.setTimestamp(new Date());
-		spot.setUser(userService.getAll().get(0));
+		spot.setUser(user);
 		spot.setStatus("free");
 		spot.setFlag("fake");
 
