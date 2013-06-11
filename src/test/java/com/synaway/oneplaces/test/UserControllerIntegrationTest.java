@@ -36,6 +36,8 @@ import com.synaway.oneplaces.interceptor.CheckAccessTokenInterceptor;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
+import com.synaway.oneplaces.repository.SpotRepository;
+import com.synaway.oneplaces.repository.UserLocationRepository;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.UserService;
 import com.synaway.oneplaces.service.impl.UserServiceImpl;
@@ -56,7 +58,14 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	UserService userService;
 
 	@Autowired
-	AccessTokenRepository accessTokenRepository;
+	AccessTokenRepository accessTokenRepository;	
+
+	@Autowired
+	SpotRepository spotRepository;
+	
+	@Autowired
+	UserLocationRepository userLocationRepository;
+	
 
 	MockMvc mockMvc;
 
@@ -69,6 +78,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	@Before
 	public void cleanDatabase() throws NoSuchAlgorithmException {
 		accessTokenRepository.deleteAllInBatch();
+		spotRepository.deleteAllInBatch();
+		userLocationRepository.deleteAllInBatch();
 		userRepository.deleteAllInBatch();
 	}
 

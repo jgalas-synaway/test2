@@ -96,4 +96,18 @@ public interface SpotService {
 
 	Spot updateSpot(Spot spot);
 
+
+	/**
+	 * Returns spots paginated and ordered
+	 * 
+	 * @param order
+	 * @param asc
+	 * @param startIndex
+	 * @param limit
+	 * @return
+	 */
+	List<Spot> getAll(String order, String asc, long startIndex, long limit);
+
+
+
 }

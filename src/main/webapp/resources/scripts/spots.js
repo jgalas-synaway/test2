@@ -54,25 +54,26 @@ var Spots = function(token){
 	var table = $('#spots-table').dataTable(
 		{
 			"bProcessing" : true,
+	        "bServerSide": true,
 			"bJQueryUI": true,
+			"bFilter": false,
 			"sPaginationType": "input",
 			"aoColumns": [
-			              { "mData": "latitude" },
-			              { "mData": "longitude" },
+			              { "mData": "latitude", "bSortable": false  },
+			              { "mData": "longitude", "bSortable": false },
 			              { "mData": "timestamp" },
 			              { "mData": "status" },
-			              { "mData": "spotId" }
+			              { "mData": "spotId", "bSortable": false }
 			          ],
-			"sAjaxSource" : baseUrl + "/spots?access_token=" + token,
+			"sAjaxSource" : baseUrl + "/spots/datatable?access_token=" + token,
 			"fnServerData" : function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType" : 'json',
 					"type" : "GET",
 					"url" : sSource,
 					"data" : aoData
-				}).done(
-						function(json) {
-							$.each(json,function(index){
+				}).done(function(json) {
+							$.each(json.aaData,function(index){
 								var d = new Date(this.timestamp*1000);
 								var curr_date = d.getDate() < 10 ? "0"+d.getDate():d.getDate();
 							    var curr_month = d.getMonth() + 1 < 10 ? "0"+(d.getMonth()+1):d.getMonth()+1;
@@ -82,9 +83,7 @@ var Spots = function(token){
 							    var s = d.getSeconds()< 10 ? "0"+d.getSeconds():d.getSeconds();
 							    this.timestamp = curr_date + "-" + curr_month + "-" + curr_year + " "+h+":"+m+":"+s;
 							});
-							fnCallback({
-								aaData : json
-							});
+							fnCallback(json);
 						});
 			},
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {

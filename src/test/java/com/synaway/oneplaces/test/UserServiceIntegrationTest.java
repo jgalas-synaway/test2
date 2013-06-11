@@ -20,7 +20,10 @@ import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
+import com.synaway.oneplaces.repository.SpotRepository;
+import com.synaway.oneplaces.repository.UserLocationRepository;
 import com.synaway.oneplaces.repository.UserRepository;
+import com.synaway.oneplaces.service.SpotService;
 import com.synaway.oneplaces.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,11 +39,19 @@ public class UserServiceIntegrationTest extends AbstractIntegrationTest {
 	@Autowired
 	AccessTokenRepository accessTokenRepository;
 	
+	@Autowired
+	SpotRepository spotRepository;
+	
+	@Autowired
+	UserLocationRepository userLocationRepository;
+	
 	private List<User> users = null;
 	
 	@Before
 	public void cleanDatabase() throws NoSuchAlgorithmException, UserException{
 		accessTokenRepository.deleteAllInBatch();
+		spotRepository.deleteAllInBatch();
+		userLocationRepository.deleteAllInBatch();
 		userRepository.deleteAllInBatch();
 		users = new ArrayList<User>();
 		for(int i = 0; i < 20; i++){

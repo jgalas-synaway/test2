@@ -3,7 +3,9 @@ package com.synaway.oneplaces.controller.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,6 @@ import com.synaway.oneplaces.service.UserService;
 @Controller
 @RequestMapping("/spots")
 public class SpotController {
-
 
 	@Autowired
 	private UserService userService;
@@ -85,13 +86,15 @@ public class SpotController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
 	@ResponseBody
-	public Spot addSpot(@RequestBody String json) throws MissingServletRequestParameterException, UserException, IOException  {
+	public Spot addSpot(@RequestBody String json) throws MissingServletRequestParameterException, UserException,
+			IOException {
 		return spotService.saveSpot(spotService.json2Spot(json));
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public Spot updateSpot(@RequestBody String json) throws IOException, MissingServletRequestParameterException, UserException {
+	public Spot updateSpot(@RequestBody String json) throws IOException, MissingServletRequestParameterException,
+			UserException {
 		Spot spot = spotService.json2Spot(json);
 		if (spot.getId() == null) {
 			throw new MissingServletRequestParameterException("spotId", "Long");
@@ -119,7 +122,7 @@ public class SpotController {
 	@RequestMapping("/random")
 	@ResponseBody
 	public Spot addSpot(@RequestParam Double minLatitude, @RequestParam Double minLongitude,
-			@RequestParam Double maxLatitude, @RequestParam Double maxLongitude)  {
+			@RequestParam Double maxLatitude, @RequestParam Double maxLongitude) {
 		Spot spot = new Spot();
 		spot.setTimestamp(new Date());
 		spot.setUser(userService.getAll().get(0));
@@ -134,5 +137,35 @@ public class SpotController {
 
 		spot = spotService.saveSpot(spot);
 		return spot;
+	}
+
+	@RequestMapping(value = "/datatable", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart,
+			@RequestParam(required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho,
+			@RequestParam(required = false) String mDataProp_0, @RequestParam(required = false) String mDataProp_1,
+			@RequestParam(required = false) String mDataProp_2, @RequestParam(required = false) String mDataProp_3,
+			@RequestParam(required = false) String mDataProp_4, @RequestParam(required = false) int iSortCol_0, 
+			@RequestParam(required = false) String sSortDir_0, @RequestParam(required = false) String sSearch) {
+		
+		List<String> cols = new ArrayList<String>();
+		cols.add(0, mDataProp_0);
+		cols.add(1, mDataProp_1);
+		cols.add(2, mDataProp_2);
+		cols.add(3, mDataProp_3);
+		cols.add(4, mDataProp_4);
+		
+		
+
+		Map<String, Object> response = new HashMap<String, Object>();
+
+		response.put("aaData", spotService.getAll(cols.get(iSortCol_0), sSortDir_0, iDisplayStart, iDisplayLength));
+		response.put("iTotalRecords", spotRepository.count());
+
+		response.put("iTotalDisplayRecords", spotRepository.count());
+		response.put("sEcho", sEcho);
+
+		return response;
+
 	}
 }

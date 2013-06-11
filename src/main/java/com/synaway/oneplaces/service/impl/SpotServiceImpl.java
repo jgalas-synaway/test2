@@ -50,6 +50,26 @@ public class SpotServiceImpl implements SpotService {
 	}
 	
 	@Override
+	public List<Spot> getAll(String order, String asc, long startIndex, long limit){	
+		if(order.equals("timestamp")){
+			if(asc.equalsIgnoreCase("asc")){
+				return spotRepository.findAllOrderByTimestampAsc(limit, startIndex);			
+			}else{
+				return spotRepository.findAllOrderByTimestampDesc(limit, startIndex);
+			}
+		}else if(order.equals("status")){
+			if(asc.equalsIgnoreCase("asc")){
+				return spotRepository.findAllOrderByStatusAsc(limit, startIndex);			
+			}else{
+				return spotRepository.findAllOrderByStatusDesc(limit, startIndex);
+			}
+		}else{
+			return spotRepository.findAll(limit, startIndex);	
+		}
+		
+	}
+	
+	@Override
 	public Spot saveSpot(Spot spot){
 		if(spot.getUser() == null){
 			spot.setUser(userService.getCurrentUser());
