@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
@@ -178,7 +179,7 @@ public class UserServiceIntegrationTest extends AbstractIntegrationTest {
 	
 	
 	@Test
-	public void updateUserShouldReturnPropperData(){
+	public void updateUserShouldReturnPropperData() throws MissingServletRequestParameterException{
 		User userBefore = createUser("john1", "password");
 		
 		

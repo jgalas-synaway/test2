@@ -11,6 +11,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
@@ -44,8 +45,12 @@ public class UserServiceImpl implements UserService {
 	private HttpServletRequest request;
 	
 	@Override
-	public User getUser(long id){
-		return userRepository.findOne(id);
+	public User getUser(long id) throws UserException{
+		User user = userRepository.findOne(id);
+		if(user == null){
+			throw new UserException("User not found", UserException.USER_NOT_FOUND);
+		}
+		return user;
 	}
 	
 	@Override
@@ -115,7 +120,10 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User updateUser(User user){
+	public User updateUser(User user) throws MissingServletRequestParameterException{
+		if(user.getId() == null){
+			throw new MissingServletRequestParameterException("id","Long");
+		}	
 		User existing = userRepository.findOne(user.getId());
 		
 		if(user.getFirstName() != null){

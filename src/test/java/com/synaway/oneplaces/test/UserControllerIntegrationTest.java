@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.util.NestedServletException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,8 +34,10 @@ import com.synaway.oneplaces.controller.rest.ControllerExceptionHandler;
 import com.synaway.oneplaces.controller.rest.UserController;
 import com.synaway.oneplaces.exception.AccessTokenException;
 import com.synaway.oneplaces.exception.GeneralException;
+import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.interceptor.CheckAccessTokenInterceptor;
 import com.synaway.oneplaces.model.AccessToken;
+import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
 import com.synaway.oneplaces.repository.SpotRepository;
@@ -68,6 +72,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	
 
 	MockMvc mockMvc;
+	
+	public ExpectedException exception = ExpectedException.none();
 
 	@Before
 	public void setUp() {
@@ -76,7 +82,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Before
-	public void cleanDatabase() throws NoSuchAlgorithmException {
+	public void cleanDatabase() {
 		accessTokenRepository.deleteAllInBatch();
 		spotRepository.deleteAllInBatch();
 		userLocationRepository.deleteAllInBatch();
@@ -84,14 +90,11 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	public void unauthorizedTest() {
-		this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController(), new UserServiceImpl())
-				.addInterceptors(new CheckAccessTokenInterceptor()).build();
-		try {
-			mockMvc.perform(get("/users").accept(MediaType.APPLICATION_JSON));
-		} catch (Exception e) {
-			Assert.assertEquals(AccessTokenException.class, e.getCause().getClass());
-		}
+	public void unauthorizedTest() throws Exception {
+
+		mockMvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.error.code").value(301)).andDo(print());
+
 	}
 
 	@Test
@@ -102,19 +105,110 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 		mockMvc.perform(
 				post("/users/auth").param("login", "john0").param("password", "password")
 						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
 						.andExpect(jsonPath("$.token").value(accessToken.getToken()))
 						.andExpect(jsonPath("$.expire", is(accessToken.getExpire().getTime())))
-						.andExpect(jsonPath("$.user_id", equalTo(accessToken.getUserId().intValue())))
+						.andExpect(jsonPath("$.user_id", equalTo(accessToken.getUserId().intValue())));
+		
+		
+		
+	}
+	
+	@Test
+	public void getAllShouldReturnPropperData() throws Exception{
+		User user = createUser("john", "password");
+		AccessToken accessToken = userService.getToken("john", "password");
+
+		mockMvc.perform(
+				get("/users").param("access_token", accessToken.getToken())
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$").isArray())
+						.andExpect(jsonPath("$.[0].firstName").value(user.getFirstName()))
+						.andExpect(jsonPath("$.[0].lastName").value(user.getLastName()))
+						.andExpect(jsonPath("$.[0].login").value(user.getLogin()))
+						.andExpect(jsonPath("$.[0].password").doesNotExist())
+						.andDo(print());
+	}
+	
+
+	@Test
+	public void getUserShouldReturnPropperData() throws Exception {
+		User user = createUser("john", "password");
+		AccessToken accessToken = userService.getToken("john", "password");
+		exception.expect(NestedServletException.class);
+
+		mockMvc.perform(
+				get("/users/"+user.getId()).param("access_token", accessToken.getToken())
+					.accept(MediaType.APPLICATION_JSON))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.firstName").value(user.getFirstName()))
+					.andExpect(jsonPath("$.lastName").value(user.getLastName()))
+					.andExpect(jsonPath("$.login").value(user.getLogin()))
+					.andExpect(jsonPath("$.password").doesNotExist())
 						.andDo(print());
 
 	}
 	
 	
+	@Test
+	public void updateUserShouldReturnPropperData() throws Exception{
+		User user = createUser("john", "password");
+		AccessToken accessToken = userService.getToken("john", "password");
+
+		mockMvc.perform(
+				put("/users/").param("access_token", accessToken.getToken())
+				.content("{ \"id\":"+user.getId()+", \"firstName\":\"Gregory\", \"password\":\"pass\"}")
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andDo(print());
+		
+		user = userRepository.findOne(user.getId());
+
+		Md5PasswordEncoder enc = new Md5PasswordEncoder();
+		Assert.assertTrue("invalid password",enc.isPasswordValid(user.getPassword(), "pass", user.getLastName()));
+		Assert.assertEquals("Gregory", user.getFirstName());
+		
+	}
+	
+	@Test
+	public void meShouldReturnPropperData() throws Exception{
+		User user = createUser("john", "password");
+		AccessToken accessToken = userService.getToken("john", "password");
+
+		mockMvc.perform(
+				get("/users/me").param("access_token", accessToken.getToken())				
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$.id").value(user.getId().intValue()))
+						.andDo(print());
+		
+		
+	}
+	
+	@Test
+	public void getUserSpotsShouldReturnPropperData() throws Exception{
+		User user = createUser("john", "password");
+		
+		Spot spot = new Spot();
+		spot.setUser(user);
+		spot = spotRepository.save(spot);
+		
+		AccessToken accessToken = userService.getToken("john", "password");
+		
+		mockMvc.perform(
+				get("/users/"+user.getId()+"/spots").param("access_token", accessToken.getToken())				
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$").isArray())
+						.andExpect(jsonPath("$.[0].spotId").value(spot.getId().intValue()))
+						.andDo(print());
+	}
 	
 	
 
 	@Transactional
-	private User createUser(String login, String password) throws NoSuchAlgorithmException {
+	private User createUser(String login, String password)  {
 		User user = new User();
 		user.setFirstName("John");
 		user.setLastName("Doe");

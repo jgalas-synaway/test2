@@ -1,5 +1,7 @@
 package com.synaway.oneplaces.interceptor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ public class CheckAccessTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AccessTokenException {
 		String uri = request.getRequestURI().replace(request.getContextPath(), "");
+
 		
 		if(uri.startsWith("/frontend") || uri.startsWith("/resources")){
 			return true;

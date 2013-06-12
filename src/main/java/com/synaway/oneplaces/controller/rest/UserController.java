@@ -51,16 +51,13 @@ public class UserController {
 	
 	@RequestMapping(value="/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public User getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable Long id) throws UserException {
 		return userService.getUser(id);		
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, consumes="application/json", produces = "application/json")
 	@ResponseBody
-    public User updateUser(@RequestBody User user) throws MissingServletRequestParameterException {
-		if(user.getId() == null){
-			throw new MissingServletRequestParameterException("id","Long");
-		}		
+    public User updateUser(@RequestBody User user) throws MissingServletRequestParameterException {	
 		return userService.updateUser(user);
 	}
 	
@@ -72,7 +69,7 @@ public class UserController {
 	
 	@RequestMapping(value="/{id}/spots", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public List<Spot> getUserSpots(@PathVariable Long id, @RequestParam(required=false) Integer limit, @RequestParam(required=false) Integer offset) {
+    public List<Spot> getUserSpots(@PathVariable Long id, @RequestParam(required=false) Integer limit, @RequestParam(required=false) Integer offset) throws UserException {
 		User user = userService.getUser(id);
 		Integer lmt = limit;
 		Integer off = offset;
@@ -89,7 +86,7 @@ public class UserController {
 	
 	@RequestMapping(value="/{id}/locations", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-    public List<UserLocation> getUserLocations(@PathVariable Long id, @RequestParam(required=false) Integer limit, @RequestParam(required=false) Integer offset) {
+    public List<UserLocation> getUserLocations(@PathVariable Long id, @RequestParam(required=false) Integer limit, @RequestParam(required=false) Integer offset) throws UserException {
 		User user = userService.getUser(id);
 		Integer lmt = limit;
 		Integer off = offset;

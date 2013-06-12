@@ -2,6 +2,8 @@ package com.synaway.oneplaces.service;
 
 import java.util.List;
 
+import org.springframework.web.bind.MissingServletRequestParameterException;
+
 import com.synaway.oneplaces.exception.UserException;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.User;
@@ -22,8 +24,9 @@ public interface UserService {
 	 * 
 	 * @param id - user id
 	 * @return User or null if not exist
+	 * @throws UserException 
 	 */
-	User getUser(long id);
+	User getUser(long id) throws UserException;
 
 	/**
 	 * Returns list of all users in application
@@ -64,8 +67,9 @@ public interface UserService {
 	 * 
 	 * @param user - user before update.
 	 * @return - user after update.
+	 * @throws MissingServletRequestParameterException 
 	 */
-	User updateUser(User user);
+	User updateUser(User user) throws MissingServletRequestParameterException;
 
 	
 	/**
