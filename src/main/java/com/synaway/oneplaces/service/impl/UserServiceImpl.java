@@ -108,22 +108,27 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 		AccessToken accessToken = accessTokenRepository.findByToken(token);		
+		if(accessToken == null){
+			return null;
+		}
 		return accessToken.getUser();
 	}
 	
 	@Override
 	public User updateUser(User user){
 		User existing = userRepository.findOne(user.getId());
-		if(user.getPassword() != null){
-			Md5PasswordEncoder enc = new Md5PasswordEncoder();
-			existing.setPassword(enc.encodePassword(user.getPassword(), existing));
-		}
+		
 		if(user.getFirstName() != null){
 			existing.setFirstName(user.getFirstName());
 		}
 		if(user.getLastName() != null){
 			existing.setLastName(user.getLastName());
 		}
+		if(user.getPassword() != null){
+			Md5PasswordEncoder enc = new Md5PasswordEncoder();
+			existing.setPassword(enc.encodePassword(user.getPassword(), existing.getLastName()));
+		}
+		
 		if(user.getLogin() != null){
 			existing.setLogin(user.getLogin());
 		}

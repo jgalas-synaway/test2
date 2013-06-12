@@ -51,6 +51,7 @@ public class SpotController {
 			@RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
 			@RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
 		List<Spot> spots = new ArrayList<Spot>();
+		
 		if (latitude == null && longitude == null && radius == null) {
 			spots = spotService.getAll();
 		} else {

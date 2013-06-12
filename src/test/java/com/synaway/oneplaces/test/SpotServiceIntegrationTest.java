@@ -205,6 +205,13 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		Spot spot = spotService.json2Spot("{\"longitude\": 19.856278, \"latitude\": 50.06063, \"userId\" : "+user.getId()+" }");
 	}
 	
+	@Transactional
+	@Test(expected=UserException.class)
+	public void json2SpotShouldThrowUserException() throws MissingServletRequestParameterException, UserException, IOException  {
+
+		Spot spot = spotService.json2Spot("{\"longitude\": 19.856278, \"latitude\": 50.06063, \"userId\" : 0, \"status\" : \"somestatus\" }");
+	}
+	
 	
 	@Transactional
 	@Test
