@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.hamcrest.Matchers.*;
 
+import com.jayway.jsonpath.JsonPath;
 import com.synaway.oneplaces.controller.rest.ControllerExceptionHandler;
 import com.synaway.oneplaces.controller.rest.UserController;
 import com.synaway.oneplaces.exception.AccessTokenException;
@@ -39,6 +44,7 @@ import com.synaway.oneplaces.interceptor.CheckAccessTokenInterceptor;
 import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
+import com.synaway.oneplaces.model.UserLocation;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
 import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserLocationRepository;
@@ -203,8 +209,118 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 						.andExpect(jsonPath("$").isArray())
 						.andExpect(jsonPath("$.[0].spotId").value(spot.getId().intValue()))
 						.andDo(print());
+		
+		mockMvc.perform(
+				get("/users/"+user.getId()+"/spots").param("access_token", accessToken.getToken()).param("limit", "1").param("offset", "0")				
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$").isArray())
+						.andExpect(jsonPath("$.[0].spotId").value(spot.getId().intValue()))
+						.andDo(print());
 	}
 	
+	
+	@Test
+	public void getUserLocationsShouldReturnPropperData() throws Exception{
+		User user = createUser("john", "password");
+		
+		UserLocation location = new UserLocation();
+		location.setUser(user);
+		location = userLocationRepository.save(location);
+		
+		AccessToken accessToken = userService.getToken("john", "password");
+
+		mockMvc.perform(
+				get("/users/"+user.getId()+"/locations").param("access_token", accessToken.getToken())				
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$").isArray())
+						.andExpect(jsonPath("$.[0].id").value(location.getId().intValue()))
+						.andDo(print());
+		
+		mockMvc.perform(
+				get("/users/"+user.getId()+"/locations").param("access_token", accessToken.getToken()).param("limit", "1").param("offset", "0")		
+						.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$").isArray())
+						.andExpect(jsonPath("$.[0].id").value(location.getId().intValue()))
+						.andDo(print());
+	}
+	
+	
+	@Test
+	public void addUserShouldReturnPropperData() throws Exception{
+
+		mockMvc.perform(
+				post("/users")
+				.content("{ " +
+							"\"id\":0, " +
+							"\"firstName\":\"John\", " +
+							"\"lastName\":\"Doe\", " +
+							"\"login\":\"john\", " +
+							"\"role\":\"user\", " +							
+							"\"password\":\"password\"" +
+						"}")
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isInternalServerError())
+						.andExpect(jsonPath("$.error.code").value(500))
+						.andDo(print());
+		
+		mockMvc.perform(
+				post("/users")
+				.content("{ " +
+							"\"firstName\":\"John\", " +
+							"\"lastName\":\"Doe\", " +
+							"\"role\":\"user\", " +							
+							"\"password\":\"password\"" +
+						"}")
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isInternalServerError())
+						.andExpect(jsonPath("$.error.code").value(500))
+						.andDo(print());
+		
+		mockMvc.perform(
+				post("/users")
+				.content("{ " +
+							"\"firstName\":\"John\", " +
+							"\"lastName\":\"Doe\", " +
+							"\"login\":\"john\", " +
+							"\"role\":\"user\", " +		
+						"}")
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isInternalServerError())
+						.andExpect(jsonPath("$.error.code").value(500))
+						.andDo(print());
+		
+		MvcResult result = mockMvc.perform(
+				post("/users")
+				.content("{ " +
+							"\"firstName\":\"John\", " +
+							"\"lastName\":\"Doe\", " +
+							"\"login\":\"john\", " +
+							"\"role\":\"user\", " +							
+							"\"password\":\"password\"" +
+						"}")
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$.firstName").value("John"))
+						.andExpect(jsonPath("$.lastName").value("Doe"))
+						.andExpect(jsonPath("$.login").value("john"))
+						.andDo(print()).andReturn();
+		
+		String json = result.getResponse().getContentAsString();
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = mapper.readTree(json);
+		
+		User user = userRepository.findOne(jsonNode.get("id").asLong());
+
+		Md5PasswordEncoder enc = new Md5PasswordEncoder();
+		Assert.assertTrue("invalid password",enc.isPasswordValid(user.getPassword(), "password", user.getLastName()));
+
+		
+	}
+	
+		
 	
 
 	@Transactional

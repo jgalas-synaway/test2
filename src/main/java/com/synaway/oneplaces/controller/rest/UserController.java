@@ -106,7 +106,7 @@ public class UserController {
 	@ResponseBody
     public User addUser(@RequestBody User user) throws GeneralException, MissingServletRequestParameterException{	
 		if(user.getId() != null){
-			throw new GeneralException("field id not allowed");
+			throw new GeneralException("field id not allowed", GeneralException.GENERAL_EXCEPTION);
 		}
 		if(user.getLogin() == null){
 			throw new MissingServletRequestParameterException("login","String");
