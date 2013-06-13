@@ -164,11 +164,11 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		request.setParameter("access_token", token.getToken());
 		
 		Spot spot3 = new Spot();
-		spot.setLocation(spotService.createPoint( 19.856278, 50.06063));
+		spot3.setLocation(spotService.createPoint( 19.856278, 50.06063));
 		
-		Spot spot4 = spotService.saveSpot(spot);
+		Spot spot4 = spotService.saveSpot(spot3);
 		Assert.assertEquals(spot3.getTimestamp(), spot4.getTimestamp());
-		Assert.assertEquals(spot3.getUser().getId(), spot4.getId());
+		Assert.assertEquals(spot3.getUser().getId(), spot4.getUser().getId());
 		Assert.assertEquals(spot3.getLocation(), spot4.getLocation());
 		
 		
