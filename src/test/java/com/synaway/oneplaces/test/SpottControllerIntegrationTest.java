@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -274,6 +275,35 @@ public class SpottControllerIntegrationTest extends AbstractIntegrationTest {
 		Spot spot = addSpot(user);
 		spotController.deleteSpot(spot.getId());
 		Assert.assertNull(spotService.getSpot(spot.getId()));
+	}
+	
+	@Transactional
+	@Test
+	public void randomSpotShouldReturnProperData() throws Exception  {
+		double minLatitude = 19.885;
+		double maxLatitude = 19.991;
+		double minLongitude = 50.0208;
+		double maxLongitude = 50.0831;
+		User user = createUser("john", "password");
+		Spot spot = spotController.addSpot(minLatitude, minLongitude, maxLatitude, maxLongitude);
+
+		Assert.assertTrue(spot.getLocation().getY() >= minLongitude);
+		Assert.assertTrue(spot.getLocation().getY() <= maxLongitude);
+		Assert.assertTrue(spot.getLocation().getX() >= minLatitude);
+		Assert.assertTrue(spot.getLocation().getX() <= maxLatitude);
+		
+	}
+	
+	@Transactional
+	@Test
+	public void dataTablesSpotShouldReturnProperData() throws Exception  {
+		User user = createUser("john", "password");
+		for(int i = 0; i < 10; i++){
+			addSpot(user);
+		}
+		Map<String, Object> response = spotController.dataTablesSpot(0l, 5l, 1, "timestamp", "", "", "", "", 0, "asc", null);
+		List<Spot> spots = (List<Spot>)response.get("aaData");
+		Assert.assertEquals(5, spots.size());
 	}
 	
 	
