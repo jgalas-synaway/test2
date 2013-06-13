@@ -95,13 +95,6 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 		userRepository.deleteAllInBatch();
 	}
 
-	@Test
-	public void unauthorizedTest() throws Exception {
-
-		mockMvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.error.code").value(301)).andDo(print());
-
-	}
 
 	@Test
 	public void authenticationTest() throws Exception {

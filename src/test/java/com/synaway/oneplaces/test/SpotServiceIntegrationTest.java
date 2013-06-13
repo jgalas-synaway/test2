@@ -20,6 +20,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import com.synaway.oneplaces.controller.rest.SpotController;
 import com.synaway.oneplaces.exception.UserException;
+import com.synaway.oneplaces.model.AccessToken;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
@@ -51,6 +52,9 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
 	UserLocationRepository userLocationRepository;
+	
+	@Autowired
+	private MockHttpServletRequest request;
 	
 	
 	@Before
@@ -133,11 +137,18 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 			}
 			prev = spot;
 		}
+		
+		spots = spotService.getAll("status", "asc", 2, 5);		
+		Assert.assertEquals(5, spots.size());
+		
+		
+		spots = spotService.getAll("status", "asc", 3, 4);	
+		Assert.assertEquals(4, spots.size());
 	}
 	
 	@Transactional
 	@Test
-	public void saveSpotShouldReturnPropperData(){
+	public void saveSpotShouldReturnPropperData() throws UserException{
 		User user = createUser("john", "password");
 		Spot spot = new Spot();
 		spot.setLocation(spotService.createPoint( 19.856278, 50.06063));
@@ -147,6 +158,20 @@ public class SpotServiceIntegrationTest extends AbstractIntegrationTest {
 		Assert.assertEquals(spot.getTimestamp(), spot2.getTimestamp());
 		Assert.assertEquals(spot.getUser(), spot2.getUser());
 		Assert.assertEquals(spot.getLocation(), spot2.getLocation());
+		
+
+		AccessToken token = userService.getToken(user.getLogin(), "password");
+		request.setParameter("access_token", token.getToken());
+		
+		Spot spot3 = new Spot();
+		spot.setLocation(spotService.createPoint( 19.856278, 50.06063));
+		
+		Spot spot4 = spotService.saveSpot(spot);
+		Assert.assertEquals(spot3.getTimestamp(), spot4.getTimestamp());
+		Assert.assertEquals(spot3.getUser().getId(), spot4.getId());
+		Assert.assertEquals(spot3.getLocation(), spot4.getLocation());
+		
+		
 	}
 	
 	@Transactional

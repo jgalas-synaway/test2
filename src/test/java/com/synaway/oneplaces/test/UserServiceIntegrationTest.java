@@ -67,6 +67,27 @@ public class UserServiceIntegrationTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	public void getUserShouldReturnPropperData() throws UserException{
+		User user =  createUser("john", "password");	
+		
+		User user2 = userService.getUser(user.getId());
+
+		Assert.assertEquals(user.getFirstName(), user2.getFirstName());
+		Assert.assertEquals(user.getLastName(), user2.getLastName());
+		Assert.assertEquals(user.getLogin(), user2.getLogin());
+		Assert.assertEquals(user.getEmail(), user2.getEmail());
+		Md5PasswordEncoder enc = new Md5PasswordEncoder();
+		Assert.assertTrue("invalid passsword", enc.isPasswordValid(user2.getPassword(), "password", user2.getLastName()));
+		
+	}
+	
+	@Test(expected=UserException.class)
+	public void getUserThrowUserException() throws UserException{
+		userService.getUser(1);
+		
+	}
+	
+	@Test
 	public void saveUserShouldReturnPropperData() throws UserException{
 		User user = new User();
 		user.setFirstName("John");
