@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,18 @@ import com.synaway.oneplaces.service.UserService;
 @Controller
 @RequestMapping("/spots")
 public class SpotController {
+	
+	@Autowired
+	@Value("${city.latitude}")
+    private String cityLatitude = "0";
+	
+	@Autowired
+	@Value("${city.longitude}")
+    private String cityLongitude = "0";
+	
+	@Autowired
+	@Value("${city.radius}")
+    private String cityRadius = "0";
 
 	@Autowired
 	private UserService userService;
@@ -47,10 +60,11 @@ public class SpotController {
 
 	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
 	@ResponseBody
-	public List<Spot> getAllSpots(@RequestParam(required = false) Double latitude,
+	public Map<String,Object> getAllSpots(@RequestParam(required = false) Double latitude,
 			@RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
 			@RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
 		List<Spot> spots = new ArrayList<Spot>();
+		HashMap<String, Object> response = new HashMap<String, Object>(); 
 		
 		if (latitude == null && longitude == null && radius == null) {
 			spots = spotService.getAll();
@@ -74,9 +88,18 @@ public class SpotController {
 
 				userLocationRepository.save(userLocation);
 			}
+			
+			response.put("spots", spots);			
+			Long ttl9 = spotService.countByLatitudeLongitudeAndRadiusTtl9(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
+			Long ttl6 = spotService.countByLatitudeLongitudeAndRadiusTtl6(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
+			Long ttl3 = spotService.countByLatitudeLongitudeAndRadiusTtl3(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
+			
+			response.put("ttl3", ttl3);	
+			response.put("ttl6", ttl6);	
+			response.put("ttl9", ttl9);	
 		}
 
-		return spots;
+		return response;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")

@@ -41,7 +41,7 @@ var MapView = function(element) {
 			//remove old spots from list
 			$.grep(self.spots, function(oldSpot, index){
 				var exist = false;
-				$.each(data, function(index2, newSpot){
+				$.each(data.spots, function(index2, newSpot){
 					if(oldSpot.spotId == newSpot.spotId){
 						exist = true;
 						return;
@@ -56,7 +56,7 @@ var MapView = function(element) {
 			
 			
 			//add new spots to list
-			$.each(data, function(index, newSpot){
+			$.each(data.spots, function(index, newSpot){
 				
 				
 				var exist = false;

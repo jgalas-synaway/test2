@@ -109,5 +109,39 @@ public interface SpotService {
 	List<Spot> getAll(String order, String asc, long startIndex, long limit);
 
 
+	/**
+	 * Returns number of spots which are closer than specified distance from point
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param radius
+	 * @return
+	 */
+	Long countByLatitudeLongitudeAndRadiusTtl3(Double latitude, Double longitude,
+			Integer radius);
+	
+	/**
+	 * Returns number of spots which are closer than specified distance from point
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param radius
+	 * @return
+	 */
+	Long countByLatitudeLongitudeAndRadiusTtl6(Double latitude, Double longitude,
+			Integer radius);
+	
+	/**
+	 * Returns number of spots which are closer than specified distance from point
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param radius
+	 * @return
+	 */
+	Long countByLatitudeLongitudeAndRadiusTtl9(Double latitude, Double longitude,
+			Integer radius);
+
+
 
 }

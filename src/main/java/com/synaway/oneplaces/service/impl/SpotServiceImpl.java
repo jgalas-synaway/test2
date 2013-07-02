@@ -135,6 +135,24 @@ public class SpotServiceImpl implements SpotService {
 	}
 	
 	@Override
+	public Long countByLatitudeLongitudeAndRadiusTtl3(Double latitude, Double longitude, Integer radius) {
+		String point = "POINT("+longitude+" "+latitude+")";
+		return spotRepository.countByLatitudeLongitudeAndRadiusTtl3(point, radius).longValue();
+	}
+
+	@Override
+	public Long countByLatitudeLongitudeAndRadiusTtl6(Double latitude, Double longitude, Integer radius) {
+		String point = "POINT("+longitude+" "+latitude+")";
+		return spotRepository.countByLatitudeLongitudeAndRadiusTtl6(point, radius).longValue();
+	}
+
+	@Override
+	public Long countByLatitudeLongitudeAndRadiusTtl9(Double latitude, Double longitude, Integer radius) {
+		String point = "POINT("+longitude+" "+latitude+")";
+		return spotRepository.countByLatitudeLongitudeAndRadiusTtl9(point, radius).longValue();
+	}
+	
+	@Override
 	public Spot updateSpot(Spot spot){
 		Spot existing = spotRepository.findOne(spot.getId());
 		

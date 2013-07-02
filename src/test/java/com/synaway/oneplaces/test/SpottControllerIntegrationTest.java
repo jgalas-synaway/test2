@@ -107,13 +107,13 @@ public class SpottControllerIntegrationTest extends AbstractIntegrationTest {
 			addSpot(user);
 		}
 		
-		List<Spot> spots = spotController.getAllSpots(null, null, null, false);		
+		List<Spot> spots = (List<Spot>) spotController.getAllSpots(null, null, null, false).get("spots");		
 		Assert.assertEquals(10, spots.size());
 		
-		spots = spotController.getAllSpots(0.0, 0.0, 100, false);
+		spots = (List<Spot>) spotController.getAllSpots(0.0, 0.0, 100, false).get("spots");
 		Assert.assertEquals(0, spots.size());
 		
-		spots = spotController.getAllSpots(50.05, 19.7, 30000, false);
+		spots = (List<Spot>) spotController.getAllSpots(50.05, 19.7, 30000, false).get("spots");
 		Assert.assertEquals(10, spots.size());		
 	}
 	
