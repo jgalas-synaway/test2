@@ -4,4 +4,3 @@ target      # maven output
 \.project   # eclipse
 \.settings  # eclipse
 \.externalToolBuilders
-\.properties
