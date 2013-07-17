@@ -33,165 +33,171 @@ import com.synaway.oneplaces.service.UserService;
 @Controller
 @RequestMapping("/spots")
 public class SpotController {
-	
-	@Autowired
-	@Value("${city.latitude}")
+
+    @Autowired
+    @Value("${city.latitude}")
     private String cityLatitude = "0";
-	
-	@Autowired
-	@Value("${city.longitude}")
+
+    @Autowired
+    @Value("${city.longitude}")
     private String cityLongitude = "0";
-	
-	@Autowired
-	@Value("${city.radius}")
+
+    @Autowired
+    @Value("${city.radius}")
     private String cityRadius = "0";
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@Autowired
-	private SpotService spotService;
+    @Autowired
+    private SpotService spotService;
 
-	@Autowired
-	private SpotRepository spotRepository;
+    @Autowired
+    private SpotRepository spotRepository;
 
-	@Autowired
-	private UserLocationRepository userLocationRepository;
+    @Autowired
+    private UserLocationRepository userLocationRepository;
 
-	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
-	@ResponseBody
-	public Map<String,Object> getAllSpots(@RequestParam(required = false) Double latitude,
-			@RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
-			@RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
-		List<Spot> spots = new ArrayList<Spot>();
-		HashMap<String, Object> response = new HashMap<String, Object>(); 
-		
-		if (latitude == null && longitude == null && radius == null) {
-			spots = spotService.getAll();
-		} else {
-			if (latitude == null) {
-				throw new MissingServletRequestParameterException("latitude", "Double");
-			}
-			if (longitude == null) {
-				throw new MissingServletRequestParameterException("longitude", "Double");
-			}
-			if (radius == null) {
-				throw new MissingServletRequestParameterException("radius", "Integer");
-			}
-			spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> getAllSpots(@RequestParam(required = false) Double latitude, @RequestParam(
+            required = false) Double longitude, @RequestParam(required = false) Integer radius, @RequestParam(
+            required = false) Boolean tracking) throws MissingServletRequestParameterException {
+        List<Spot> spots = new ArrayList<Spot>();
+        HashMap<String, Object> response = new HashMap<String, Object>();
 
-			if (tracking == null || tracking.booleanValue()) {
+        if (latitude == null && longitude == null && radius == null) {
+            spots = spotService.getAll();
 
-				UserLocation userLocation = new UserLocation();
-				userLocation.setLocation(spotService.createPoint(longitude, latitude));
-				userLocation.setUser(userService.getCurrentUser());
+        } else {
+            if (latitude == null) {
+                throw new MissingServletRequestParameterException("latitude", "Double");
+            }
+            if (longitude == null) {
+                throw new MissingServletRequestParameterException("longitude", "Double");
+            }
+            if (radius == null) {
+                throw new MissingServletRequestParameterException("radius", "Integer");
+            }
+            spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
 
-				userLocationRepository.save(userLocation);
-			}
-			
-			response.put("spots", spots);			
-			Long ttl9 = spotService.countByLatitudeLongitudeAndRadiusTtl9(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
-			Long ttl6 = spotService.countByLatitudeLongitudeAndRadiusTtl6(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
-			Long ttl3 = spotService.countByLatitudeLongitudeAndRadiusTtl3(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude), Integer.valueOf(cityRadius));
-			
-			response.put("ttl3", ttl3);	
-			response.put("ttl6", ttl6);	
-			response.put("ttl9", ttl9);	
-		}
+            if (tracking == null || tracking.booleanValue()) {
 
-		return response;
-	}
+                UserLocation userLocation = new UserLocation();
+                userLocation.setLocation(spotService.createPoint(longitude, latitude));
+                userLocation.setUser(userService.getCurrentUser());
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
-	@ResponseBody
-	public Spot getSpot(@PathVariable Long id) {
-		return spotService.getSpot(id);
-	}
+                userLocationRepository.save(userLocation);
+            }
 
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
-	@ResponseBody
-	public Spot addSpot(@RequestBody String json) throws MissingServletRequestParameterException, UserException,
-			IOException {
-		return spotService.saveSpot(spotService.json2Spot(json));
-	}
+            Long ttl9 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                    Integer.valueOf(cityRadius), 5400, 3600);
+            Long ttl6 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                    Integer.valueOf(cityRadius), 3600, 1800);
+            Long ttl3 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                    Integer.valueOf(cityRadius), 1800, 0);
 
-	@RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-	@ResponseBody
-	public Spot updateSpot(@RequestBody String json) throws IOException, MissingServletRequestParameterException,
-			UserException {
-		Spot spot = spotService.json2Spot(json);
-		if (spot.getId() == null) {
-			throw new MissingServletRequestParameterException("spotId", "Long");
-		}
-		return spotService.updateSpot(spot);
-	}
+            response.put("ttl3", ttl3);
+            response.put("ttl6", ttl6);
+            response.put("ttl9", ttl9);
+        }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	@ResponseBody
-	public Spot deleteSpot(@PathVariable Long id) {
-		Spot spot = spotService.getSpot(id);
-		spotRepository.delete(id);
-		return spot;
-	}
+        response.put("spots", spots);
 
-	@RequestMapping(value = "/{id}/occupy", method = RequestMethod.PUT)
-	@ResponseBody
-	public Spot setOccupy(@PathVariable Long id) {
-		Spot spot = spotService.getSpot(id);
-		spot.setStatus("occupied");
-		spot = spotService.saveSpot(spot);
-		return spot;
-	}
+        return response;
+    }
 
-	@RequestMapping("/random")
-	@ResponseBody
-	public Spot addSpot(@RequestParam Double minLatitude, @RequestParam Double minLongitude,
-			@RequestParam Double maxLatitude, @RequestParam Double maxLongitude) {
-		Spot spot = new Spot();
-		spot.setTimestamp(new Date());
-		spot.setUser(userService.getAll().get(0));
-		spot.setStatus("free");
-		spot.setFlag("fake");
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json",
+            produces = "application/json")
+    @ResponseBody
+    public Spot getSpot(@PathVariable Long id) {
+        return spotService.getSpot(id);
+    }
 
-		Random r = new Random();
-		double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();
-		double longitude = minLongitude + (maxLongitude - minLongitude) * r.nextDouble();
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json")
+    @ResponseBody
+    public Spot addSpot(@RequestBody String json) throws MissingServletRequestParameterException, UserException,
+            IOException {
+        return spotService.saveSpot(spotService.json2Spot(json));
+    }
 
-		spot.setLocation(spotService.createPoint(latitude, longitude));
+    @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public Spot updateSpot(@RequestBody String json) throws IOException, MissingServletRequestParameterException,
+            UserException {
+        Spot spot = spotService.json2Spot(json);
+        if (spot.getId() == null) {
+            throw new MissingServletRequestParameterException("spotId", "Long");
+        }
+        return spotService.updateSpot(spot);
+    }
 
-		spot = spotService.saveSpot(spot);
-		return spot;
-	}
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Spot deleteSpot(@PathVariable Long id) {
+        Spot spot = spotService.getSpot(id);
+        spotRepository.delete(id);
+        return spot;
+    }
 
-	@RequestMapping(value = "/datatable", method = RequestMethod.GET)
-	@ResponseBody
-	public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart,
-			@RequestParam(required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho,
-			@RequestParam(value = "mDataProp_0", required = false) String mDataProp0,
-			@RequestParam(value = "mDataProp_1", required = false) String mDataProp1,
-			@RequestParam(value = "mDataProp_2", required = false) String mDataProp2,
-			@RequestParam(value = "mDataProp_3", required = false) String mDataProp3,
-			@RequestParam(value = "mDataProp_4", required = false) String mDataProp4,
-			@RequestParam(value = "iSortCol_0", required = false) int iSortCol,
-			@RequestParam(value = "sSortDir_0", required = false) String sSortDir,
-			@RequestParam(required = false) String sSearch) {
+    @RequestMapping(value = "/{id}/occupy", method = RequestMethod.PUT)
+    @ResponseBody
+    public Spot setOccupy(@PathVariable Long id) {
+        Spot spot = spotService.getSpot(id);
+        spot.setStatus("occupied");
+        spot = spotService.saveSpot(spot);
+        return spot;
+    }
 
-		List<String> cols = new ArrayList<String>();
-		cols.add(0, mDataProp0);
-		cols.add(1, mDataProp1);
-		cols.add(2, mDataProp2);
-		cols.add(3, mDataProp3);
-		cols.add(4, mDataProp4);
+    @RequestMapping("/random")
+    @ResponseBody
+    public Spot addSpot(@RequestParam Double minLatitude, @RequestParam Double minLongitude,
+            @RequestParam Double maxLatitude, @RequestParam Double maxLongitude) {
+        Spot spot = new Spot();
+        spot.setTimestamp(new Date());
+        spot.setUser(userService.getAll().get(0));
+        spot.setStatus("free");
+        spot.setFlag("fake");
 
-		Map<String, Object> response = new HashMap<String, Object>();
+        Random r = new Random();
+        double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();
+        double longitude = minLongitude + (maxLongitude - minLongitude) * r.nextDouble();
 
-		response.put("aaData", spotService.getAll(cols.get(iSortCol), sSortDir, iDisplayStart, iDisplayLength));
-		response.put("iTotalRecords", spotRepository.count());
+        spot.setLocation(spotService.createPoint(latitude, longitude));
 
-		response.put("iTotalDisplayRecords", spotRepository.count());
-		response.put("sEcho", sEcho);
+        spot = spotService.saveSpot(spot);
+        return spot;
+    }
 
-		return response;
+    @RequestMapping(value = "/datatable", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart, @RequestParam(
+            required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho, @RequestParam(
+            value = "mDataProp_0", required = false) String mDataProp0, @RequestParam(value = "mDataProp_1",
+            required = false) String mDataProp1,
+            @RequestParam(value = "mDataProp_2", required = false) String mDataProp2, @RequestParam(
+                    value = "mDataProp_3", required = false) String mDataProp3, @RequestParam(value = "mDataProp_4",
+                    required = false) String mDataProp4,
+            @RequestParam(value = "iSortCol_0", required = false) int iSortCol, @RequestParam(value = "sSortDir_0",
+                    required = false) String sSortDir, @RequestParam(required = false) String sSearch) {
 
-	}
+        List<String> cols = new ArrayList<String>();
+        cols.add(0, mDataProp0);
+        cols.add(1, mDataProp1);
+        cols.add(2, mDataProp2);
+        cols.add(3, mDataProp3);
+        cols.add(4, mDataProp4);
+
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        response.put("aaData", spotService.getAll(cols.get(iSortCol), sSortDir, iDisplayStart, iDisplayLength));
+        response.put("iTotalRecords", spotRepository.count());
+
+        response.put("iTotalDisplayRecords", spotRepository.count());
+        response.put("sEcho", sEcho);
+
+        return response;
+
+    }
 }
