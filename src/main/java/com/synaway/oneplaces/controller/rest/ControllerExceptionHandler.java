@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.synaway.oneplaces.exception.FileOperationException;
 import com.synaway.oneplaces.exception.GeneralException;
 import com.synaway.oneplaces.exception.ObjectByIdNotFoundException;
 import com.synaway.oneplaces.pojo.Response;
@@ -23,14 +22,6 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     protected Response handleException(GeneralException ex) {
-        logGeneralException(ex);
-        return new Response(ex);
-    }
-
-    @ExceptionHandler({ FileOperationException.class })
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    protected Response handleFileOperationException(FileOperationException ex) {
         logGeneralException(ex);
         return new Response(ex);
     }
