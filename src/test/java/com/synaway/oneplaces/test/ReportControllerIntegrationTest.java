@@ -1,5 +1,7 @@
 package com.synaway.oneplaces.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.Random;
 
@@ -17,8 +19,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import com.synaway.oneplaces.controller.rest.ReportController;
 import com.synaway.oneplaces.controller.rest.SpotController;
+import com.synaway.oneplaces.dto.ActivityReportDTO;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
+import com.synaway.oneplaces.model.UserLocation;
 import com.synaway.oneplaces.repository.AccessTokenRepository;
 import com.synaway.oneplaces.repository.SpotRepository;
 import com.synaway.oneplaces.repository.UserLocationRepository;
@@ -66,13 +70,41 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testActivityReport() throws MissingServletRequestParameterException {
+    public void testActivityReportActiveUsers() throws MissingServletRequestParameterException {
+        Date now = new Date();
         User user = createUser("john", "password");
-        for (int i = 0; i < 10; i++) {
-            addSpot(user);
-        }
+        User user2 = createUser("john2", "password");
 
-        reportController.activityReport(DateUtils.addDays(new Date(), -2), new Date());
+        UserLocation location = new UserLocation();
+        location.setUser(user);
+        location.setTimestamp(DateUtils.addMinutes(now, -15));
+        location = userLocationRepository.save(location);
+
+        location = new UserLocation();
+        location.setUser(user2);
+        location.setTimestamp(DateUtils.addMinutes(now, -16));
+        location = userLocationRepository.save(location);
+
+        location = new UserLocation();
+        location.setUser(user2);
+        location.setTimestamp(DateUtils.addMinutes(now, -90));
+        location = userLocationRepository.save(location);
+
+        location = new UserLocation();
+        location.setUser(user2);
+        location.setTimestamp(DateUtils.addMinutes(now, -91));
+        location = userLocationRepository.save(location);
+
+        ActivityReportDTO report = reportController.activityReport(DateUtils.addMinutes(now, -120),
+                DateUtils.addMinutes(now, -60));
+        ActivityReportDTO report2 = reportController.activityReport(DateUtils.addMinutes(now, -120),
+                DateUtils.addMinutes(now, 0));
+        ActivityReportDTO report3 = reportController.activityReport(DateUtils.addMinutes(now, -1200),
+                DateUtils.addMinutes(now, -360));
+
+        assertEquals(Long.valueOf(1), report.getActiveUsers());
+        assertEquals(Long.valueOf(2), report2.getActiveUsers());
+        assertEquals(Long.valueOf(0), report3.getActiveUsers());
     }
 
     private Spot addSpot(User user) {
