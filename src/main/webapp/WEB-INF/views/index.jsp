@@ -28,6 +28,7 @@
 <c:url var="app" value="/resources/scripts/app.js" />
 <c:url var="users" value="/resources/scripts/users.js" />
 <c:url var="spots" value="/resources/scripts/spots.js" />
+<c:url var="reports" value="/resources/scripts/reports.js" />
 
 <c:url var="style" value="/resources/styles/style.css" />
 <c:url var="ui_style"
@@ -57,6 +58,7 @@
 <script type="text/javascript" src="${app}"></script>
 <script type="text/javascript" src="${users}"></script>
 <script type="text/javascript" src="${spots}"></script>
+<script type="text/javascript" src="${reports}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 <script type="text/javascript">
@@ -67,6 +69,7 @@
 	var user = null;
 	var users = null;
 	var spots = null;
+	var reports = null;
 	
 	$.ajaxSetup({cache:false})
 
@@ -105,6 +108,7 @@
 					me(token);
 					users = new Users(token);
 					spots = new Spots(token);
+					reports = new Reports(token);
 				}).fail(function(data) {
 					var error = $.parseJSON(data.responseText).error;
 					if (error.code == 504) {
@@ -125,6 +129,7 @@
 			me(token);
 			users = new Users(token);
 			spots = new Spots(token);
+			reports = new Reports(token);
 		}
 
 		$("#accordion").accordion(
@@ -267,7 +272,12 @@
 						Spots
 					</p>
 				</div>
-
+				<h3 id="acc-3" data-for="tab-3">Reports</h3>
+				<div>
+					<p class="link" data-for="tab-4">
+						activity report
+					</p>
+				</div>
 			</div>
 
 		</div>
@@ -400,6 +410,26 @@
 					</div>
 					<div id="spot_delete">
 						Are you sure you want to delete this item?
+					</div>
+				</div>
+			</div>
+			<div id="tab-4" class="tab">
+				<div style="width: 80%">
+					<div style="text-align:center">
+					<span style="display:inline-block; text-align:center">
+						From: <span id="from_date"></span>
+					</span>
+					<span style="display:inline-block; text-align:center">
+						To: <span id="to_date"></span>
+					</span>
+					<br /><br />
+					<span>
+					<button id="generate-report">Generate report</button>
+					</span>
+					</div>
+					<br />
+					<div id="activity-report" style="text-align:center; display:none">
+					Active users: <span id="active-users"></span>
 					</div>
 				</div>
 			</div>

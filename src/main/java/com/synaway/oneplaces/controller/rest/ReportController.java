@@ -3,6 +3,7 @@ package com.synaway.oneplaces.controller.rest;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,8 +26,9 @@ public class ReportController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/activity", produces = "application/json")
     @ResponseBody
-    public ActivityReportDTO activityReport(@RequestParam(value = "from") Date fromDate,
-            @RequestParam(value = "to") Date toDate) {
+    public ActivityReportDTO activityReport(
+            @RequestParam(value = "from") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date fromDate, @RequestParam(
+                    value = "to") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date toDate) {
         return reportService.activityReport(fromDate, toDate);
     }
 }
