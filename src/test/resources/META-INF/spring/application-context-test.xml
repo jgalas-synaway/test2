@@ -24,19 +24,5 @@
     <context:property-placeholder
 	location="classpath*:META-INF/spring/configuration-test.properties" order="0" system-properties-mode="OVERRIDE"/>
 
-    
-
-     
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-        </property>
-        <property name="dataSource" ref="dataSource" />
-        <property name="persistenceUnitName" value="persistenceUnitTest" />
-    </bean>
-
 <!-- 	<bean id="mockHttpServletRequest" class="org.springframework.mock.web.MockHttpServletRequest" /> -->
-     
-     
-
 </beans>

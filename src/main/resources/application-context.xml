@@ -20,7 +20,7 @@
 	<context:component-scan base-package="com.synaway.ancilla" />
 	<context:annotation-config />
 
-	<context:property-placeholder location="classpath*:META-INF/spring/*.properties"
+	<context:property-placeholder location="classpath:configuration.properties"
 		order="1" system-properties-mode="OVERRIDE" />
 
 	<jpa:repositories base-package="com.synaway.oneplaces" />
@@ -44,10 +44,13 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="databasePlatform" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
+            	<property name="showSql" value="false" />
+			</bean>
 		</property>
 		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="persistenceUnit" />
+		<property name="packagesToScan" value="com.synaway.oneplaces.model" />
 	</bean>
 
 	<bean
