@@ -16,6 +16,7 @@ var Reports = function(token){
 		}).done(function(json) {
 			$('#active-users').text(json.activeUsers);
 			$('#click-count').text(json.greenRedClickCount);
+			$('#average-clicks').text(json.averageClicksPerUser);
 			$('#activity-report').show();
 		});
 	});

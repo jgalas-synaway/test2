@@ -430,7 +430,8 @@
 					<br />
 					<div id="activity-report" style="text-align:center; display:none">
 					Active users: <span id="active-users"></span><br />
-					Number of green and red clicks: <span id="click-count"></span>
+					Number of green and red clicks: <span id="click-count"></span><br />
+					Average clicks per user: <span id="average-clicks"></span>
 					</div>
 				</div>
 			</div>
