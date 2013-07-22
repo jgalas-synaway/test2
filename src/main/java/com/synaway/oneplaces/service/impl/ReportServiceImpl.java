@@ -39,8 +39,8 @@ public class ReportServiceImpl implements ReportService {
 
         // Calculate the average.
 
-        if (greenRedClickCount > 0) {
-            result.setAverageClicksPerUser(activeUsers / Double.valueOf(greenRedClickCount));
+        if (activeUsers > 0) {
+            result.setAverageClicksPerUser(greenRedClickCount / Double.valueOf(activeUsers));
         } else {
             result.setAverageClicksPerUser(Double.valueOf(0));
         }
