@@ -15,6 +15,7 @@ var Reports = function(token){
 				"&access_token=" + token
 		}).done(function(json) {
 			$('#active-users').text(json.activeUsers);
+			$('#click-count').text(json.greenRedClickCount);
 			$('#activity-report').show();
 		});
 	});

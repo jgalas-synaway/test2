@@ -20,12 +20,22 @@ public class ReportServiceImpl implements ReportService {
     public ActivityReportDTO activityReport(Date fromDate, Date toDate) {
         ActivityReportDTO result = new ActivityReportDTO();
 
+        // Active users count.
+
         Long activeUsers = entityManager
                 .createQuery(
                         "SELECT COUNT(DISTINCT ul.user) FROM UserLocation ul WHERE ul.timestamp BETWEEN :from AND :to",
                         Long.class).setParameter("from", fromDate).setParameter("to", toDate).getSingleResult();
 
         result.setActiveUsers(activeUsers);
+
+        // Number of clicks.
+
+        Long greenRedClickCount = entityManager
+                .createQuery("SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to", Long.class)
+                .setParameter("from", fromDate).setParameter("to", toDate).getSingleResult();
+
+        result.setGreenRedClickCount(greenRedClickCount);
 
         return result;
     }

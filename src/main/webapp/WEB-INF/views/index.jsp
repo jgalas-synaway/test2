@@ -429,7 +429,8 @@
 					</div>
 					<br />
 					<div id="activity-report" style="text-align:center; display:none">
-					Active users: <span id="active-users"></span>
+					Active users: <span id="active-users"></span><br />
+					Number of green and red clicks: <span id="click-count"></span>
 					</div>
 				</div>
 			</div>
