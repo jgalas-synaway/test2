@@ -22,7 +22,12 @@
 	<context:annotation-config />
    	
     <context:property-placeholder
-	location="classpath*:META-INF/spring/configuration-test.properties" order="0" system-properties-mode="OVERRIDE"/>
+        ignore-resource-not-found="true" system-properties-mode="OVERRIDE" 
+        location=" 
+            classpath:config-default.properties,
+            classpath:config-test.properties,
+            file:/opt/1places/config.properties,
+            #{systemProperties['configFileLocation']}" />
 
 <!-- 	<bean id="mockHttpServletRequest" class="org.springframework.mock.web.MockHttpServletRequest" /> -->
 </beans>
