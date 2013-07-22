@@ -95,10 +95,10 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         location.setTimestamp(DateUtils.addMinutes(now, -91));
         location = userLocationRepository.save(location);
 
-        addSpot(user, now);
-        addSpot(user, now);
-        addSpot(user, now);
-        addSpot(user, DateUtils.addMinutes(now, -360));
+        addSpot(user, now, "free");
+        addSpot(user, now, "occupied");
+        addSpot(user, now, "occupied");
+        addSpot(user, DateUtils.addMinutes(now, -360), "free");
 
         ActivityReportDTO report = reportController.activityReport(DateUtils.addMinutes(now, -120),
                 DateUtils.addMinutes(now, -60));
@@ -112,11 +112,11 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         assertEquals(Long.valueOf(0), report3.getActiveUsers());
 
         assertEquals(Long.valueOf(0), report.getGreenRedClickCount());
-        assertEquals(Long.valueOf(3), report2.getGreenRedClickCount());
+        assertEquals(Long.valueOf(5), report2.getGreenRedClickCount());
         assertEquals(Long.valueOf(1), report3.getGreenRedClickCount());
     }
 
-    private Spot addSpot(User user, Date timestamp) {
+    private Spot addSpot(User user, Date timestamp, String status) {
         double minLatitude = 19.885;
         double maxLatitude = 19.991;
         double minLongitude = 50.0208;
@@ -125,7 +125,7 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         Spot spot = new Spot();
         spot.setTimestamp(timestamp);
         spot.setUser(user);
-        spot.setStatus("free");
+        spot.setStatus(status);
         spot.setFlag("fake");
 
         Random r = new Random();
