@@ -146,9 +146,9 @@ public class SpotController {
         Spot spot = spotService.getSpot(id);
         spot.setStatus("occupied");
         spot = spotService.saveSpot(spot);
-        
-        logger.debug("Saved spot: " + spot);
-        
+
+        logger.debug("Occupied spot: " + spot);
+
         return spot;
     }
 
@@ -169,6 +169,9 @@ public class SpotController {
         spot.setLocation(spotService.createPoint(latitude, longitude));
 
         spot = spotService.saveSpot(spot);
+
+        logger.debug("Saved spot: " + spot);
+
         return spot;
     }
 

@@ -87,6 +87,35 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
         Assert.assertEquals(10, spots.size());
     }
 
+    @Test
+    public void testBugWithSpotsAndStatistics() throws MissingServletRequestParameterException {
+        User user = createUser("john", "password");
+        for (int i = 0; i < 10; i++) {
+            addSpot(user, 2.350, 2.351, 48.8550, 48.8559);
+        }
+        for (int i = 0; i < 10; i++) {
+            addSpot(user, 22.350, 22.351, 48.8550, 48.8559);
+        }
+
+        Map<String, Object> response = (Map<String, Object>) spotController.getAllSpots(0.0, 0.0, 100, false);
+        Assert.assertEquals(0, ((List<Spot>) response.get("spots")).size());
+        Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl9"));
+
+        response = (Map<String, Object>) spotController.getAllSpots(50.05, 19.7, 30000, false);
+        Assert.assertEquals(0, ((List<Spot>) response.get("spots")).size());
+        Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl9"));
+
+        response = (Map<String, Object>) spotController.getAllSpots(48.8559, 2.351, 10000, false);
+        Assert.assertEquals(10, ((List<Spot>) response.get("spots")).size());
+        Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
+        Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl9"));
+    }
+
     @Test(expected = MissingServletRequestParameterException.class)
     public void getAllSpotsShouldThrowMissingServletRequestParameterExceptionLatitude()
             throws MissingServletRequestParameterException {
@@ -280,11 +309,10 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     private Spot addSpot(User user) {
-        double minLatitude = 19.885;
-        double maxLatitude = 19.991;
-        double minLongitude = 50.0208;
-        double maxLongitude = 50.0831;
+        return addSpot(user, 19.885, 19.991, 50.0208, 50.0831);
+    }
 
+    private Spot addSpot(User user, double minLatitude, double maxLatitude, double minLongitude, double maxLongitude) {
         Spot spot = new Spot();
         spot.setTimestamp(new Date());
         spot.setUser(user);
