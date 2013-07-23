@@ -60,9 +60,9 @@ public class SpotController {
 
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
     @ResponseBody
-    public Map<String, Object> getAllSpots(@RequestParam(required = false) Double latitude, @RequestParam(
-            required = false) Double longitude, @RequestParam(required = false) Integer radius, @RequestParam(
-            required = false) Boolean tracking) throws MissingServletRequestParameterException {
+    public Map<String, Object> getAllSpots(@RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
+            @RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
         List<Spot> spots = new ArrayList<Spot>();
         HashMap<String, Object> response = new HashMap<String, Object>();
 
@@ -91,11 +91,11 @@ public class SpotController {
             }
 
             Long ttl9 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 5400, 3600);
+                    Integer.valueOf(cityRadius), 540, 360);
             Long ttl6 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 3600, 1800);
+                    Integer.valueOf(cityRadius), 360, 180);
             Long ttl3 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 1800, 0);
+                    Integer.valueOf(cityRadius), 180, 0);
 
             response.put("ttl3", ttl3);
             response.put("ttl6", ttl6);
@@ -107,15 +107,13 @@ public class SpotController {
         return response;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json",
-            produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
     @ResponseBody
     public Spot getSpot(@PathVariable Long id) {
         return spotService.getSpot(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
     @ResponseBody
     public Spot addSpot(@RequestBody String json) throws MissingServletRequestParameterException, UserException,
             IOException {
@@ -172,15 +170,16 @@ public class SpotController {
 
     @RequestMapping(value = "/datatable", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart, @RequestParam(
-            required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho, @RequestParam(
-            value = "mDataProp_0", required = false) String mDataProp0, @RequestParam(value = "mDataProp_1",
-            required = false) String mDataProp1,
-            @RequestParam(value = "mDataProp_2", required = false) String mDataProp2, @RequestParam(
-                    value = "mDataProp_3", required = false) String mDataProp3, @RequestParam(value = "mDataProp_4",
-                    required = false) String mDataProp4,
-            @RequestParam(value = "iSortCol_0", required = false) int iSortCol, @RequestParam(value = "sSortDir_0",
-                    required = false) String sSortDir, @RequestParam(required = false) String sSearch) {
+    public Map<String, Object> dataTablesSpot(@RequestParam(required = false) Long iDisplayStart,
+            @RequestParam(required = false) Long iDisplayLength, @RequestParam(required = false) int sEcho,
+            @RequestParam(value = "mDataProp_0", required = false) String mDataProp0,
+            @RequestParam(value = "mDataProp_1", required = false) String mDataProp1,
+            @RequestParam(value = "mDataProp_2", required = false) String mDataProp2,
+            @RequestParam(value = "mDataProp_3", required = false) String mDataProp3,
+            @RequestParam(value = "mDataProp_4", required = false) String mDataProp4,
+            @RequestParam(value = "iSortCol_0", required = false) int iSortCol,
+            @RequestParam(value = "sSortDir_0", required = false) String sSortDir,
+            @RequestParam(required = false) String sSearch) {
 
         List<String> cols = new ArrayList<String>();
         cols.add(0, mDataProp0);
