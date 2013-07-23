@@ -28,132 +28,126 @@ import com.vividsolutions.jts.geom.Point;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Spot implements JsonSerializableWithType {
 
-	@Id
+    @Id
     @GeneratedValue(generator = "spot_id", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "spot_id", sequenceName = "spot_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
-     
+
     @Column(name = "status")
     private String status;
-    
+
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "location", columnDefinition="Geometry")
-	@Type(type="org.hibernate.spatial.GeometryType")
+    @Column(name = "location", columnDefinition = "Geometry")
+    @Type(type = "org.hibernate.spatial.GeometryType")
     private Point location;
-    
-    @Column(name="created_at")
+
+    @Column(name = "created_at")
     private Date timestamp;
-    
+
     @Column(name = "flag")
     private String flag;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Long getId() {
-		return id;
-	}
-	
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Point getLocation() {
-		return location;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setLocation(Point location) {
-		this.location = location;
-	}
+    public Point getLocation() {
+        return location;
+    }
 
-	@Override
-	public String toString() {
-		return "Spot [id=" + id + ", status=" + status + ", user=" + user + ", location=" + location + "]";
-	}
+    public void setLocation(Point location) {
+        this.location = location;
+    }
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
+    @Override
+    public String toString() {
+        return "Spot [id=" + id + ", status=" + status + ", user=" + user + ", location=" + location + "]";
+    }
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-	
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
-	@Override
-	public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
-		
-		jgen.writeStartObject();
-		if(id == null){
-			jgen.writeNullField("spotId");
-		}else{
-			jgen.writeNumberField("spotId", id);
-		}
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
-		if(timestamp == null){
-			jgen.writeNullField("timestamp");
-		}else{
-			jgen.writeNumberField("timestamp", timestamp.getTime()/1000);
-		}
-		
-		if(location == null){
-			jgen.writeNullField("longitude");
-		}else{
-			jgen.writeNumberField("longitude", location.getX());
-		}
-		
-		if(location == null){
-			jgen.writeNullField("latitude");
-		}else{
-			jgen.writeNumberField("latitude", location.getY());
-		}
-		
-		if(status == null){
-			jgen.writeNullField("status");
-		}else{
-			jgen.writeStringField("status", status);
-		}
-		
-		if(flag == null){
-			jgen.writeNullField("flag");
-		}else{
-			jgen.writeStringField("flag", flag);
-		}
+    @Override
+    public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
 
+        jgen.writeStartObject();
+        if (id == null) {
+            jgen.writeNullField("spotId");
+        } else {
+            jgen.writeNumberField("spotId", id);
+        }
 
-		jgen.writeEndObject();		 
-		
-	}
+        if (timestamp == null) {
+            jgen.writeNullField("timestamp");
+        } else {
+            jgen.writeNumberField("timestamp", timestamp.getTime() / 1000);
+        }
 
-	@Override
-	public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer){
-		
-		
-	}
+        if (location == null) {
+            jgen.writeNullField("longitude");
+        } else {
+            jgen.writeNumberField("longitude", location.getX());
+        }
 
-	public String getFlag() {
-		return flag;
-	}
+        if (location == null) {
+            jgen.writeNullField("latitude");
+        } else {
+            jgen.writeNumberField("latitude", location.getY());
+        }
 
-	public void setFlag(String flag) {
-		this.flag = flag;
-	}
-	
+        if (status == null) {
+            jgen.writeNullField("status");
+        } else {
+            jgen.writeStringField("status", status);
+        }
+
+        if (flag == null) {
+            jgen.writeNullField("flag");
+        } else {
+            jgen.writeStringField("flag", flag);
+        }
+
+        jgen.writeEndObject();
+    }
+
+    @Override
+    public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) {
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 }

@@ -80,10 +80,7 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
             addSpot(user);
         }
 
-        List<Spot> spots = (List<Spot>) spotController.getAllSpots(null, null, null, false).get("spots");
-        Assert.assertEquals(10, spots.size());
-
-        spots = (List<Spot>) spotController.getAllSpots(0.0, 0.0, 100, false).get("spots");
+        List<Spot> spots = (List<Spot>) spotController.getAllSpots(0.0, 0.0, 100, false).get("spots");
         Assert.assertEquals(0, spots.size());
 
         spots = (List<Spot>) spotController.getAllSpots(50.05, 19.7, 30000, false).get("spots");
@@ -197,10 +194,8 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
                     + ", \"status\" : \"somestatus\" }");
         }
 
-        Assert.assertEquals(20, ((List) spotController.getAllSpots(null, null, null, null).get("spots")).size());
         Assert.assertEquals(10, ((List) spotController.getAllSpots(50.06063, 19.856278, 100, null).get("spots")).size());
         Assert.assertEquals(10, ((List) spotController.getAllSpots(58.06063, 18.856278, 100, null).get("spots")).size());
-
     }
 
     @Transactional
@@ -228,9 +223,7 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
             Assert.assertEquals(50.06063, userLocation.getLocation().getY(), 0);
 
             previous = userLocation.getTimestamp();
-
         }
-
     }
 
     @Transactional

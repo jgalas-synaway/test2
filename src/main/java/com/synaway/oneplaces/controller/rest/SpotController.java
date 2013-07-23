@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -33,6 +34,8 @@ import com.synaway.oneplaces.service.UserService;
 @Controller
 @RequestMapping("/spots")
 public class SpotController {
+
+    private static final Logger logger = Logger.getLogger(SpotController.class);
 
     @Autowired
     @Value("${city.latitude}")
@@ -64,43 +67,41 @@ public class SpotController {
             @RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
         List<Spot> spots = new ArrayList<Spot>();
-        HashMap<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<String, Object>();
 
-        if (latitude == null && longitude == null && radius == null) {
-            spots = spotService.getAll();
-
-        } else {
-            if (latitude == null) {
-                throw new MissingServletRequestParameterException("latitude", "Double");
-            }
-            if (longitude == null) {
-                throw new MissingServletRequestParameterException("longitude", "Double");
-            }
-            if (radius == null) {
-                throw new MissingServletRequestParameterException("radius", "Integer");
-            }
-            spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
-
-            if (tracking == null || tracking.booleanValue()) {
-
-                UserLocation userLocation = new UserLocation();
-                userLocation.setLocation(spotService.createPoint(longitude, latitude));
-                userLocation.setUser(userService.getCurrentUser());
-
-                userLocationRepository.save(userLocation);
-            }
-
-            Long ttl9 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 540, 360);
-            Long ttl6 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 360, 180);
-            Long ttl3 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
-                    Integer.valueOf(cityRadius), 180, 0);
-
-            response.put("ttl3", ttl3);
-            response.put("ttl6", ttl6);
-            response.put("ttl9", ttl9);
+        if (latitude == null) {
+            throw new MissingServletRequestParameterException("latitude", "Double");
         }
+        if (longitude == null) {
+            throw new MissingServletRequestParameterException("longitude", "Double");
+        }
+        if (radius == null) {
+            throw new MissingServletRequestParameterException("radius", "Integer");
+        }
+        spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
+
+        if (tracking == null || tracking.booleanValue()) {
+
+            UserLocation userLocation = new UserLocation();
+            userLocation.setLocation(spotService.createPoint(longitude, latitude));
+            userLocation.setUser(userService.getCurrentUser());
+
+            userLocationRepository.save(userLocation);
+        }
+
+        Long ttl9 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                Integer.valueOf(cityRadius), 540, 360);
+        Long ttl6 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                Integer.valueOf(cityRadius), 360, 180);
+        Long ttl3 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
+                Integer.valueOf(cityRadius), 180, 0);
+
+        response.put("ttl3", ttl3);
+        response.put("ttl6", ttl6);
+        response.put("ttl9", ttl9);
+
+        logger.debug("Returning " + spots.size() + " spot(s) [lat = " + latitude + ", lon = " + longitude
+                + ", radius = " + radius + "], 3/6/9 = " + ttl3 + "/" + ttl6 + "/" + ttl9);
 
         response.put("spots", spots);
 
@@ -145,6 +146,9 @@ public class SpotController {
         Spot spot = spotService.getSpot(id);
         spot.setStatus("occupied");
         spot = spotService.saveSpot(spot);
+        
+        logger.debug("Saved spot: " + spot);
+        
         return spot;
     }
 
