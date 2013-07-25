@@ -35,7 +35,10 @@ public class ReportController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/activity/map/{zoom}/{x}/{y}.json", produces = "application/json")
     @ResponseBody
-    public long activityReportMap(@PathVariable long zoom, @PathVariable long x, @PathVariable long y) {
-        return 5;
+    public ActivityReportDTO activityReportMap(
+            @RequestParam(value = "from") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date fromDate,
+            @RequestParam(value = "to") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date toDate,
+            @PathVariable int zoom, @PathVariable int x, @PathVariable int y) {
+        return reportService.activityReport(fromDate, toDate, zoom, x, y);
     }
 }

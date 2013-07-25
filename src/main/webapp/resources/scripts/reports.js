@@ -4,6 +4,8 @@ var Reports = function(token){
 	
 	$("#from_date").datepicker({ dateFormat: "yy-mm-dd" });
 	$("#to_date").datepicker({ dateFormat: "yy-mm-dd" });
+	$("#map_from_date").datepicker({ dateFormat: "yy-mm-dd" });
+	$("#map_to_date").datepicker({ dateFormat: "yy-mm-dd" });
 
 	$("#generate-report").click(function () {
 		$.ajax({
@@ -23,8 +25,16 @@ var Reports = function(token){
 
 	var map = L.map('map').setView([48.860, 2.344], 13);
 
-	new L.TileLayer.Ajax(baseUrl + '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
-			{ accessToken: token }).addTo(map);
+	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	var osmAttrib='Map data © OpenStreetMap contributors';
+	var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});		
+	map.addLayer(osm);
+	
+	new L.TileLayer.Ajax(baseUrl + '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}&from={fromDate}&to={toDate}',	{
+			accessToken: token,
+			fromDate: function () { return $("#map_from_date").datepicker().val() + " 00:00" },
+			toDate: function () { return $("#map_to_date").datepicker().val() + " 23:59" }	
+		}).addTo(map);
 };
 
 //Load data tiles using the JQuery ajax function

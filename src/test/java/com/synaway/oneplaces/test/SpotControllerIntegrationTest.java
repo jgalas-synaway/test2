@@ -59,9 +59,6 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
     SpotRepository spotRepository;
 
     @Autowired
-    SpotService spotService;
-
-    @Autowired
     UserLocationRepository userLocationRepository;
 
     @Before
@@ -306,27 +303,6 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
                 null);
         List<Spot> spots = (List<Spot>) response.get("aaData");
         Assert.assertEquals(5, spots.size());
-    }
-
-    private Spot addSpot(User user) {
-        return addSpot(user, 19.885, 19.991, 50.0208, 50.0831);
-    }
-
-    private Spot addSpot(User user, double minLatitude, double maxLatitude, double minLongitude, double maxLongitude) {
-        Spot spot = new Spot();
-        spot.setTimestamp(new Date());
-        spot.setUser(user);
-        spot.setStatus("free");
-        spot.setFlag("fake");
-
-        Random r = new Random();
-        double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();
-        double longitude = minLongitude + (maxLongitude - minLongitude) * r.nextDouble();
-
-        spot.setLocation(spotService.createPoint(latitude, longitude));
-
-        spot = spotService.saveSpot(spot);
-        return spot;
     }
 
     @Transactional

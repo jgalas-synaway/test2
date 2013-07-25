@@ -114,6 +114,25 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         assertEquals(Long.valueOf(0), report.getGreenRedClickCount());
         assertEquals(Long.valueOf(5), report2.getGreenRedClickCount());
         assertEquals(Long.valueOf(1), report3.getGreenRedClickCount());
+
+    }
+
+    @Test
+    public void testActivityReportForTile() {
+        Date now = new Date();
+        User user = createUser("john", "password");
+
+        for (int i = 0; i < 10; i++) {
+            addSpot(user, 2.350, 2.351, 48.8550, 48.8559);
+        }
+
+        ActivityReportDTO reportTile = reportController.activityReportMap(DateUtils.addMinutes(now, -12000),
+                new Date(), 8, 129, 88);
+        ActivityReportDTO reportTile2 = reportController.activityReportMap(DateUtils.addMinutes(now, -12000),
+                new Date(), 11, 100, 200);
+
+        assertEquals(Long.valueOf(10), reportTile.getGreenRedClickCount());
+        assertEquals(Long.valueOf(0), reportTile2.getGreenRedClickCount());
     }
 
     private Spot addSpot(User user, Date timestamp, String status) {

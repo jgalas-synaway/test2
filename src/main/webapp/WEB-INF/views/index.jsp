@@ -447,7 +447,17 @@
 				</div>
 			</div>
 			<div id="tab-5" class="tab">
-				<div id="map" style="height:500px"></div>
+				<div style="width: 80%">
+					<div style="text-align:center">
+					<span style="display:inline-block; text-align:center">
+						From: <span id="map_from_date"></span>
+					</span>
+					<span style="display:inline-block; text-align:center">
+						To: <span id="map_to_date"></span>
+					</span>
+					<br /><br />
+					<div id="map" style="height:500px"></div>
+				</div>
 			</div>
 		</div>
 

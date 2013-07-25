@@ -1,5 +1,6 @@
 package com.synaway.oneplaces.service.impl;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -31,14 +32,8 @@ public class ReportServiceImpl implements ReportService {
 
         // Number of clicks.
 
-        Long greenClickCount = entityManager
-                .createQuery("SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to AND status = 'free'",
-                        Long.class).setParameter("from", fromDate).setParameter("to", toDate).getSingleResult();
-
-        Long redClickCount = entityManager
-                .createQuery(
-                        "SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to AND status = 'occupied'",
-                        Long.class).setParameter("from", fromDate).setParameter("to", toDate).getSingleResult();
+        Long greenClickCount = getClickCount(fromDate, toDate, null, "free");
+        Long redClickCount = getClickCount(fromDate, toDate, null, "occupied");
 
         // Red spots required 2 clicks (first marked as green, then as red).
         result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
@@ -54,4 +49,36 @@ public class ReportServiceImpl implements ReportService {
         return result;
     }
 
+    @Override
+    public ActivityReportDTO activityReport(Date fromDate, Date toDate, int zoom, int x, int y) {
+        ActivityReportDTO result = new ActivityReportDTO();
+        BoundingBox box = TileHelper.tile2boundingBox(x, y, zoom);
+        // Number of clicks.
+
+        Long greenClickCount = getClickCount(fromDate, toDate, box, "free");
+        Long redClickCount = getClickCount(fromDate, toDate, box, "occupied");
+
+        // Red spots required 2 clicks (first marked as green, then as red).
+        result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
+        return result;
+    }
+
+    protected Long getClickCount(Date fromDate, Date toDate, BoundingBox boundingBox, String status) {
+        if (boundingBox == null) {
+            return entityManager
+                    .createQuery(
+                            "SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to AND status = :status",
+                            Long.class).setParameter("from", fromDate).setParameter("to", toDate)
+                    .setParameter("status", status).getSingleResult();
+        } else {
+            return ((BigInteger) entityManager
+                    .createNativeQuery(
+                            "SELECT COUNT(*) FROM Spot s WHERE s.created_at BETWEEN ?1 AND ?2 AND status = ?3"
+                                    + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))")
+                    .setParameter(1, fromDate).setParameter(2, toDate).setParameter(3, status)
+                    .setParameter(5, boundingBox.getNorth()).setParameter(4, boundingBox.getWest())
+                    .setParameter(7, boundingBox.getSouth()).setParameter(6, boundingBox.getEast()).getSingleResult())
+                    .longValue();
+        }
+    }
 }
