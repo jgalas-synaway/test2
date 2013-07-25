@@ -117,3 +117,14 @@ html, body{
 	padding-left: 20px;
 	margin-bottom: 10px;
 }
+
+.leaflet-div-icon {
+	background: rgba(0, 0, 0, .2);
+	border: none;
+}
+
+.leaflet-marker-icon .number{
+	width: 25px;
+	font-size: 36px;
+	text-align: center;
+}
