@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,8 +28,14 @@ public class ReportController {
     @RequestMapping(method = RequestMethod.GET, value = "/activity", produces = "application/json")
     @ResponseBody
     public ActivityReportDTO activityReport(
-            @RequestParam(value = "from") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date fromDate, @RequestParam(
-                    value = "to") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date toDate) {
+            @RequestParam(value = "from") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date fromDate,
+            @RequestParam(value = "to") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date toDate) {
         return reportService.activityReport(fromDate, toDate);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/activity/map/{zoom}/{x}/{y}.json", produces = "application/json")
+    @ResponseBody
+    public long activityReportMap(@PathVariable long zoom, @PathVariable long x, @PathVariable long y) {
+        return 5;
     }
 }

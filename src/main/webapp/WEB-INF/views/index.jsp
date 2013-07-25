@@ -4,6 +4,14 @@
 <html>
 
 <head>
+
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
+<![endif]-->
+
+<script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+
 <c:url var="jq" value="/resources/scripts/jquery-1.9.1.min.js" />
 <c:url var="jq_cookie" value="/resources/scripts/jquery.cookie.js" />
 
@@ -277,6 +285,9 @@
 					<p class="link" data-for="tab-4">
 						activity report
 					</p>
+					<p class="link" data-for="tab-5">
+						activity report (map)
+					</p>
 				</div>
 			</div>
 
@@ -434,6 +445,9 @@
 					Average clicks per user: <span id="average-clicks"></span>
 					</div>
 				</div>
+			</div>
+			<div id="tab-5" class="tab">
+				<div id="map" style="height:500px"></div>
 			</div>
 		</div>
 
