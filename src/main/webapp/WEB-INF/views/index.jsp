@@ -4,7 +4,7 @@
 <html>
 
 <head>
-
+<title>1places</title>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
@@ -447,7 +447,7 @@
 				</div>
 			</div>
 			<div id="tab-5" class="tab">
-				<div style="width: 80%">
+				<div style="width: 100%">
 					<div style="text-align:center">
 					<span style="display:inline-block; text-align:center">
 						From: <span id="map_from_date"></span>
