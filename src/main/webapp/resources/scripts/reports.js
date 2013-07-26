@@ -30,11 +30,19 @@ var Reports = function(token){
 	var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});		
 	map.addLayer(osm);
 
-	new L.TileLayer.Ajax(baseUrl + '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}&from={fromDate}&to={toDate}',	{
+	var tileLayer = new L.TileLayer.Ajax(baseUrl + '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}&from={fromDate}&to={toDate}',	{
 			accessToken: token,
 			fromDate: function () { return $("#map_from_date").datepicker().val() + " 00:00" },
 			toDate: function () { return $("#map_to_date").datepicker().val() + " 23:59" }	
 		}).addTo(map);
+
+	$("#map_from_date").change(function () {
+		tileLayer.redraw();
+	});
+
+	$("#map_to_date").change(function () {
+		tileLayer.redraw();
+	});
 };
 
 //Load data tiles using the JQuery ajax function
