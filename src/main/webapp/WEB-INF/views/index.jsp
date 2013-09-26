@@ -266,7 +266,7 @@
 					<label for="spot">spots</label>
 					<div id="fakeDiv">
 						<input id="fake" name="fake" type="checkbox" checked="checked"/>
-						<label for="fake">show fake spots</label>
+						<label for="fake">show robots activity</label>
 					</div>
 					<input id="location" name="location" type="checkbox" />
 					<label for="location">users locations</label>
