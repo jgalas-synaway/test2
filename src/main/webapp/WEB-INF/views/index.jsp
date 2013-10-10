@@ -5,7 +5,8 @@
 
 <head>
 <title>1places</title>
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+<link rel="stylesheet"
+	href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
 <![endif]-->
@@ -24,7 +25,10 @@
 <c:url var="ui_accordion"
 	value="/resources/scripts/ui/jquery.ui.accordion.js" />
 <c:url var="ui_tabs" value="/resources/scripts/ui/jquery.ui.tabs.js" />
-<c:url var="datepicker" value="/resources/scripts/ui/jquery.ui.datepicker.js" />
+<c:url var="datepicker"
+	value="/resources/scripts/ui/jquery.ui.datepicker.js" />
+<c:url var="multiselect"
+	value="/resources/scripts/jquery.multiselect.min.js" />
 <c:url var="dataTable"
 	value="/resources/scripts/dataTables/media/js/jquery.dataTables.js" />
 <c:url var="dataTableUpdate"
@@ -41,6 +45,8 @@
 <c:url var="style" value="/resources/styles/style.css" />
 <c:url var="ui_style"
 	value="/resources/scripts/themes/base/jquery.ui.all.css" />
+<c:url var="multiselect_style"
+	value="/resources/styles/jquery.multiselect.css" />
 <c:url var="tableStyle"
 	value="/resources/scripts/dataTables/media/css/jquery.dataTables.css" />
 
@@ -48,6 +54,7 @@
 <link rel="stylesheet" href="${style}" />
 <link rel="stylesheet" href="${ui_style}" />
 <link rel="stylesheet" href="${tableStyle}" />
+<link rel="stylesheet" href="${multiselect_style}" />
 
 <script type="text/javascript" src="${jq}"></script>
 <script type="text/javascript" src="${jq_cookie}"></script>
@@ -62,6 +69,7 @@
 <script type="text/javascript" src="${dataTable}"></script>
 <script type="text/javascript" src="${dataTableUpdate}"></script>
 <script type="text/javascript" src="${dataTablePagination}"></script>
+<script type="text/javascript" src="${multiselect}"></script>
 
 <script type="text/javascript" src="${app}"></script>
 <script type="text/javascript" src="${users}"></script>
@@ -78,8 +86,10 @@
 	var users = null;
 	var spots = null;
 	var reports = null;
-	
-	$.ajaxSetup({cache:false})
+
+	$.ajaxSetup({
+		cache : false
+	})
 
 	$(function() {
 
@@ -173,27 +183,31 @@
 		}
 
 		function me(token) {
-			$.ajax({
-				url : baseUrl + "/users/me?access_token=" + token,
-				dataType : "json",
-			}).done(
-				function(data) {
-					user = data;
-					$("#userInfo").empty();
-					$("#userInfo").append(
-						'<p>'
-						+ user.firstName
-						+ ' '
-						+ user.lastName
-						+ ' ('+user.login+')'
-						+ ' <a href="#" id="logout">logout</a></p>'
-					);
-					$("#userInfo #logout").click(function() {
-						$.removeCookie('access_token');
-						location.reload();
-					});
-					$("#accordion").accordion("refresh");
-				});
+			$
+					.ajax({
+						url : baseUrl + "/users/me?access_token=" + token,
+						dataType : "json",
+					})
+					.done(
+							function(data) {
+								user = data;
+								$("#userInfo").empty();
+								$("#userInfo")
+										.append(
+												'<p>'
+														+ user.firstName
+														+ ' '
+														+ user.lastName
+														+ ' ('
+														+ user.login
+														+ ')'
+														+ ' <a href="#" id="logout">logout</a></p>');
+								$("#userInfo #logout").click(function() {
+									$.removeCookie('access_token');
+									location.reload();
+								});
+								$("#accordion").accordion("refresh");
+							});
 		}
 
 		$(window).resize(function() {
@@ -217,7 +231,7 @@
 				mapView.locationStop();
 			}
 		});
-		
+
 		$("#fake").change(function() {
 			if ($(this).is(":checked")) {
 				mapView.showFake(true);
@@ -226,15 +240,17 @@
 			}
 		});
 
-		$("#accordion .link").click(function(event){
-			var forElement = $(this).attr("href");
-			if (forElement == undefined || forElement == null
-					|| forElement == "") {
-				forElement = $(this).data("for");
-			}
-			changeTab(forElement);
-			event.preventDefault();
-		});
+		$("#accordion .link").click(
+				function(event) {
+					var forElement = $(this).attr("href");
+					if (forElement == undefined || forElement == null
+							|| forElement == "") {
+						forElement = $(this).data("for");
+					}
+					changeTab(forElement);
+					event.preventDefault();
+				});
+
 
 	});
 </script>
@@ -265,29 +281,21 @@
 					<input id="spot" name="spot" type="checkbox" checked="checked" />
 					<label for="spot">spots</label>
 					<div id="fakeDiv">
-						<input id="fake" name="fake" type="checkbox" checked="checked"/>
+						<input id="fake" name="fake" type="checkbox" checked="checked" />
 						<label for="fake">show robots activity</label>
 					</div>
-					<input id="location" name="location" type="checkbox" />
-					<label for="location">users locations</label>
+					<input id="location" name="location" type="checkbox" /> <label
+						for="location">users locations</label>
 				</div>
 				<h3 id="acc-2" data-for="tab-2">Administration</h3>
 				<div>
-					<p class="link" data-for="tab-2">
-						Users
-					</p>
-					<p  class="link" data-for="tab-3">
-						Spots
-					</p>
+					<p class="link" data-for="tab-2">Users</p>
+					<p class="link" data-for="tab-3">Spots</p>
 				</div>
 				<h3 id="acc-3" data-for="tab-3">Reports</h3>
 				<div>
-					<p class="link" data-for="tab-4">
-						activity report
-					</p>
-					<p class="link" data-for="tab-5">
-						activity report (map)
-					</p>
+					<p class="link" data-for="tab-4">activity report</p>
+					<p class="link" data-for="tab-5">activity report (map)</p>
 				</div>
 			</div>
 
@@ -314,58 +322,52 @@
 							</tr>
 						</thead>
 						<tbody>
-	
+
 						</tbody>
 					</table>
-					<div id="add_user_btn" class="under_table_btn">
-					Add user
-					</div>
-					<div id="refresch_user_btn" class="under_table_btn">
-					Refresh
-					</div>
+					<div id="add_user_btn" class="under_table_btn">Add user</div>
+					<div id="refresch_user_btn" class="under_table_btn">Refresh</div>
 					<div id="user_edit">
 						<form>
-							<input name="user_id" id="user_id" type="hidden"/>
+							<input name="user_id" id="user_id" type="hidden" />
 							<div class="form_row">
-								<label for="firstName">First Name:</label> 
-								<input id="firstName" name="firstName" type="text" />
+								<label for="firstName">First Name:</label> <input id="firstName"
+									name="firstName" type="text" />
 							</div>
 							<div class="form_row">
-								<label for="lastName">Last Name:</label> 
-								<input id="lastName" name="lastName" type="text" />
+								<label for="lastName">Last Name:</label> <input id="lastName"
+									name="lastName" type="text" />
 							</div>
 							<div class="form_row">
-								<label for="login">Login:</label> 
-								<input id="login" name="login" type="text" />
+								<label for="login">Login:</label> <input id="login" name="login"
+									type="text" />
 							</div>
 							<div class="form_row">
-								<label for="email">Email:</label> 
-								<input id="email" name="email" type="text" />
+								<label for="email">Email:</label> <input id="email" name="email"
+									type="text" />
 							</div>
 							<div class="form_row">
-								<label for="role">Role:</label> 
-								<select id="role" name="role">
+								<label for="role">Role:</label> <select id="role" name="role">
 									<option value="user">user</option>
 									<option value="beta">beta</option>
 									<option value="admin">admin</option>
 								</select>
 							</div>
-							<div class="form_row"> 
-								<label for="change_password">Change password:</label> 
-								<input id="change_password" name="change_password" type="checkbox" />
-							</div>
-							
 							<div class="form_row">
-								<label for="new_password">Password:</label> 
-								<input id="new_password" name="new_password" type="password" />
+								<label for="change_password">Change password:</label> <input
+									id="change_password" name="change_password" type="checkbox" />
 							</div>
-							<input value="save" type="submit"/>
-							<input id="user_cancel" value="cancel" type="button"/>
+
+							<div class="form_row">
+								<label for="new_password">Password:</label> <input
+									id="new_password" name="new_password" type="password" />
+							</div>
+							<input value="save" type="submit" /> <input id="user_cancel"
+								value="cancel" type="button" />
 						</form>
 					</div>
-					<div id="user_delete">
-						Are you sure you want to delete this item?
-					</div>
+					<div id="user_delete">Are you sure you want to delete this
+						item?</div>
 				</div>
 			</div>
 			<div id="tab-3" class="tab">
@@ -383,87 +385,81 @@
 							</tr>
 						</thead>
 						<tbody>
-	
+
 						</tbody>
 					</table>
-					<div id="add_spot_btn"  class="under_table_btn">
-					Add spot
-					</div>
-					<div id="refresch_spot_btn" class="under_table_btn">
-					Refresh
-					</div>
+					<div id="add_spot_btn" class="under_table_btn">Add spot</div>
+					<div id="refresch_spot_btn" class="under_table_btn">Refresh</div>
 					<div id="spot_edit">
 						<form>
-							<input name="spot_id" id="spot_id" type="hidden"/>
+							<input name="spot_id" id="spot_id" type="hidden" />
 							<div class="form_row">
-								<label for="latitude">Latitude:</label> 
-								<input id="latitude" name="latitude" type="text" />
+								<label for="latitude">Latitude:</label> <input id="latitude"
+									name="latitude" type="text" />
 							</div>
 							<div class="form_row">
-								<label for="longitude">Longitude:</label> 
-								<input id="longitude" name="longitude" type="text" />
+								<label for="longitude">Longitude:</label> <input id="longitude"
+									name="longitude" type="text" />
 							</div>
 							<div class="form_row">
-								<label for="timestamp">Timestamp:</label> 
-								<input style="width:105px" id="timestamp" name="timestamp" type="text" />
-								<input style="width:23px;margin-left:0;" id="hour" name="hour"/>:<input style="width:23px;margin-left:0;" id="minute" name="minute"/>:<input style="width:23px;margin-left:0;" id="second" name="second"/>
+								<label for="timestamp">Timestamp:</label> <input
+									style="width: 105px" id="timestamp" name="timestamp"
+									type="text" /> <input style="width: 23px; margin-left: 0;"
+									id="hour" name="hour" />:<input
+									style="width: 23px; margin-left: 0;" id="minute" name="minute" />:<input
+									style="width: 23px; margin-left: 0;" id="second" name="second" />
 							</div>
 							<div class="form_row">
-								<label for="status">Status:</label> 
-								<select id="status" name="status">
+								<label for="status">Status:</label> <select id="status"
+									name="status">
 									<option value="free">free</option>
 									<option value="occupied">occupied</option>
 								</select>
 							</div>
-							<input value="save" type="submit"/>
-							<input id="spot_cancel" value="cancel" type="button"/>
+							<input value="save" type="submit" /> <input id="spot_cancel"
+								value="cancel" type="button" />
 						</form>
 					</div>
-					<div id="spot_delete">
-						Are you sure you want to delete this item?
-					</div>
+					<div id="spot_delete">Are you sure you want to delete this
+						item?</div>
 				</div>
 			</div>
 			<div id="tab-4" class="tab">
 				<div style="width: 80%">
-					<div style="text-align:center">
-					<span style="display:inline-block; text-align:center">
-						From: <span id="from_date"></span>
-					</span>
-					<span style="display:inline-block; text-align:center">
-						To: <span id="to_date"></span>
-					</span>
-					<br /><br />
-					<span>
-					<button id="generate-report">Generate report</button>
-					</span>
+					<div style="text-align: center">
+						<span style="display: inline-block; text-align: center">
+							From: <span id="from_date"></span>
+						</span> <span style="display: inline-block; text-align: center">
+							To: <span id="to_date"></span>
+						</span> <span style="display: inline-block; text-align: center">
+							Users: <select multiple id="users">
+								
+							</select>
+						</span> <br /> <br /> <span>
+							<button id="generate-report">Generate report</button>
+						</span>
 					</div>
 					<br />
-					<div id="activity-report" style="text-align:center; display:none">
-					Active users: <span id="active-users"></span><br />
-					Number of green and red clicks: <span id="click-count"></span><br />
-					Average clicks per user: <span id="average-clicks"></span>
+					<div id="activity-report" style="text-align: center; display: none">
+						Active users: <span id="active-users"></span><br /> Number of
+						green and red clicks: <span id="click-count"></span><br />
+						Average clicks per user: <span id="average-clicks"></span>
 					</div>
 				</div>
 			</div>
 			<div id="tab-5" class="tab">
 				<div style="width: 100%">
-					<div style="text-align:center">
-					<span style="display:inline-block; text-align:center">
-						From: <span id="map_from_date"></span>
-					</span>
-					<span style="display:inline-block; text-align:center">
-						To: <span id="map_to_date"></span>
-					</span>
-					<br /><br />
-					<div id="map" style="height:500px"></div>
+					<div style="text-align: center">
+						<span style="display: inline-block; text-align: center">
+							From: <span id="map_from_date"></span>
+						</span> <span style="display: inline-block; text-align: center">
+							To: <span id="map_to_date"></span>
+						</span> <br /> <br />
+						<div id="map" style="height: 500px"></div>
+					</div>
 				</div>
 			</div>
+
 		</div>
-
-	</div>
-
-
-
 </body>
 </html>
