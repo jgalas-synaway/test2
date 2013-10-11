@@ -179,6 +179,13 @@ var Users = function(token){
 	}
 	
 	this.sendEmailWithApp = function(userId) {
-		alert("implementation reqired: send email with application link for user id " + userId);
+		$.ajax({
+			"type" : "POST",
+			"url" : baseUrl + "/mails?userId="+userId+"&access_token=" + token
+		}).done(function(json){
+			showTooltip("Email send");
+		}).fail(function(json) {
+			showTooltip("Error, email not send, please contact with administrator.");
+		});
 	}
 };

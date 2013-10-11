@@ -195,8 +195,13 @@ var MapView = function(element) {
 		self.fakeSpots = show;
 		getSpots();
 	};
-	
-	
+};
 
+showTooltip = function(message) {
+	$("#tooltip").show();
+	$("#tooltip").html("<span>" + message + "</span>");
+	   setTimeout(function() {
+		   $("#tooltip").fadeOut("slow");
+	    }, 2500);
 };
 

@@ -461,10 +461,9 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 
-
+	<div id="tooltip" style="display:none;">tooltip</div>
 
 </body>
 </html>
