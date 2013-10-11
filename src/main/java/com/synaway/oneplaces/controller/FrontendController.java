@@ -14,4 +14,8 @@ public class FrontendController {
         return new ModelAndView("index");
     }
 
+    @RequestMapping(method = RequestMethod.GET, value="/mobile")
+    public ModelAndView getManifestForIOS() {
+        return new ModelAndView("mobile");
+    }
 }

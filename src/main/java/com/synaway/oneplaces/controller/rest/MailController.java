@@ -21,16 +21,14 @@ public class MailController {
     private MailService mailService;
         
     @Value("${mail.template.mobileRelease.relativeUrl}")
-    private String defaultMobileAppRelativeUrl;
-
-    @Value("${mail.template.mobileRelease.defaultFileName}")
-    private String defaultMobileAppFileName;    
+    private String mobileReleaseRelativeUrl;
+ 
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
     @ResponseBody
     public void sendMobileAppReleaseMail(HttpServletRequest request, @RequestParam(value = "userId") Long userId) throws UserException {
         String baseUrl = String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
-        mailService.sendMobileAppReleaseMail(userId, baseUrl + "/" + defaultMobileAppRelativeUrl + "/" + defaultMobileAppFileName);
+        mailService.sendMobileAppReleaseMail(userId, baseUrl + "/" + mobileReleaseRelativeUrl);
     }
     
 }

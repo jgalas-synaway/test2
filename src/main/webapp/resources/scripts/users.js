@@ -179,6 +179,7 @@ var Users = function(token){
 	}
 	
 	this.sendEmailWithApp = function(userId) {
+		showTooltip("Sending email...");
 		$.ajax({
 			"type" : "POST",
 			"url" : baseUrl + "/mails?userId="+userId+"&access_token=" + token
