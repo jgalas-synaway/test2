@@ -1,7 +1,6 @@
 package com.synaway.oneplaces.service.impl;
 
 import java.math.BigInteger;
-import java.util.Iterator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,9 +38,19 @@ public class ReportServiceImpl implements ReportService {
         result.setActiveUsers(activeUsers);
 
         // Number of clicks.
+        Long greenClickCount = 0L;
+        Long redClickCount = 0L;
 
-        Long greenClickCount = getClickCount(params, null, "free");
-        Long redClickCount = getClickCount(params, null, "occupied");
+        if (params.getStatus() != null && params.getStatus().equals("free")) {
+            greenClickCount = getClickCount(params, null);
+        } else if (params.getStatus() != null && params.getStatus().equals("occupied")) {
+            redClickCount = getClickCount(params, null);
+        } else {
+            params.setStatus("free");
+            greenClickCount = getClickCount(params, null);
+            params.setStatus("occupied");
+            redClickCount = getClickCount(params, null);
+        }
 
         // Red spots required 2 clicks (first marked as green, then as red).
         result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
@@ -62,16 +71,26 @@ public class ReportServiceImpl implements ReportService {
         ActivityReportDTO result = new ActivityReportDTO();
         BoundingBox box = TileHelper.tile2boundingBox(x, y, zoom);
         // Number of clicks.
+        Long greenClickCount = 0L;
+        Long redClickCount = 0L;
 
-        Long greenClickCount = getClickCount(params, box, "free");
-        Long redClickCount = getClickCount(params, box, "occupied");
+        if (params.getStatus() != null && params.getStatus().equals("free")) {
+            greenClickCount = getClickCount(params, box);
+        } else if (params.getStatus() != null && params.getStatus().equals("occupied")) {
+            redClickCount = getClickCount(params, box);
+        } else {
+            params.setStatus("free");
+            greenClickCount = getClickCount(params, box);
+            params.setStatus("occupied");
+            redClickCount = getClickCount(params, box);
+        }
 
         // Red spots required 2 clicks (first marked as green, then as red).
         result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
         return result;
     }
 
-    protected Long getClickCount(ReportParamsDTO params, BoundingBox boundingBox, String status) {
+    protected Long getClickCount(ReportParamsDTO params, BoundingBox boundingBox) {
         Iterable<User> users;
         if (params.getUsers() == null) {
             users = userRepository.findAll();
@@ -84,9 +103,9 @@ public class ReportServiceImpl implements ReportService {
         if (boundingBox == null) {
             return entityManager
                     .createQuery(
-                            "SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to AND status = :status AND user IN(:users)",
+                            "SELECT COUNT(*) FROM Spot s WHERE s.flag IS NULL AND s.timestamp BETWEEN :from AND :to AND status = :status AND user IN(:users)",
                             Long.class).setParameter("from", params.getFrom()).setParameter("to", params.getTo())
-                    .setParameter("status", status).setParameter("users", users).getSingleResult();
+                    .setParameter("status", params.getStatus()).setParameter("users", users).getSingleResult();
         } else {
             String usersIdList = "";
             for (User user : users) {
@@ -95,12 +114,13 @@ public class ReportServiceImpl implements ReportService {
             }
             return ((BigInteger) entityManager
                     .createNativeQuery(
-                            "SELECT COUNT(*) FROM Spot s WHERE s.created_at BETWEEN ?1 AND ?2 AND status = ?3"
+                            "SELECT COUNT(*) FROM Spot s WHERE  s.flag IS NULL AND s.created_at BETWEEN ?1 AND ?2 AND status = ?3"
                                     + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
                                     + " AND user_id IN(" + usersIdList + ")").setParameter(1, params.getFrom())
-                    .setParameter(2, params.getTo()).setParameter(3, status).setParameter(5, boundingBox.getNorth())
-                    .setParameter(4, boundingBox.getWest()).setParameter(7, boundingBox.getSouth())
-                    .setParameter(6, boundingBox.getEast()).getSingleResult()).longValue();
+                    .setParameter(2, params.getTo()).setParameter(3, params.getStatus())
+                    .setParameter(5, boundingBox.getNorth()).setParameter(4, boundingBox.getWest())
+                    .setParameter(7, boundingBox.getSouth()).setParameter(6, boundingBox.getEast()).getSingleResult())
+                    .longValue();
         }
     }
 }

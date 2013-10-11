@@ -29,6 +29,8 @@
 	value="/resources/scripts/ui/jquery.ui.datepicker.js" />
 <c:url var="multiselect"
 	value="/resources/scripts/jquery.multiselect.min.js" />
+<c:url var="selectmenu"
+	value="/resources/scripts/ui/jquery.ui.selectmenu.js" />
 <c:url var="dataTable"
 	value="/resources/scripts/dataTables/media/js/jquery.dataTables.js" />
 <c:url var="dataTableUpdate"
@@ -45,6 +47,8 @@
 <c:url var="style" value="/resources/styles/style.css" />
 <c:url var="ui_style"
 	value="/resources/scripts/themes/base/jquery.ui.all.css" />
+<c:url var="ui_selectmenu"
+	value="/resources/scripts/themes/base/jquery.ui.selectmenu.css" />
 <c:url var="multiselect_style"
 	value="/resources/styles/jquery.multiselect.css" />
 <c:url var="tableStyle"
@@ -53,6 +57,7 @@
 
 <link rel="stylesheet" href="${style}" />
 <link rel="stylesheet" href="${ui_style}" />
+<link rel="stylesheet" href="${ui_selectmenu}" />
 <link rel="stylesheet" href="${tableStyle}" />
 <link rel="stylesheet" href="${multiselect_style}" />
 
@@ -70,6 +75,7 @@
 <script type="text/javascript" src="${dataTableUpdate}"></script>
 <script type="text/javascript" src="${dataTablePagination}"></script>
 <script type="text/javascript" src="${multiselect}"></script>
+<script type="text/javascript" src="${selectmenu}"></script>
 
 <script type="text/javascript" src="${app}"></script>
 <script type="text/javascript" src="${users}"></script>
@@ -425,18 +431,29 @@
 							From: <span id="from_date"></span>
 						</span> <span style="display: inline-block; text-align: center">
 							To: <span id="to_date"></span>
-						</span> <span style="display: inline-block; text-align: center">
-							Users: <select multiple id="users">
-
-						</select>
-						</span> <br /> <br /> <span>
+						</span> 
+						<span style="text-align: left">
+							<span style="display: inline-block;">
+								<label for="users">Users:</label>
+								<select multiple id="users"></select>
+							</span>
+							<span style="display: inline-block;">
+								<label for="status">Type:</label>
+								<select id="status" style="width:100px;">
+									<option value="both" selected="selected">Both</option>
+									<option value="occupied">Red</option>
+									<option value="free">Green</option>
+								</select>
+							</span>
+						</span> 
+						<br /> <br /> <span>
 							<button id="generate-report">Generate report</button>
 						</span>
 					</div>
 					<br />
 					<div id="activity-report" style="text-align: center; display: none">
-						Active users: <span id="active-users"></span><br /> Number of
-						green and red clicks: <span id="click-count"></span><br />
+						Active users: <span id="active-users"></span><br /> 
+						Number of clicks: <span id="click-count"></span><br />
 						Average clicks per user: <span id="average-clicks"></span>
 					</div>
 				</div>
@@ -448,13 +465,23 @@
 							From: <span id="map_from_date"></span>
 						</span> <span style="display: inline-block; text-align: center">
 							To: <span id="map_to_date"></span>
-						</span> <span style="display: inline-block; text-align: center">
-							Users: <select multiple id="map_users">
-
-						</select>
-
-						</span> <br /> <br />
-						<div id="map" style="height: 500px"></div>
+						</span> 
+						<span style="text-align: left">
+							<span style="display: inline-block;">
+								<label for="map_users">Users:</label>
+								<select multiple id="map_users"></select>
+							</span>
+							<span style="display: inline-block;">
+								<label for="map_status">Type:</label>
+								<select id="map_status" style="width:100px;">
+									<option value="both" selected="selected">Both</option>
+									<option value="occupied">Red</option>
+									<option value="free">Green</option>
+								</select>
+							</span>
+						</span>  
+						<br /> <br />
+						<div id="map" style="height: 600px"></div>
 					</div>
 				</div>
 			</div>
