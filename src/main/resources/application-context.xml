@@ -46,7 +46,7 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="databasePlatform"
 					value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-				<property name="showSql" value="true" />
+				<property name="showSql" value="false" />
 			</bean>
 		</property>
 		<property name="dataSource" ref="dataSource" />
@@ -86,7 +86,7 @@
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.transport.protocol">${mail.transportProtocol}</prop>
-				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
 				<prop key="mail.smtp.starttls.enable">true</prop>
 			</props>
 		</property>

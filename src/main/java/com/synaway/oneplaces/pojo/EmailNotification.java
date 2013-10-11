@@ -5,13 +5,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class EmailNotification {
     private String addressTo;
     private String addressFrom;
+    private String addressReplyTo;
     private String subject;
     private String body;
     private MultipartFile attachment;
     
-    public EmailNotification(String addressTo, String addressFrom, String subject, String body) {
+    public EmailNotification(String addressTo, String subject, String body) {
         this.addressTo = addressTo;
-        this.addressFrom = addressFrom;
         this.subject = subject;
         this.body = body;
     }
@@ -54,5 +54,13 @@ public class EmailNotification {
 
     public void setAttachment(MultipartFile attachment) {
         this.attachment = attachment;
+    }
+
+    public String getAddressReplyTo() {
+        return addressReplyTo;
+    }
+
+    public void setAddressReplyTo(String addressReplyTo) {
+        this.addressReplyTo = addressReplyTo;
     }
 }

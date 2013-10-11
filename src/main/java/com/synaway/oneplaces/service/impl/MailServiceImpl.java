@@ -31,20 +31,19 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Send simpleMailMessage with given parameters: address to, subject, body
-     * and address from set on default value.
      * 
-     * @param addressTo
-     * @param subject
-     * @param body
+     * @param addressTo email address where we should send email
+     * @param subject email subject
+     * @param body email content
      */
     @Override
     public void sendMail(String addressTo, String subject, String body) {
-        sendMail(new EmailNotification(addressTo, defaultAddressFrom, subject, body));
+        sendMail(new EmailNotification(addressTo, subject, body));
     }
 
     /**
-     * sending email with defined in emailNotification data like: address to,
-     * address from, subject, body
+     * sending email with defined in emailNotification data: address to,
+     * address from, address reply to, subject, body
      * 
      * @param en
      */
@@ -55,17 +54,19 @@ public class MailServiceImpl implements MailService {
         message.setSubject(en.getSubject());
         message.setText(en.getBody());
         message.setFrom(en.getAddressFrom());
+        message.setReplyTo(en.getAddressReplyTo());
         mailSender.send(message);
     }
 
     /**
      * Send email with information about release of certain version of 1places
-     * mobile application; Email content and mobile application url is set on
-     * default values (set in properite file).
+     * mobile application. Email content and mobile application url is set on
+     * default values (set in property file).
      * 
      * @param userId
      *            id of user for which we want to send and email
-     * @throws UserException 
+     * @param mobileAppUrl full string to url from where mobile application can be download
+     * @throws UserException when user with given id not exist
      */
     @Override
     public void sendMobileAppReleaseMail(Long userId, String mobileAppUrl) throws UserException {
@@ -75,9 +76,7 @@ public class MailServiceImpl implements MailService {
         }
         
         String body = String.format(templateMobileAppReleaseInfo, mobileAppUrl);
-
         sendMail(user.getEmail(), "Mobile application release", body);
-
     }
 
 }
