@@ -251,7 +251,6 @@
 					event.preventDefault();
 				});
 
-
 	});
 </script>
 
@@ -433,8 +432,8 @@
 							To: <span id="to_date"></span>
 						</span> <span style="display: inline-block; text-align: center">
 							Users: <select multiple id="users">
-								
-							</select>
+
+						</select>
 						</span> <br /> <br /> <span>
 							<button id="generate-report">Generate report</button>
 						</span>
@@ -454,6 +453,11 @@
 							From: <span id="map_from_date"></span>
 						</span> <span style="display: inline-block; text-align: center">
 							To: <span id="map_to_date"></span>
+						</span> <span style="display: inline-block; text-align: center">
+							Users: <select multiple id="map_users">
+
+						</select>
+
 						</span> <br /> <br />
 						<div id="map" style="height: 500px"></div>
 					</div>

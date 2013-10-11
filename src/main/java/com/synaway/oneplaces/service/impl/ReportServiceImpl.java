@@ -1,7 +1,7 @@
 package com.synaway.oneplaces.service.impl;
 
 import java.math.BigInteger;
-import java.util.Date;
+import java.util.Iterator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.synaway.oneplaces.dto.ActivityReportDTO;
 import com.synaway.oneplaces.dto.ReportParamsDTO;
+import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.ReportService;
 
@@ -19,7 +20,7 @@ public class ReportServiceImpl implements ReportService {
 
     @PersistenceContext
     private EntityManager entityManager;
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -28,7 +29,6 @@ public class ReportServiceImpl implements ReportService {
         ActivityReportDTO result = new ActivityReportDTO();
 
         // Active users count.
-        
 
         Long activeUsers = entityManager
                 .createQuery(
@@ -58,36 +58,51 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ActivityReportDTO activityReport(Date fromDate, Date toDate, int zoom, int x, int y) {
+    public ActivityReportDTO activityReport(ReportParamsDTO params, int zoom, int x, int y) {
         ActivityReportDTO result = new ActivityReportDTO();
         BoundingBox box = TileHelper.tile2boundingBox(x, y, zoom);
         // Number of clicks.
 
-        // Long greenClickCount = getClickCount(fromDate, toDate, box, "free");
-        // Long redClickCount = getClickCount(fromDate, toDate, box,
-        // "occupied");
-        //
-        // // Red spots required 2 clicks (first marked as green, then as red).
-        // result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
+        Long greenClickCount = getClickCount(params, box, "free");
+        Long redClickCount = getClickCount(params, box, "occupied");
+
+        // Red spots required 2 clicks (first marked as green, then as red).
+        result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
         return result;
     }
 
     protected Long getClickCount(ReportParamsDTO params, BoundingBox boundingBox, String status) {
+        Iterable<User> users;
+        if (params.getUsers() == null) {
+            users = userRepository.findAll();
+        } else if (params.getUsers().size() > 0) {
+            users = userRepository.findAll(params.getUsers());
+        } else {
+            return 0L;
+        }
+
         if (boundingBox == null) {
             return entityManager
                     .createQuery(
                             "SELECT COUNT(*) FROM Spot s WHERE s.timestamp BETWEEN :from AND :to AND status = :status AND user IN(:users)",
                             Long.class).setParameter("from", params.getFrom()).setParameter("to", params.getTo())
-                    .setParameter("status", status).setParameter("users", userRepository.findAll(params.getUsers())).getSingleResult();
+                    .setParameter("status", status).setParameter("users", users).getSingleResult();
         } else {
+            String usersIdList = "";
+            Iterator<User> it = users.iterator();
+            while (it.hasNext()) {
+                User user = (User) it.next();
+                usersIdList += (usersIdList.length() > 0) ? ", " : "";
+                usersIdList += user.getId();
+            }
             return ((BigInteger) entityManager
                     .createNativeQuery(
                             "SELECT COUNT(*) FROM Spot s WHERE s.created_at BETWEEN ?1 AND ?2 AND status = ?3"
-                                    + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))")
-                    .setParameter(1, params.getFrom()).setParameter(2, params.getTo()).setParameter(3, status)
-                    .setParameter(5, boundingBox.getNorth()).setParameter(4, boundingBox.getWest())
-                    .setParameter(7, boundingBox.getSouth()).setParameter(6, boundingBox.getEast()).getSingleResult())
-                    .longValue();
+                                    + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
+                                    + " AND user_id IN(" + usersIdList + ")").setParameter(1, params.getFrom())
+                    .setParameter(2, params.getTo()).setParameter(3, status).setParameter(5, boundingBox.getNorth())
+                    .setParameter(4, boundingBox.getWest()).setParameter(7, boundingBox.getSouth())
+                    .setParameter(6, boundingBox.getEast()).getSingleResult()).longValue();
         }
     }
 }

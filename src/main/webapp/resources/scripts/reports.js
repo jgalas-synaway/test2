@@ -19,6 +19,13 @@ var Reports = function(token) {
 		selectedText : "# of # users",
 		noneSelectedText: "Select users"
 	});
+	$("#map_users").multiselect({
+		selectedText : "# of # users",
+		noneSelectedText: "Select users",
+		close : function(){
+			tileLayer.redraw();
+		}
+	});
 
 	$.ajax({
 		"dataType" : 'json',
@@ -27,9 +34,13 @@ var Reports = function(token) {
 	}).done(function(json) {
 		$.each(json, function(index,user){
 			$("#users").append('<option value="'+user.id+'">'+user.firstName+' '+user.lastName+'</option>');
+			$("#map_users").append('<option value="'+user.id+'">'+user.firstName+' '+user.lastName+'</option>');
 		});
 		$("#users").multiselect('refresh');
 		$("#users").multiselect('checkAll');
+		$("#map_users").multiselect('refresh');
+		$("#map_users").multiselect('checkAll');
+		tileLayer.redraw();
 	});
 
 	$("#generate-report").click(
@@ -38,6 +49,7 @@ var Reports = function(token) {
 				data.from = new Date($("#from_date").datepicker().val()+ "T00:00:00.000Z");
 				data.to = new Date($("#to_date").datepicker().val()+ "T23:59:00.000Z");
 				data.users = $("#users").val();
+				data.users = (data.users === null)? [] : data.users;
 				$.ajax(
 						{
 							"dataType" : 'json',
@@ -64,15 +76,9 @@ var Reports = function(token) {
 
 	var tileLayer = new L.TileLayer.Ajax(
 			baseUrl
-					+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}&from={fromDate}&to={toDate}',
+					+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
 			{
-				accessToken : token,
-				fromDate : function() {
-					return $("#map_from_date").datepicker().val() + " 00:00"
-				},
-				toDate : function() {
-					return $("#map_to_date").datepicker().val() + " 23:59"
-				}
+				accessToken : token				
 			}).addTo(map);
 
 	$("#map_from_date").change(function() {
@@ -82,6 +88,7 @@ var Reports = function(token) {
 	$("#map_to_date").change(function() {
 		tileLayer.redraw();
 	});
+	
 };
 
 // Load data tiles using the JQuery ajax function
@@ -125,52 +132,30 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 				className : 'leaflet-click-count',
 				iconAnchor : new L.Point(0, -128),
 				iconSize : new L.Point(256, 256),
-				html : JSON.parse(tile.datum).greenRedClickCount
+				html : tile.datum.greenRedClickCount
 			})
 		})
 		tile.marker.addTo(this._map);
-	},
-	// XMLHttpRequest handler; closure over the XHR object, the layer, and the
-	// tile
-	_xhrHandler : function(req, layer, tile) {
-		return function() {
-			if (req.readyState != 4) {
-				return;
-			}
-			var s = req.status;
-			if ((s >= 200 && s < 300) || s == 304) {
-				// check if request is about to be aborted, avoid rare error
-				// when aborted while parsing
-				if (tile._request) {
-					tile._request = null;
-					layer.fire('tileresponse', {
-						tile : tile,
-						request : req
-					});
-					tile.datum = req.responseText;
-					layer._addTileData(tile);
-				}
-			} else {
-				layer.fire('tileerror', {
-					tile : tile
-				});
-				layer._tileLoaded();
-			}
-		}
 	},
 	// Load the requested tile via AJAX
 	_loadTile : function(tile, tilePoint) {
 		this._adjustTilePoint(tilePoint);
 		var layer = this;
-		var req = new XMLHttpRequest();
-		tile._request = req;
-		req.onreadystatechange = this._xhrHandler(req, layer, tile);
-		this.fire('tilerequest', {
-			tile : tile,
-			request : req
+		var data = {};
+		data.from = new Date($("#map_from_date").datepicker().val()+ "T00:00:00.000Z");
+		data.to = new Date($("#map_to_date").datepicker().val()+ "T23:59:00.000Z");
+		data.users = $("#map_users").val();
+		data.users = (data.users === null)? [] : data.users;
+		$.ajax({
+			"dataType" : 'json',
+			"type" : "POST",
+			"url" : this.getTileUrl(tilePoint),
+			"contentType": 'application/json',
+			"data":JSON.stringify(data)
+		}).done(function(json) {
+			tile.datum = json;
+			layer._addTileData(tile);
 		});
-		req.open('GET', this.getTileUrl(tilePoint), true);
-		req.send();
 	},
 	_unloadTile : function(evt) {
 		var tile = evt.tile, req = tile._request;

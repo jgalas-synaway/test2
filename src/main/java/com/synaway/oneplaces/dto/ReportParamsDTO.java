@@ -4,20 +4,34 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.synaway.oneplaces.model.User;
-
+/**
+ * Includes reports parameters data
+ * 
+ * @author Łukasz Kracoń
+ * 
+ */
 public class ReportParamsDTO implements Serializable {
 
     private static final long serialVersionUID = 5153705669628708115L;
 
+    /**
+     * Beginning of the reporting period
+     */
     private Date from;
-    
+
+    /**
+     * End of the reporting period
+     */
     private Date to;
-    
+
+    /**
+     * List of users id in included in report
+     */
     private List<Long> users;
-    
+
+    /**
+     * Status of posts to report ("free"/"occupied")
+     */
     private String status;
 
     public Date getFrom() {
@@ -97,8 +111,7 @@ public class ReportParamsDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "ReportParamsDTO [from=" + from + ", to=" + to + ", users=" + users + ", activityKind=" + status
-                + "]";
+        return "ReportParamsDTO [from=" + from + ", to=" + to + ", users=" + users + ", activityKind=" + status + "]";
     }
 
 }
