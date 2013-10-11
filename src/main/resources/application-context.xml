@@ -46,7 +46,7 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="databasePlatform"
 					value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-				<property name="showSql" value="true" />
+				<property name="showSql" value="false" />
 			</bean>
 		</property>
 		<property name="dataSource" ref="dataSource" />

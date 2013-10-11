@@ -20,6 +20,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import com.synaway.oneplaces.controller.rest.ReportController;
 import com.synaway.oneplaces.controller.rest.SpotController;
 import com.synaway.oneplaces.dto.ActivityReportDTO;
+import com.synaway.oneplaces.dto.ReportParamsDTO;
 import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.model.UserLocation;
@@ -100,12 +101,21 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         addSpot(user, now, "occupied");
         addSpot(user, DateUtils.addMinutes(now, -360), "free");
 
-        ActivityReportDTO report = reportController.activityReport(DateUtils.addMinutes(now, -120),
-                DateUtils.addMinutes(now, -60));
-        ActivityReportDTO report2 = reportController.activityReport(DateUtils.addMinutes(now, -120),
-                DateUtils.addMinutes(now, 0));
-        ActivityReportDTO report3 = reportController.activityReport(DateUtils.addMinutes(now, -1200),
-                DateUtils.addMinutes(now, -360));
+        ReportParamsDTO params1 = new ReportParamsDTO();
+        params1.setFrom(DateUtils.addMinutes(now, -120));
+        params1.setTo(DateUtils.addMinutes(now, -60));
+
+        ReportParamsDTO params2 = new ReportParamsDTO();
+        params2.setFrom(DateUtils.addMinutes(now, -120));
+        params2.setTo(DateUtils.addMinutes(now, 0));
+
+        ReportParamsDTO params3 = new ReportParamsDTO();
+        params3.setFrom(DateUtils.addMinutes(now, -1200));
+        params3.setTo(DateUtils.addMinutes(now, -360));
+
+        ActivityReportDTO report = reportController.activityReport(params1);
+        ActivityReportDTO report2 = reportController.activityReport(params2);
+        ActivityReportDTO report3 = reportController.activityReport(params3);
 
         assertEquals(Long.valueOf(1), report.getActiveUsers());
         assertEquals(Long.valueOf(2), report2.getActiveUsers());
@@ -126,10 +136,12 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
             addSpot(user, 2.350, 2.351, 48.8550, 48.8559);
         }
 
-        ActivityReportDTO reportTile = reportController.activityReportMap(DateUtils.addMinutes(now, -12000),
-                new Date(), 8, 129, 88);
-        ActivityReportDTO reportTile2 = reportController.activityReportMap(DateUtils.addMinutes(now, -12000),
-                new Date(), 11, 100, 200);
+        ReportParamsDTO params1 = new ReportParamsDTO();
+        params1.setFrom(DateUtils.addMinutes(now, -12000));
+        params1.setTo(new Date());
+
+        ActivityReportDTO reportTile = reportController.activityReportMap(params1, 8, 129, 88);
+        ActivityReportDTO reportTile2 = reportController.activityReportMap(params1, 11, 100, 200);
 
         assertEquals(Long.valueOf(10), reportTile.getGreenRedClickCount());
         assertEquals(Long.valueOf(0), reportTile2.getGreenRedClickCount());
