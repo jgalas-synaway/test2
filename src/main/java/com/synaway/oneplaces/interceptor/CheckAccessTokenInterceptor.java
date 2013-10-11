@@ -1,7 +1,5 @@
 package com.synaway.oneplaces.interceptor;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,8 +1,7 @@
 package com.synaway.oneplaces.service;
 
-import java.util.Date;
-
 import com.synaway.oneplaces.dto.ActivityReportDTO;
+import com.synaway.oneplaces.dto.ReportParamsDTO;
 
 /**
  * API for reports.
@@ -12,21 +11,17 @@ public interface ReportService {
     /**
      * Generates activity report.
      * 
-     * @param fromDate
-     *            beginning of the report time period
-     * @param toDate
-     *            end of the report time period
+     * @param params
+     *            contains filter parameters used for reporting
      * @return data object containing the report
      */
-    ActivityReportDTO activityReport(Date fromDate, Date toDate);
+    ActivityReportDTO activityReport(ReportParamsDTO params);
 
     /**
      * Generates activity report for a tile (rectangular area).
      * 
-     * @param fromDate
-     *            beginning of the report time period
-     * @param toDate
-     *            end of the report time period
+     * @param params
+     *            contains filter parameters used for reporting
      * @param zoom
      *            zoom level
      * @param x
@@ -35,5 +30,6 @@ public interface ReportService {
      *            tile y
      * @return data object containing the report
      */
-    ActivityReportDTO activityReport(Date fromDate, Date toDate, int zoom, int x, int y);
+    ActivityReportDTO activityReport(ReportParamsDTO params, int zoom, int x, int y);
+
 }
