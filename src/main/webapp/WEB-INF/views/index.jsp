@@ -183,31 +183,27 @@
 		}
 
 		function me(token) {
-			$
-					.ajax({
-						url : baseUrl + "/users/me?access_token=" + token,
-						dataType : "json",
-					})
-					.done(
-							function(data) {
-								user = data;
-								$("#userInfo").empty();
-								$("#userInfo")
-										.append(
-												'<p>'
-														+ user.firstName
-														+ ' '
-														+ user.lastName
-														+ ' ('
-														+ user.login
-														+ ')'
-														+ ' <a href="#" id="logout">logout</a></p>');
-								$("#userInfo #logout").click(function() {
-									$.removeCookie('access_token');
-									location.reload();
-								});
-								$("#accordion").accordion("refresh");
-							});
+			$.ajax({
+				url : baseUrl + "/users/me?access_token=" + token,
+				dataType : "json",
+			}).done(
+				function(data) {
+					user = data;
+					$("#userInfo").empty();
+					$("#userInfo").append(
+						'<p>'
+						+ user.firstName
+						+ ' '
+						+ user.lastName
+						+ ' ('+user.login+')'
+						+ ' <a href="#" id="logout">logout</a></p>'
+					);
+					$("#userInfo #logout").click(function() {
+						$.removeCookie('access_token');
+						location.reload();
+					});
+					$("#accordion").accordion("refresh");
+				});
 		}
 
 		$(window).resize(function() {
@@ -240,16 +236,15 @@
 			}
 		});
 
-		$("#accordion .link").click(
-				function(event) {
-					var forElement = $(this).attr("href");
-					if (forElement == undefined || forElement == null
-							|| forElement == "") {
-						forElement = $(this).data("for");
-					}
-					changeTab(forElement);
-					event.preventDefault();
-				});
+		$("#accordion .link").click(function(event){
+			var forElement = $(this).attr("href");
+			if (forElement == undefined || forElement == null
+					|| forElement == "") {
+				forElement = $(this).data("for");
+			}
+			changeTab(forElement);
+			event.preventDefault();
+		});
 
 	});
 </script>

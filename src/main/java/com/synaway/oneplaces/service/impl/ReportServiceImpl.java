@@ -89,9 +89,7 @@ public class ReportServiceImpl implements ReportService {
                     .setParameter("status", status).setParameter("users", users).getSingleResult();
         } else {
             String usersIdList = "";
-            Iterator<User> it = users.iterator();
-            while (it.hasNext()) {
-                User user = (User) it.next();
+            for (User user : users) {
                 usersIdList += (usersIdList.length() > 0) ? ", " : "";
                 usersIdList += user.getId();
             }
