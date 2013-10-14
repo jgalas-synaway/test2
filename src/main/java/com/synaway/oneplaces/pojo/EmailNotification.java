@@ -1,14 +1,35 @@
 package com.synaway.oneplaces.pojo;
 
-import org.springframework.web.multipart.MultipartFile;
-
+/**
+ * Object containing typical data for sending mail.
+ *
+ */
 public class EmailNotification {
+    
+    /*
+     * email address where we want to send message
+     */
     private String addressTo;
+    
+    /**
+     * email address from we send message
+     */
     private String addressFrom;
+    
+    /**
+     * email address where should be send answer for current mail
+     */
     private String addressReplyTo;
+    
+    /**
+     * email subject
+     */
     private String subject;
+    
+    /**
+     * content of the email
+     */
     private String body;
-    private MultipartFile attachment;
     
     public EmailNotification(String addressTo, String subject, String body) {
         this.addressTo = addressTo;
@@ -46,14 +67,6 @@ public class EmailNotification {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public MultipartFile getAttachment() {
-        return attachment;
-    }
-
-    public void setAttachment(MultipartFile attachment) {
-        this.attachment = attachment;
     }
 
     public String getAddressReplyTo() {

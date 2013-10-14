@@ -17,12 +17,22 @@ import com.synaway.oneplaces.service.MailService;
 @Transactional
 public class MailServiceImpl implements MailService {
 
+    /**
+     * service for email sending
+     */
     @Autowired
     private MailSender mailSender;
 
+    /**
+     * default value for setting "from" address in sending message
+     */
     @Value("${mail.default.from}")
     private String defaultAddressFrom;
 
+    /**
+     * content for email message send to notify about new release of mobile
+     * application
+     */
     @Value("${mail.template.mobileRelease.message}")
     private String templateMobileAppReleaseInfo;
     
@@ -30,11 +40,7 @@ public class MailServiceImpl implements MailService {
     private UserRepository userRepository;
 
     /**
-     * Send simpleMailMessage with given parameters: address to, subject, body
-     * 
-     * @param addressTo email address where we should send email
-     * @param subject email subject
-     * @param body email content
+     * {@inheritDoc}
      */
     @Override
     public void sendMail(String addressTo, String subject, String body) {
@@ -42,10 +48,7 @@ public class MailServiceImpl implements MailService {
     }
 
     /**
-     * sending email with defined in emailNotification data: address to,
-     * address from, address reply to, subject, body
-     * 
-     * @param en
+     * {@inheritDoc}
      */
     @Override
     public void sendMail(EmailNotification en) {
@@ -59,14 +62,7 @@ public class MailServiceImpl implements MailService {
     }
 
     /**
-     * Send email with information about release of certain version of 1places
-     * mobile application. Email content and mobile application url is set on
-     * default values (set in property file).
-     * 
-     * @param userId
-     *            id of user for which we want to send and email
-     * @param mobileAppUrl full string to url from where mobile application can be download
-     * @throws UserException when user with given id not exist
+     * {@inheritDoc}
      */
     @Override
     public void sendMobileAppReleaseMail(Long userId, String mobileAppUrl) throws UserException {
