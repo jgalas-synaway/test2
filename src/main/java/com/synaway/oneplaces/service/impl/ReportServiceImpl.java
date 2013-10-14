@@ -1,6 +1,7 @@
 package com.synaway.oneplaces.service.impl;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,13 +28,20 @@ public class ReportServiceImpl implements ReportService {
     public ActivityReportDTO activityReport(ReportParamsDTO params) {
         ActivityReportDTO result = new ActivityReportDTO();
 
-        // Active users count.
+        Iterable<User> users;
+        if (params.getUsers() == null) {
+            users = userRepository.findAll();
+        } else if (params.getUsers().size() > 0) {
+            users = userRepository.findAll(params.getUsers());
+        } else {
+            users = new ArrayList<User>();
+        }
 
         Long activeUsers = entityManager
                 .createQuery(
                         "SELECT COUNT(DISTINCT ul.user) FROM UserLocation ul WHERE ul.timestamp BETWEEN :from AND :to AND ul.user IN(:users)",
                         Long.class).setParameter("from", params.getFrom()).setParameter("to", params.getTo())
-                .setParameter("users", userRepository.findAll(params.getUsers())).getSingleResult();
+                .setParameter("users", users).getSingleResult();
 
         result.setActiveUsers(activeUsers);
 

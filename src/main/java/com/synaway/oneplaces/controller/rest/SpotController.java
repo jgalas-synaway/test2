@@ -96,12 +96,9 @@ public class SpotController {
         Long ttl3 = spotService.count(Double.valueOf(cityLatitude), Double.valueOf(cityLongitude),
                 Integer.valueOf(cityRadius), 180, 0);
 
-        response.put("ttl3", ttl9); // XXX change 3 and 9 back
+        response.put("ttl3", ttl3);
         response.put("ttl6", ttl6);
-        response.put("ttl9", ttl3); // XXX change 3 and 9 back
-
-        logger.debug("Returning " + spots.size() + " spot(s) [lat = " + latitude + ", lon = " + longitude
-                + ", radius = " + radius + "], 3/6/9 = " + ttl3 + "/" + ttl6 + "/" + ttl9);
+        response.put("ttl9", ttl9);
 
         response.put("spots", spots);
 
