@@ -486,7 +486,13 @@
 								</select>
 							</span>
 						</span>  
-						<br /> <br />
+						<br />
+						<form style="overflow: auto;">
+						  <div id="mode"  style="float:right; padding: 3px;">
+						    <input type="radio" id="radio1" name="radio" checked="checked" /><label for="radio1">Counters</label>
+						    <input type="radio" id="radio2" name="radio" /><label for="radio2">Pins</label>
+						  </div>
+						</form>
 						<div id="map" style="height: 600px"></div>
 					</div>
 				</div>

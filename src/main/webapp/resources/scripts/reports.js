@@ -29,6 +29,10 @@ var Reports = function(token) {
 
 	$('#status').selectmenu();
 	$('#map_status').selectmenu();
+	
+	$(function() {
+	    $("#mode").buttonset();
+	  });
 
 	$.ajax({
 		"dataType" : 'json',
