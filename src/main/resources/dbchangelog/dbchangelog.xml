@@ -16,5 +16,6 @@
 	<include file="classpath:dbchangelog/007-create-user-locations-table.xml"/>
 	<include file="classpath:dbchangelog/008-add-flag-to-spots.xml"/>
 	<include file="classpath:dbchangelog/009-add-spot-created-at-index.xml"/>
+	<include file="classpath:dbchangelog/010-add-spot-location-index.xml"/>
 	
 </databaseChangeLog>
