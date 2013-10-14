@@ -69,13 +69,15 @@ var Users = function(token){
 			"bProcessing" : true,
 			"bJQueryUI": true,
 			"sPaginationType": "input",
+			//for aoColumns this array must be equal to the number of columns in the original HTML table 
 			"aoColumns": [
 			              { "mData": "firstName" },
 			              { "mData": "lastName" },
 			              { "mData": "login" },
 			              { "mData": "role" },
 			              { "mData": "email" },
-			              { "mData": "id" }
+			              { "mData": null, "sClass": "center" },
+			              { "mData": null }
 			          ],
 			"sAjaxSource" : baseUrl + "/users?access_token=" + token,
 			"fnServerData" : function(sSource, aoData, fnCallback) {
@@ -95,7 +97,10 @@ var Users = function(token){
 				  var id = aData['id']; 
 
 				  var imgTag = '<img class="edit_btn" src="'+baseUrl+'/resources/images/edit.png"/><img class="delete_btn" src="'+baseUrl+'/resources/images/delete.png"/>';
-				  $('td:eq(5)', nRow).html(imgTag); 
+				  $('td:eq(6)', nRow).html(imgTag); 
+				  
+				  var appEmailImgTag = '<img alt="send email" class="email_btn" src="'+baseUrl+'/resources/images/email.png"/>';
+				  $('td:eq(5)', nRow).html(appEmailImgTag); 
 				  
 				  $(nRow).find(".edit_btn").click(function(){
 					  self.editWindow(id);
@@ -103,6 +108,10 @@ var Users = function(token){
 				  
 				  $(nRow).find(".delete_btn").click(function(){
 					  self.deleteWindow(id);
+				  });
+				  
+				  $(nRow).find(".email_btn").click(function(){
+					  self.sendEmailWithApp(id);
 				  });
 				  
 				  return nRow;
@@ -167,5 +176,17 @@ var Users = function(token){
 			         ]
 		});
 		$('#user_delete').dialog('open');
+	}
+	
+	this.sendEmailWithApp = function(userId) {
+		showTooltip("Sending email...");
+		$.ajax({
+			"type" : "POST",
+			"url" : baseUrl + "/mails?userId="+userId+"&access_token=" + token
+		}).done(function(json){
+			showTooltip("Email send");
+		}).fail(function(json) {
+			showTooltip("Error, email not send, please contact with administrator.");
+		});
 	}
 };

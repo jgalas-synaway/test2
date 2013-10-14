@@ -309,10 +309,11 @@
 							<tr>
 								<th width="20%">First Name</th>
 								<th width="20%">Last Name</th>
-								<th width="20%">Login</th>
-								<th width="15%">Role</th>
-								<th width="15%">email</th>
-								<th width="10%">edit</th>
+								<th width="15%">Login</th>
+								<th width="10%">Role</th>
+								<th width="15%">Email</th>
+								<th width="10%">Send an application</th>
+								<th width="10%">Edit</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -458,7 +459,7 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
+	<div id="tooltip" style="display:none;">tooltip</div>
 </body>
 </html>

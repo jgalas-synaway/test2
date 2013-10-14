@@ -126,3 +126,19 @@ html, body{
 .leaflet-tile {
 	border: 2px solid #666666;
 }
+
+#tooltip {
+	position: fixed;
+	bottom: 5px;
+	right: 5px;
+	min-width: 180px;
+	min-height: 20px;
+	border-radius: 5px;
+	background: #333;
+	background: rgba(0,0,0,.8);
+    color: #fff;
+    padding: 10px 20px;
+    z-index: 98;
+    border: 1px solid #14DA19;
+    text-align: center;
+}
