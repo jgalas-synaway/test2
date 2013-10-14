@@ -83,10 +83,15 @@ var MapView = function(element) {
 					self.spots.push(newSpot);
 				}
 				
-			});
-			
-			
+			});			
 		});
+		var spotsInBounds = 0;
+		$.each(self.spots, function(index, spot){
+			if(self.map.getBounds() != undefined && self.map.getBounds().contains(spot.marker.getPosition())){
+				spotsInBounds += 1;
+			}
+		});
+		$('#spotsCount').html(spotsInBounds);
 	}
 	
 	function getLocations() {
@@ -143,8 +148,7 @@ var MapView = function(element) {
 					
 					self.locations.push(newLocation);
 				}
-			});
-			
+			});			
 			
 		});
 	}

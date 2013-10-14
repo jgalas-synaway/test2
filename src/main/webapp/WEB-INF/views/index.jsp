@@ -305,6 +305,11 @@
 
 			<div id="tab-1" class="tab">
 				<div id="map_canvas"></div>
+				<div style="position: absolute; left: 50%; top: 0px">
+					<div id=stats  style="position: relative; left: -50%; background:#eee; padding: 5px;">
+						<span>Spots in view: </span><span id="spotsCount">0</span>
+					</div>
+				</div>
 			</div>
 			<div id="tab-2" class="tab">
 				<div class="tabWrapper">
