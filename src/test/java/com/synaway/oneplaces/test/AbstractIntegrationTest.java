@@ -25,7 +25,6 @@ abstract public class AbstractIntegrationTest {
         spot.setTimestamp(new Date());
         spot.setUser(user);
         spot.setStatus("free");
-        spot.setFlag("fake");
 
         Random r = new Random();
         double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();

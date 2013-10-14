@@ -157,7 +157,6 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         spot.setTimestamp(timestamp);
         spot.setUser(user);
         spot.setStatus(status);
-        spot.setFlag("fake");
 
         Random r = new Random();
         double latitude = minLatitude + (maxLatitude - minLatitude) * r.nextDouble();
