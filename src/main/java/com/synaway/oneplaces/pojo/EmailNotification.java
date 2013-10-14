@@ -5,32 +5,32 @@ package com.synaway.oneplaces.pojo;
  *
  */
 public class EmailNotification {
-    
+
     /*
      * email address where we want to send message
      */
     private String addressTo;
-    
+
     /**
      * email address from we send message
      */
     private String addressFrom;
-    
+
     /**
      * email address where should be send answer for current mail
      */
     private String addressReplyTo;
-    
+
     /**
      * email subject
      */
     private String subject;
-    
+
     /**
      * content of the email
      */
     private String body;
-    
+
     public EmailNotification(String addressTo, String subject, String body) {
         this.addressTo = addressTo;
         this.subject = subject;
