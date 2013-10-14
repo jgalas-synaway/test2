@@ -86,6 +86,12 @@ var MapView = function(element) {
 			});			
 		});
 		var spotsInBounds = 0;
+		for(var i = 0; i < self.spots.length; i++){
+			if(self.spots[i].marker.getMap() == null){
+				self.spots.splice(i,1);
+				i--;
+			}
+		}
 		$.each(self.spots, function(index, spot){
 			if(self.map.getBounds() != undefined && self.map.getBounds().contains(spot.marker.getPosition())){
 				spotsInBounds += 1;
