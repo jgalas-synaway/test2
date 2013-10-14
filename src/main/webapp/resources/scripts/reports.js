@@ -27,6 +27,9 @@ var Reports = function(token) {
 		}
 	});
 
+	$('#status').selectmenu();
+	$('#map_status').selectmenu();
+
 	$.ajax({
 		"dataType" : 'json',
 		"type" : "GET",
@@ -48,6 +51,7 @@ var Reports = function(token) {
 				var data = {};
 				data.from = new Date($("#from_date").datepicker().val()+ "T00:00:00.000Z");
 				data.to = new Date($("#to_date").datepicker().val()+ "T23:59:00.000Z");
+				data.status = $('#status').val();
 				data.users = $("#users").val();
 				data.users = (data.users === null)? [] : data.users;
 				$.ajax(
@@ -86,6 +90,10 @@ var Reports = function(token) {
 	});
 
 	$("#map_to_date").change(function() {
+		tileLayer.redraw();
+	});
+	
+	$('#map_status').change(function() {
 		tileLayer.redraw();
 	});
 	
@@ -144,6 +152,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 		var data = {};
 		data.from = new Date($("#map_from_date").datepicker().val()+ "T00:00:00.000Z");
 		data.to = new Date($("#map_to_date").datepicker().val()+ "T23:59:00.000Z");
+		data.status = $('#map_status').val();
 		data.users = $("#map_users").val();
 		data.users = (data.users === null)? [] : data.users;
 		$.ajax({
