@@ -1,5 +1,7 @@
 package com.synaway.oneplaces.controller.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.synaway.oneplaces.dto.ActivityReportDTO;
 import com.synaway.oneplaces.dto.ReportParamsDTO;
+import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.service.ReportService;
 
 /**
@@ -29,10 +32,17 @@ public class ReportController {
         return reportService.activityReport(params);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/activity/map/{zoom}/{x}/{y}.json", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/activity/map/counters/{zoom}/{x}/{y}.json", produces = "application/json")
     @ResponseBody
-    public ActivityReportDTO activityReportMap(@RequestBody final ReportParamsDTO params, @PathVariable int zoom,
+    public ActivityReportDTO activityReportCountersMap(@RequestBody final ReportParamsDTO params, @PathVariable int zoom,
             @PathVariable int x, @PathVariable int y) {
         return reportService.activityReport(params, zoom, x, y);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/activity/map/pins/{zoom}/{x}/{y}.json", produces = "application/json")
+    @ResponseBody
+    public List<Spot> activityReportPinMap(@RequestBody final ReportParamsDTO params, @PathVariable int zoom,
+            @PathVariable int x, @PathVariable int y) {
+        return reportService.getSpots(params, zoom, x, y);
     }
 }

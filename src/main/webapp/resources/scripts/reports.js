@@ -80,43 +80,50 @@ var Reports = function(token) {
 		attribution : osmAttrib
 	});
 	map.addLayer(osm);
+    
 
-	var tileLayer = new L.TileLayer.Ajax(
+	var tileLayer = new L.TileLayer.Counters(
 			baseUrl
-					+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
+					+ '/reports/activity/map/counters/{z}/{x}/{y}.json?access_token={accessToken}',
 			{
 				accessToken : token				
 			}).addTo(map);
+	
+	var markerLayer = new L.TileLayer.Pins(
+			baseUrl
+					+ '/reports/activity/map/pins/{z}/{x}/{y}.json?access_token={accessToken}',
+			{
+				accessToken : token				
+			});
 
 	$("#map_from_date").change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 
 	$("#map_to_date").change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 	
 	$('#map_status').change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 	
 	$("#mode").change(function(event){
 		if($("#mode input:radio:checked").val() === 'counters'){
-			tileLayer = new L.TileLayer.Ajax(
-					baseUrl
-							+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
-					{
-						accessToken : token				
-					}).addTo(map);
+			map.removeLayer(markerLayer);
 			map.addLayer(tileLayer);
 		}else{
 			map.removeLayer(tileLayer);
+			map.addLayer(markerLayer);
 		}
 	});
 };
 
 // Load data tiles using the JQuery ajax function
-L.TileLayer.Ajax = L.TileLayer.extend({
+L.TileLayer.Counters = L.TileLayer.extend({
 	_createTile : function() {
 		var tile = L.DomUtil.create('div',
 				'leaflet-tile leaflet-tile-loaded activity-tile');
@@ -188,6 +195,99 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 	_unloadTile : function(evt) {
 		var tile = evt.tile, req = tile._request;
 		this._map.removeLayer(tile.marker);
+		if (req) {
+			tile._request = null;
+			req.abort();
+			this.fire('tilerequestabort', {
+				tile : tile,
+				request : req
+			});
+		}
+	},
+	_update : function() {
+		// console.log('_update');
+		if (this._map._panTransition && this._map._panTransition._inProgress) {
+			return;
+		}
+		if (this._tilesToLoad < 0)
+			this._tilesToLoad = 0;
+		L.TileLayer.prototype._update.apply(this, arguments);
+	}
+});
+
+L.TileLayer.Pins = L.TileLayer.extend({
+	_createTile : function() {
+		var tile = L.DomUtil.create('div',
+				'leaflet-tile leaflet-tile-loaded activity-tile');
+		var tileSize = this.options.tileSize;
+		tile.style.width = tileSize + 'px';
+		tile.style.height = tileSize + 'px';
+		tile.onselectstart = tile.onmousemove = L.Util.falseFn;
+		return tile;
+	},
+
+	drawTile : function(tile, tilePoint) {
+		// override with rendering code
+	},
+
+	onAdd : function(map) {
+		L.TileLayer.prototype.onAdd.call(this, map);
+		this.on('tileunload', this._unloadTile);
+	},
+	onRemove : function(map) {
+		$.each(this._tiles, function (index, tile) {
+			$.each(tile.marker, function(index, marker){
+				map.removeLayer(tile.marker[index]);
+			});			
+		});
+		L.TileLayer.prototype.onRemove.call(this, map);
+		this.off('tileunload', this._unloadTile);
+	},
+	_addTile : function(tilePoint, container) {
+		var key = tilePoint.x + ':' + tilePoint.y;
+		var tilePos = this._getTilePos(tilePoint);
+		var tiledata = {
+			key : key,
+			datum : null,
+			latlon : this._map.layerPointToLatLng(tilePos)
+		};
+		this._tiles[key] = tiledata;
+		this._loadTile(tiledata, tilePoint);
+	},
+	_addTileData : function(tile) {
+		tile.marker = [];
+		var map = this._map;
+		$.each(tile.datum,function(index, spot){
+			tile.marker[index] = new L.Marker([spot.latitude, spot.longitude])
+			tile.marker[index].addTo(map);			
+		});
+	},
+	_loadTile : function(tile, tilePoint) {
+		this._adjustTilePoint(tilePoint);
+		var layer = this;
+		var data = {};
+		data.from = new Date($("#map_from_date").datepicker().val()+ "T00:00:00.000Z");
+		data.to = new Date($("#map_to_date").datepicker().val()+ "T23:59:00.000Z");
+		data.status = $('#map_status').val();
+		data.users = $("#map_users").val();
+		data.users = (data.users === null)? [] : data.users;
+		$.ajax({
+			"dataType" : 'json',
+			"type" : "POST",
+			"url" : this.getTileUrl(tilePoint),
+			"contentType": 'application/json',
+			"data":JSON.stringify(data)
+		}).done(function(json) {
+			tile.datum = json;
+			layer._addTileData(tile);
+		});
+	},
+	_unloadTile : function(evt) {
+		var tile = evt.tile, req = tile._request;
+		var map = this._map;
+		$.each(tile.marker, function(index, marker){
+			map.removeLayer(tile.marker[index]);
+		});
 		if (req) {
 			tile._request = null;
 			req.abort();
