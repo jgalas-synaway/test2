@@ -117,27 +117,15 @@ public class ReportServiceImpl implements ReportService {
             usersIdList += (usersIdList.length() > 0) ? ", " : "";
             usersIdList += user.getId();
         }
-        if (params.getStatus() != null && (params.getStatus().equals("free") || params.getStatus().equals("occupied"))) {
-            return entityManager
-                    .createNativeQuery(
-                            "SELECT * FROM Spot s WHERE  s.flag IS NULL AND s.created_at BETWEEN ?1 AND ?2 AND status = ?3"
-                                    + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
-                                    + " AND user_id IN(" + usersIdList + ")", Spot.class)
-                    .setParameter(1, params.getFrom()).setParameter(2, params.getTo())
-                    .setParameter(3, params.getStatus()).setParameter(5, boundingBox.getNorth())
-                    .setParameter(4, boundingBox.getWest()).setParameter(7, boundingBox.getSouth())
-                    .setParameter(6, boundingBox.getEast()).getResultList();
-        } else {
-            return entityManager
-                    .createNativeQuery(
-                            "SELECT * FROM Spot s WHERE  s.flag IS NULL AND s.created_at BETWEEN ?1 AND ?2"
-                                    + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
-                                    + " AND user_id IN(" + usersIdList + ")", Spot.class)
-                    .setParameter(1, params.getFrom()).setParameter(2, params.getTo())
-                    .setParameter(5, boundingBox.getNorth())
-                    .setParameter(4, boundingBox.getWest()).setParameter(7, boundingBox.getSouth())
-                    .setParameter(6, boundingBox.getEast()).getResultList();
-        }
+        return entityManager
+                .createNativeQuery(
+                        "SELECT * FROM Spot s WHERE  s.flag IS NULL AND s.created_at BETWEEN ?1 AND ?2 AND (?3 = 'both' OR status = ?3)"
+                                + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
+                                + " AND user_id IN(" + usersIdList + ")", Spot.class).setParameter(1, params.getFrom())
+                .setParameter(2, params.getTo()).setParameter(3, params.getStatus())
+                .setParameter(5, boundingBox.getNorth()).setParameter(4, boundingBox.getWest())
+                .setParameter(7, boundingBox.getSouth()).setParameter(6, boundingBox.getEast()).getResultList();
+
     }
 
     protected Long getClickCount(ReportParamsDTO params, BoundingBox boundingBox) {

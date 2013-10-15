@@ -150,6 +150,7 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         params1 = new ReportParamsDTO();
         params1.setFrom(DateUtils.addMinutes(now, -12000));
         params1.setTo(new Date());
+        params1.setStatus("both");
 
         List<Spot> spots = reportController.activityReportPinMap(params1, 8, 129, 88);
         List<Spot> spots2 = reportController.activityReportPinMap(params1, 11, 100, 200);

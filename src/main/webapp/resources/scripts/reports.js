@@ -215,25 +215,7 @@ L.TileLayer.Counters = L.TileLayer.extend({
 	}
 });
 
-L.TileLayer.Pins = L.TileLayer.extend({
-	_createTile : function() {
-		var tile = L.DomUtil.create('div',
-				'leaflet-tile leaflet-tile-loaded activity-tile');
-		var tileSize = this.options.tileSize;
-		tile.style.width = tileSize + 'px';
-		tile.style.height = tileSize + 'px';
-		tile.onselectstart = tile.onmousemove = L.Util.falseFn;
-		return tile;
-	},
-
-	drawTile : function(tile, tilePoint) {
-		// override with rendering code
-	},
-
-	onAdd : function(map) {
-		L.TileLayer.prototype.onAdd.call(this, map);
-		this.on('tileunload', this._unloadTile);
-	},
+L.TileLayer.Pins = L.TileLayer.Counters.extend({
 	onRemove : function(map) {
 		$.each(this._tiles, function (index, tile) {
 			$.each(tile.marker, function(index, marker){
@@ -243,43 +225,12 @@ L.TileLayer.Pins = L.TileLayer.extend({
 		L.TileLayer.prototype.onRemove.call(this, map);
 		this.off('tileunload', this._unloadTile);
 	},
-	_addTile : function(tilePoint, container) {
-		var key = tilePoint.x + ':' + tilePoint.y;
-		var tilePos = this._getTilePos(tilePoint);
-		var tiledata = {
-			key : key,
-			datum : null,
-			latlon : this._map.layerPointToLatLng(tilePos)
-		};
-		this._tiles[key] = tiledata;
-		this._loadTile(tiledata, tilePoint);
-	},
 	_addTileData : function(tile) {
 		tile.marker = [];
 		var map = this._map;
 		$.each(tile.datum,function(index, spot){
 			tile.marker[index] = new L.Marker([spot.latitude, spot.longitude])
 			tile.marker[index].addTo(map);			
-		});
-	},
-	_loadTile : function(tile, tilePoint) {
-		this._adjustTilePoint(tilePoint);
-		var layer = this;
-		var data = {};
-		data.from = new Date($("#map_from_date").datepicker().val()+ "T00:00:00.000Z");
-		data.to = new Date($("#map_to_date").datepicker().val()+ "T23:59:00.000Z");
-		data.status = $('#map_status').val();
-		data.users = $("#map_users").val();
-		data.users = (data.users === null)? [] : data.users;
-		$.ajax({
-			"dataType" : 'json',
-			"type" : "POST",
-			"url" : this.getTileUrl(tilePoint),
-			"contentType": 'application/json',
-			"data":JSON.stringify(data)
-		}).done(function(json) {
-			tile.datum = json;
-			layer._addTileData(tile);
 		});
 	},
 	_unloadTile : function(evt) {
@@ -296,14 +247,5 @@ L.TileLayer.Pins = L.TileLayer.extend({
 				request : req
 			});
 		}
-	},
-	_update : function() {
-		// console.log('_update');
-		if (this._map._panTransition && this._map._panTransition._inProgress) {
-			return;
-		}
-		if (this._tilesToLoad < 0)
-			this._tilesToLoad = 0;
-		L.TileLayer.prototype._update.apply(this, arguments);
 	}
 });
