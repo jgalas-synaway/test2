@@ -30,9 +30,8 @@ var Reports = function(token) {
 	$('#status').selectmenu();
 	$('#map_status').selectmenu();
 	
-	$(function() {
-	    $("#mode").buttonset();
-	  });
+
+	$("#mode").buttonset();
 
 	$.ajax({
 		"dataType" : 'json',
@@ -101,8 +100,18 @@ var Reports = function(token) {
 		tileLayer.redraw();
 	});
 	
-	$('#radio2').click(function(e) {
-		map.removeLayer(tileLayer);
+	$("#mode").change(function(event){
+		if($("#mode input:radio:checked").val() === 'counters'){
+			tileLayer = new L.TileLayer.Ajax(
+					baseUrl
+							+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
+					{
+						accessToken : token				
+					}).addTo(map);
+			map.addLayer(tileLayer);
+		}else{
+			map.removeLayer(tileLayer);
+		}
 	});
 };
 
