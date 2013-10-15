@@ -101,6 +101,9 @@ var Reports = function(token) {
 		tileLayer.redraw();
 	});
 	
+	$('#radio2').click(function(e) {
+		map.removeLayer(tileLayer);
+	});
 };
 
 // Load data tiles using the JQuery ajax function
@@ -124,6 +127,9 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 		this.on('tileunload', this._unloadTile);
 	},
 	onRemove : function(map) {
+		$.each(this._tiles, function (index, tile) {
+			map.removeLayer(tile.marker);
+		});
 		L.TileLayer.prototype.onRemove.call(this, map);
 		this.off('tileunload', this._unloadTile);
 	},
