@@ -110,7 +110,7 @@ public class ReportServiceImpl implements ReportService {
         } else if (params.getUsers().size() > 0) {
             users = userRepository.findAll(params.getUsers());
         } else {
-            users = new ArrayList<User>();
+            return new ArrayList<Spot>();
         }
         String usersIdList = "";
         for (User user : users) {
