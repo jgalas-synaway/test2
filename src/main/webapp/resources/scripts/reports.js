@@ -24,6 +24,7 @@ var Reports = function(token) {
 		noneSelectedText: "Select users",
 		close : function(){
 			tileLayer.redraw();
+			markerLayer.redraw();
 		}
 	});
 
