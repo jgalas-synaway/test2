@@ -29,6 +29,9 @@ var Reports = function(token) {
 
 	$('#status').selectmenu();
 	$('#map_status').selectmenu();
+	
+
+	$("#mode").buttonset();
 
 	$.ajax({
 		"dataType" : 'json',
@@ -77,30 +80,50 @@ var Reports = function(token) {
 		attribution : osmAttrib
 	});
 	map.addLayer(osm);
+    
 
-	var tileLayer = new L.TileLayer.Ajax(
+	var tileLayer = new L.TileLayer.Counters(
 			baseUrl
-					+ '/reports/activity/map/{z}/{x}/{y}.json?access_token={accessToken}',
+					+ '/reports/activity/map/counters/{z}/{x}/{y}.json?access_token={accessToken}',
 			{
 				accessToken : token				
 			}).addTo(map);
+	
+	var markerLayer = new L.TileLayer.Pins(
+			baseUrl
+					+ '/reports/activity/map/pins/{z}/{x}/{y}.json?access_token={accessToken}',
+			{
+				accessToken : token				
+			});
 
 	$("#map_from_date").change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 
 	$("#map_to_date").change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 	
 	$('#map_status').change(function() {
 		tileLayer.redraw();
+		markerLayer.redraw();
 	});
 	
+	$("#mode").change(function(event){
+		if($("#mode input:radio:checked").val() === 'counters'){
+			map.removeLayer(markerLayer);
+			map.addLayer(tileLayer);
+		}else{
+			map.removeLayer(tileLayer);
+			map.addLayer(markerLayer);
+		}
+	});
 };
 
 // Load data tiles using the JQuery ajax function
-L.TileLayer.Ajax = L.TileLayer.extend({
+L.TileLayer.Counters = L.TileLayer.extend({
 	_createTile : function() {
 		var tile = L.DomUtil.create('div',
 				'leaflet-tile leaflet-tile-loaded activity-tile');
@@ -120,6 +143,9 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 		this.on('tileunload', this._unloadTile);
 	},
 	onRemove : function(map) {
+		$.each(this._tiles, function (index, tile) {
+			map.removeLayer(tile.marker);
+		});
 		L.TileLayer.prototype.onRemove.call(this, map);
 		this.off('tileunload', this._unloadTile);
 	},
@@ -186,5 +212,40 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 		if (this._tilesToLoad < 0)
 			this._tilesToLoad = 0;
 		L.TileLayer.prototype._update.apply(this, arguments);
+	}
+});
+
+L.TileLayer.Pins = L.TileLayer.Counters.extend({
+	onRemove : function(map) {
+		$.each(this._tiles, function (index, tile) {
+			$.each(tile.marker, function(index, marker){
+				map.removeLayer(tile.marker[index]);
+			});			
+		});
+		L.TileLayer.prototype.onRemove.call(this, map);
+		this.off('tileunload', this._unloadTile);
+	},
+	_addTileData : function(tile) {
+		tile.marker = [];
+		var map = this._map;
+		$.each(tile.datum,function(index, spot){
+			tile.marker[index] = new L.Marker([spot.latitude, spot.longitude])
+			tile.marker[index].addTo(map);			
+		});
+	},
+	_unloadTile : function(evt) {
+		var tile = evt.tile, req = tile._request;
+		var map = this._map;
+		$.each(tile.marker, function(index, marker){
+			map.removeLayer(tile.marker[index]);
+		});
+		if (req) {
+			tile._request = null;
+			req.abort();
+			this.fire('tilerequestabort', {
+				tile : tile,
+				request : req
+			});
+		}
 	}
 });

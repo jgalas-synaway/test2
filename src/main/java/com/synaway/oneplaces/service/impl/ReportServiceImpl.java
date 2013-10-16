@@ -2,6 +2,7 @@ package com.synaway.oneplaces.service.impl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.synaway.oneplaces.dto.ActivityReportDTO;
 import com.synaway.oneplaces.dto.ReportParamsDTO;
+import com.synaway.oneplaces.model.Spot;
 import com.synaway.oneplaces.model.User;
 import com.synaway.oneplaces.repository.UserRepository;
 import com.synaway.oneplaces.service.ReportService;
@@ -96,6 +98,34 @@ public class ReportServiceImpl implements ReportService {
         // Red spots required 2 clicks (first marked as green, then as red).
         result.setGreenRedClickCount(greenClickCount + 2 * redClickCount);
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Spot> getSpots(ReportParamsDTO params, int zoom, int x, int y) {
+        BoundingBox boundingBox = TileHelper.tile2boundingBox(x, y, zoom);
+        Iterable<User> users;
+        if (params.getUsers() == null) {
+            users = userRepository.findAll();
+        } else if (params.getUsers().size() > 0) {
+            users = userRepository.findAll(params.getUsers());
+        } else {
+            users = new ArrayList<User>();
+        }
+        String usersIdList = "";
+        for (User user : users) {
+            usersIdList += (usersIdList.length() > 0) ? ", " : "";
+            usersIdList += user.getId();
+        }
+        return entityManager
+                .createNativeQuery(
+                        "SELECT * FROM Spot s WHERE  s.flag IS NULL AND s.created_at BETWEEN ?1 AND ?2 AND (?3 = 'both' OR status = ?3)"
+                                + " AND ST_Within(location, ST_MakeEnvelope(?4, ?5, ?6, ?7, 4326))"
+                                + " AND user_id IN(" + usersIdList + ")", Spot.class).setParameter(1, params.getFrom())
+                .setParameter(2, params.getTo()).setParameter(3, params.getStatus())
+                .setParameter(5, boundingBox.getNorth()).setParameter(4, boundingBox.getWest())
+                .setParameter(7, boundingBox.getSouth()).setParameter(6, boundingBox.getEast()).getResultList();
+
     }
 
     protected Long getClickCount(ReportParamsDTO params, BoundingBox boundingBox) {

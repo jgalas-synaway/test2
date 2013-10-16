@@ -6,12 +6,13 @@
 <head>
 <title>1places</title>
 <link rel="stylesheet"
-	href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+	href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
 <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
 <![endif]-->
 
-<script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+
 
 <c:url var="jq" value="/resources/scripts/jquery-1.9.1.min.js" />
 <c:url var="jq_cookie" value="/resources/scripts/jquery.cookie.js" />
@@ -486,7 +487,13 @@
 								</select>
 							</span>
 						</span>  
-						<br /> <br />
+						<br />
+						<form style="overflow: auto;">
+						  <div id="mode"  style="float:right; padding: 3px;">
+						    <input type="radio" id="radio1" name="radio" checked="checked" value="counters" /><label for="radio1">Counters</label>
+						    <input type="radio" id="radio2" name="radio"  value="pins"/><label for="radio2">Pins</label>
+						  </div>
+						</form>
 						<div id="map" style="height: 600px"></div>
 					</div>
 				</div>

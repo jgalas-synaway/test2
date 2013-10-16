@@ -3,6 +3,7 @@ package com.synaway.oneplaces.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -140,11 +141,22 @@ public class ReportControllerIntegrationTest extends AbstractIntegrationTest {
         params1.setFrom(DateUtils.addMinutes(now, -12000));
         params1.setTo(new Date());
 
-        ActivityReportDTO reportTile = reportController.activityReportMap(params1, 8, 129, 88);
-        ActivityReportDTO reportTile2 = reportController.activityReportMap(params1, 11, 100, 200);
+        ActivityReportDTO reportTile = reportController.activityReportCountersMap(params1, 8, 129, 88);
+        ActivityReportDTO reportTile2 = reportController.activityReportCountersMap(params1, 11, 100, 200);
 
         assertEquals(Long.valueOf(10), reportTile.getGreenRedClickCount());
         assertEquals(Long.valueOf(0), reportTile2.getGreenRedClickCount());
+        
+        params1 = new ReportParamsDTO();
+        params1.setFrom(DateUtils.addMinutes(now, -12000));
+        params1.setTo(new Date());
+        params1.setStatus("both");
+
+        List<Spot> spots = reportController.activityReportPinMap(params1, 8, 129, 88);
+        List<Spot> spots2 = reportController.activityReportPinMap(params1, 11, 100, 200);
+        
+        assertEquals(10, spots.size());
+        assertEquals(0, spots2.size());
     }
 
     private Spot addSpot(User user, Date timestamp, String status) {
