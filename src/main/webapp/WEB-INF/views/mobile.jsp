@@ -16,6 +16,6 @@
 
 </head>
 <body>
-	<a href="itms-services://?action=download-manifest&url=${baseURL}/resources/mobile/manifest.plist">Install App</a>
+	<a href="itms-services://?action=download-manifest&url=${manifestUrl}">Install App</a>
 </body>
 </html>
