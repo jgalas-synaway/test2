@@ -14,8 +14,31 @@
 	value="${req.scheme}://${req.serverName}:${req.serverPort}${req.contextPath}" />
 
 
+<style type="text/css">
+	a {
+		font-size: 50px;
+	}
+
+	#install-button {
+		border: 2px dashed #BEB16E;
+		border-radius: 15px;
+		width: 400px;
+		text-align: center;
+		padding: 10px;
+		margin: auto;
+	}
+
+	#content {
+		padding-top: 50px;
+	}
+</style>
 </head>
 <body>
-	<a href="itms-services://?action=download-manifest&url=${manifestUrl}">Install App</a>
+	<div id="content">
+		<div id="install-button">
+			<a href="itms-services://?action=download-manifest&url=${manifestUrl}">Install application</a>
+		</div>
+	</div>
 </body>
 </html>
+
