@@ -20,15 +20,14 @@ public class MailController {
     @Autowired
     private MailService mailService;
         
-    @Value("${mail.template.mobileRelease.relativeUrl}")
-    private String mobileReleaseRelativeUrl;
+    @Value("${mobileRelease.siteUrl}")
+    private String mobileReleaseSiteUrl;
  
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
     @ResponseBody
     public void sendMobileAppReleaseMail(HttpServletRequest request, @RequestParam(value = "userId") Long userId) throws UserException {
-        String baseUrl = String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
-        mailService.sendMobileAppReleaseMail(userId, baseUrl + "/" + mobileReleaseRelativeUrl);
+        mailService.sendMobileAppReleaseMail(userId, mobileReleaseSiteUrl);
     }
     
 }
