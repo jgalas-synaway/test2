@@ -35,7 +35,7 @@ var MapView = function(element) {
 
 	function getSpots() {
 		$.ajax({
-			url : baseUrl+"/spots?latitude="+self.map.getCenter().lat()+"&longitude="+self.map.getCenter().lng()+"&radius=30000&access_token="+self.token+"&tracking=false",
+			url : baseUrl+"/spots?latitude="+self.map.getCenter().lat()+"&longitude="+self.map.getCenter().lng()+"&radius=30000&access_token="+self.token,
 			dataType:"json"
 		}).done(function(data) {
 			//remove old spots from list

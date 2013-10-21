@@ -65,7 +65,7 @@ public class SpotController {
     @ResponseBody
     public Map<String, Object> getAllSpots(@RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude, @RequestParam(required = false) Integer radius,
-            @RequestParam(required = false) Boolean tracking) throws MissingServletRequestParameterException {
+            @RequestParam(required = false) Double trackLatitude, @RequestParam(required = false) Double trackLongitude) throws MissingServletRequestParameterException {
         List<Spot> spots = new ArrayList<Spot>();
         Map<String, Object> response = new HashMap<String, Object>();
 
@@ -80,10 +80,10 @@ public class SpotController {
         }
         spots = spotService.getByLatitudeLongitudeAndRadius(latitude, longitude, radius);
 
-        if (tracking == null || tracking.booleanValue()) {
+        if (trackLatitude != null || trackLongitude != null) {
 
             UserLocation userLocation = new UserLocation();
-            userLocation.setLocation(spotService.createPoint(longitude, latitude));
+            userLocation.setLocation(spotService.createPoint(trackLongitude, trackLatitude));
             userLocation.setUser(userService.getCurrentUser());
 
             userLocationRepository.save(userLocation);

@@ -77,10 +77,10 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
             addSpot(user);
         }
 
-        List<Spot> spots = (List<Spot>) spotController.getAllSpots(0.0, 0.0, 100, false).get("spots");
+        List<Spot> spots = (List<Spot>) spotController.getAllSpots(0.0, 0.0, 100, null ,null).get("spots");
         Assert.assertEquals(0, spots.size());
 
-        spots = (List<Spot>) spotController.getAllSpots(50.05, 19.7, 30000, false).get("spots");
+        spots = (List<Spot>) spotController.getAllSpots(50.05, 19.7, 30000, null, null).get("spots");
         Assert.assertEquals(10, spots.size());
     }
 
@@ -94,19 +94,19 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
             addSpot(user, 22.350, 22.351, 48.8550, 48.8559);
         }
 
-        Map<String, Object> response = (Map<String, Object>) spotController.getAllSpots(0.0, 0.0, 100, false);
+        Map<String, Object> response = (Map<String, Object>) spotController.getAllSpots(0.0, 0.0, 100, null, null);
         Assert.assertEquals(0, ((List<Spot>) response.get("spots")).size());
         Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
         Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
         Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl9"));
 
-        response = (Map<String, Object>) spotController.getAllSpots(50.05, 19.7, 30000, false);
+        response = (Map<String, Object>) spotController.getAllSpots(50.05, 19.7, 30000, null, null);
         Assert.assertEquals(0, ((List<Spot>) response.get("spots")).size());
         Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
         Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
         Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl9"));
 
-        response = (Map<String, Object>) spotController.getAllSpots(48.8559, 2.351, 10000, false);
+        response = (Map<String, Object>) spotController.getAllSpots(48.8559, 2.351, 10000, null, null);
         Assert.assertEquals(10, ((List<Spot>) response.get("spots")).size());
         Assert.assertEquals(Long.valueOf(10), (Long) response.get("ttl3"));
         Assert.assertEquals(Long.valueOf(0), (Long) response.get("ttl6"));
@@ -116,19 +116,19 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
     @Test(expected = MissingServletRequestParameterException.class)
     public void getAllSpotsShouldThrowMissingServletRequestParameterExceptionLatitude()
             throws MissingServletRequestParameterException {
-        spotController.getAllSpots(null, 19.7, 20000, false);
+        spotController.getAllSpots(null, 19.7, 20000, null, null);
     }
 
     @Test(expected = MissingServletRequestParameterException.class)
     public void getAllSpotsShouldThrowMissingServletRequestParameterExceptionLongitude()
             throws MissingServletRequestParameterException {
-        spotController.getAllSpots(50.05, null, 20000, false);
+        spotController.getAllSpots(50.05, null, 20000, null, null);
     }
 
     @Test(expected = MissingServletRequestParameterException.class)
     public void getAllSpotsShouldThrowMissingServletRequestParameterExceptionRadius()
             throws MissingServletRequestParameterException {
-        spotController.getAllSpots(50.05, 19.7, null, false);
+        spotController.getAllSpots(50.05, 19.7, null, null, null);
     }
 
     @Transactional
@@ -220,8 +220,8 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
                     + ", \"status\" : \"somestatus\" }");
         }
 
-        Assert.assertEquals(10, ((List) spotController.getAllSpots(50.06063, 19.856278, 100, null).get("spots")).size());
-        Assert.assertEquals(10, ((List) spotController.getAllSpots(58.06063, 18.856278, 100, null).get("spots")).size());
+        Assert.assertEquals(10, ((List) spotController.getAllSpots(50.06063, 19.856278, 100, null, null).get("spots")).size());
+        Assert.assertEquals(10, ((List) spotController.getAllSpots(58.06063, 18.856278, 100, null, null).get("spots")).size());
     }
 
     @Transactional
@@ -233,7 +233,7 @@ public class SpotControllerIntegrationTest extends AbstractIntegrationTest {
         request.addParameter("access_token", accessToken.getToken());
 
         for (int i = 0; i < 10; i++) {
-            spotController.getAllSpots(50.06063, 19.856278, 100, null);
+            spotController.getAllSpots(50.06063, 19.856278, 100, 50.06063, 19.856278);
         }
 
         Assert.assertEquals(10, userLocationRepository.count());
